@@ -1,4 +1,38 @@
 import type React from "react"
+import { 
+  Activity, 
+  Boxes, 
+  Scissors, 
+  HeartPulse, 
+  Pill, 
+  Microscope, 
+  Wand2, 
+  UserRound
+} from "lucide-react"
+
+// Función para obtener el ícono correspondiente a cada servicio
+export const getServiceIcon = (serviceName: string, className?: string) => {
+  switch (serviceName) {
+    case "Cirugía de Próstata":
+      return <Scissors className={className} />
+    case "Tratamiento de VPH":
+      return <Microscope className={className} />
+    case "Circuncisión":
+      return <Scissors className={className} />
+    case "Disfunción Eréctil":
+      return <HeartPulse className={className} />
+    case "Litiasis Renal":
+      return <Boxes className={className} />
+    case "Cáncer Urológico":
+      return <Activity className={className} />
+    case "Urodinamia":
+      return <Wand2 className={className} />
+    case "Uroginecología":
+      return <UserRound className={className} />
+    default:
+      return <Pill className={className} />
+  }
+}
 
 interface IconProps {
   className?: string

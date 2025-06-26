@@ -2,11 +2,10 @@
 
 import { useEffect, useState } from "react"
 import { ScrollProgressBar, CustomCursor } from "@/components/scroll-animations"
+import { QuienSoySection } from "@/components/quien-soy-section"
 import { Header } from "@/components/header"
-import { HeroSection } from "@/components/hero-section"
 import { Section } from "@/components/section"
 import { ResponsiveContainer } from "@/components/responsive-container"
-import { TypographyH2, TypographyP } from "@/components/typography"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
@@ -19,12 +18,19 @@ import {
   Award,
   Facebook,
   Instagram,
-  Twitter,
   ArrowRight,
   Shield,
   Users,
   MapPinned,
   Calendar,
+  CheckCircle,
+  Star,
+  Stethoscope,
+  GraduationCap,
+  Play,
+  Pause,
+  Camera,
+  Building2,
 } from "lucide-react"
 import Link from "next/link"
 import Image from "next/image"
@@ -46,7 +52,14 @@ import {
 export default function Home() {
   const [activeSection, setActiveSection] = useState("inicio")
   const [selectedLocation, setSelectedLocation] = useState("polanco")
-  const [expandedService, setExpandedService] = useState<number | null>(null)
+  const [isVideoPlaying, setIsVideoPlaying] = useState(true)
+  const [formData, setFormData] = useState({
+    nombre: "",
+    correo: "",
+    celular: "",
+    diagnostico: "",
+    comentarios: ""
+  })
 
   const locations = {
     polanco: {
@@ -57,6 +70,7 @@ export default function Home() {
         saturday: "9:00 AM - 2:00 PM",
       },
       phone: "(55) 1694 2925",
+      mapUrl: "https://maps.app.goo.gl/YFminzdq8uixrNxB9?g_st=com.google.maps.preview.copy"
     },
     satelite: {
       name: "Ciudad Satélite",
@@ -66,13 +80,24 @@ export default function Home() {
         saturday: "9:00 AM - 2:00 PM",
       },
       phone: "(55) 1694 2925",
+      mapUrl: "https://maps.app.goo.gl/Yx5Yx5Yx5Yx5Yx5Y6"
+    },
+    intermed: {
+      name: "INTERMED",
+      address: "Calz de Guadalupe 442, Industrial, Gustavo A. Madero, 07800 Ciudad de México, CDMX",
+      schedule: {
+        weekdays: "9:00 AM - 7:00 PM",
+        saturday: "9:00 AM - 2:00 PM",
+      },
+      phone: "(55) 5739 3939",
+      mapUrl: "https://maps.app.goo.gl/IntermedLocation"
     },
   }
 
   useEffect(() => {
     const handleScroll = () => {
-      const sections = ["inicio", "servicios", "sobre-mi", "blog", "contacto"]
-
+      const sections = ["inicio", "sobre-mi", "servicios", "clinicas", "instalaciones", "contacto"]
+      
       for (const section of sections) {
         const element = document.getElementById(section)
         if (!element) continue
@@ -85,118 +110,317 @@ export default function Home() {
       }
     }
 
-    window.addEventListener("scroll", handleScroll)
+    window.addEventListener("scroll", handleScroll, { passive: true })
     return () => window.removeEventListener("scroll", handleScroll)
   }, [])
 
   const getServiceIcon = (serviceName: string, className: string) => {
-    switch (serviceName) {
-      case "Cáncer urológico":
-        return <CancerUrologicoSvg className={className} />
-      case "Cálculos en vía urinaria":
-        return <CalculosViaSvg className={className} />
-      case "Eyaculación Precoz":
-        return <EyaculacionPrecozSvg className={className} />
-      case "Infección de Vías Urinarias":
-        return <InfeccionViasSvg className={className} />
-      case "Quiste de Epidídimo":
-        return <QuisteEpididimoSvg className={className} />
-      case "Circuncisión con Láser":
-        return <CircuncisionLaserSvg className={className} />
-      case "Hiperplasia Prostática Benigna":
-        return <HiperplasiaSvg className={className} />
-      case "Infecciones de Transmisión Sexual":
-        return <ItsSvg className={className} />
-      default:
-        return <Award className={className} />
+    const icons = {
+      "Cáncer urológico": <CancerUrologicoSvg className={className} />,
+      "Cálculos en vía urinaria": <CalculosViaSvg className={className} />,
+      "Eyaculación Precoz": <EyaculacionPrecozSvg className={className} />,
+      "Infección de Vías Urinarias": <InfeccionViasSvg className={className} />,
+      "Quiste de Epidídimo": <QuisteEpididimoSvg className={className} />,
+      "Circuncisión con Láser": <CircuncisionLaserSvg className={className} />,
+      "Hiperplasia Prostática Benigna": <HiperplasiaSvg className={className} />,
+      "Infecciones de Transmisión Sexual": <ItsSvg className={className} />,
     }
+    return icons[serviceName as keyof typeof icons] || <Award className={className} />
   }
 
   const services = [
     {
       name: "Cáncer urológico",
-      description: "Diagnóstico y tratamiento de cáncer en el sistema urinario y órganos reproductores masculinos.",
-      icon: "/images/cancer-icon.png",
-    },
-    {
-      name: "Cálculos en vía urinaria",
-      description: "Tratamiento de piedras en los riñones, uréteres y vejiga.",
-      icon: "/images/calculos-icon.png",
-    },
-    {
-      name: "Eyaculación Precoz",
-      description: "Diagnóstico y tratamiento de la eyaculación prematura.",
-      icon: "/images/eyaculacion-icon.png",
-    },
-    {
-      name: "Infección de Vías Urinarias",
-      description: "Tratamiento de infecciones en cualquier parte del sistema urinario.",
-      icon: "/images/infeccion-icon.png",
-    },
-    {
-      name: "Quiste de Epidídimo",
-      description: "Diagnóstico y tratamiento de quistes en el epidídimo.",
-      icon: "/images/quiste-icon.png",
-    },
-    {
-      name: "Circuncisión con Láser",
-      description: "Procedimiento quirúrgico con tecnología láser para la circuncisión.",
-      icon: "/images/circuncision-icon.png",
+      description: "Diagnóstico temprano y tratamiento integral de cáncer en próstata, vejiga, riñón y testículos con técnicas mínimamente invasivas.",
+      highlights: ["Detección temprana", "Cirugía robótica", "Seguimiento integral"]
     },
     {
       name: "Hiperplasia Prostática Benigna",
-      description: "Tratamiento del agrandamiento no canceroso de la próstata.",
-      icon: "/images/hiperplasia-icon.png",
+      description: "Tratamiento especializado del agrandamiento prostático con técnicas láser de última generación.",
+      highlights: ["Cirugía láser", "Recuperación rápida", "Resultados duraderos"]
+    },
+    {
+      name: "Cálculos en vía urinaria",
+      description: "Eliminación de piedras renales mediante litotricia láser y técnicas endoscópicas avanzadas.",
+      highlights: ["Sin incisiones", "Tecnología láser", "Alta efectividad"]
+    },
+    {
+      name: "Circuncisión con Láser",
+      description: "Procedimiento preciso con tecnología láser para máximo confort y recuperación rápida.",
+      highlights: ["Tecnología láser", "Mínimo dolor", "Cicatrización óptima"]
+    },
+    {
+      name: "Infección de Vías Urinarias",
+      description: "Diagnóstico preciso y tratamiento efectivo de infecciones urinarias recurrentes.",
+      highlights: ["Diagnóstico certero", "Tratamiento dirigido", "Prevención"]
+    },
+    {
+      name: "Eyaculación Precoz",
+      description: "Enfoque integral con técnicas modernas para mejorar la función sexual masculina.",
+      highlights: ["Tratamiento personalizado", "Enfoque integral", "Resultados probados"]
+    },
+    {
+      name: "Quiste de Epidídimo",
+      description: "Cirugía microscópica especializada preservando la función reproductiva.",
+      highlights: ["Cirugía microscópica", "Preservación función", "Técnica especializada"]
     },
     {
       name: "Infecciones de Transmisión Sexual",
-      description: "Diagnóstico y tratamiento de infecciones transmitidas sexualmente.",
-      icon: "/images/its-icon.png",
+      description: "Diagnóstico confidencial y tratamiento especializado de ITS con seguimiento completo.",
+      highlights: ["Confidencialidad", "Diagnóstico completo", "Seguimiento"]
     },
+  ]
+
+  const facilityImages = [
+    {
+      id: 1,
+      src: "/images/consultorio-1.jpg",
+      alt: "Consultorio médico moderno",
+      caption: "Consultorio equipado con tecnología de vanguardia"
+    },
+    {
+      id: 2,
+      src: "/images/sala-espera.jpg",
+      alt: "Sala de espera cómoda",
+      caption: "Ambiente relajante para nuestros pacientes"
+    },
+    {
+      id: 3,
+      src: "/images/quirofano.jpg",
+      alt: "Quirófano especializado",
+      caption: "Quirófano con tecnología láser avanzada"
+    },
+    {
+      id: 4,
+      src: "/images/recepcion.jpg",
+      alt: "Área de recepción",
+      caption: "Recepción con atención personalizada"
+    }
   ]
 
   const currentLocation = locations[selectedLocation as keyof typeof locations]
 
+  const openWhatsApp = () => {
+    window.open("https://api.whatsapp.com/send?phone=5215516942925", "_blank")
+  }
+
+  const handleInputChange = (field: string, value: string) => {
+    setFormData(prev => ({ ...prev, [field]: value }))
+  }
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    
+    try {
+      // Aquí integraremos con Mailchimp
+      const response = await fetch('/api/mailchimp', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData)
+      })
+      
+      if (response.ok) {
+        alert('¡Gracias! Nos pondremos en contacto contigo muy pronto.')
+        setFormData({
+          nombre: "",
+          correo: "",
+          celular: "",
+          diagnostico: "",
+          comentarios: ""
+        })
+      }
+    } catch (error) {
+      console.error('Error:', error)
+      openWhatsApp() // Fallback a WhatsApp
+    }
+  }
+
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="flex flex-col min-h-screen bg-gradient-to-b from-green-50/30 to-white">
       <ScrollProgressBar />
       <CustomCursor />
-
       <Header activeSection={activeSection} />
 
       <main className="flex-1">
-        <HeroSection />
+        {/* Hero Section with Consultorio Background */}
+        <section id="inicio" className="relative overflow-hidden min-h-[calc(100dvh-5rem)]">
+          <div className="absolute inset-0 w-full h-full">
+            <video
+              src="/images/Video_Quirúrgico_Urología_Moderna (1).mp4"
+              autoPlay
+              loop
+              muted
+              playsInline
+              className="object-cover w-full h-full absolute inset-0"
+              poster="/images/doctor-profile.png"
+            />
+            <div className="absolute inset-0 bg-gradient-to-r from-green-800/85 via-green-700/80 to-green-600/75"></div>
+          </div>
 
-        {/* Three Blocks Section */}
-        <section className="relative w-full bg-green-50 py-20">
-          <div className="absolute inset-0 bg-black/20"></div>
+          <ResponsiveContainer className="py-12 md:py-20 lg:py-28 relative flex flex-col justify-center min-h-[calc(100dvh-5rem)]">
+            <ScrollAnimation animation="fade-in-up" className="max-w-4xl mx-auto text-center space-y-6 md:space-y-8 z-30 relative px-4">
+              <div className="inline-flex items-center gap-2 bg-white/15 backdrop-blur-sm text-white border border-white/20 rounded-full px-6 py-3 text-sm md:text-base font-medium mb-4 shadow-lg">
+                <Shield className="h-5 w-5" /> 
+                Cirujano Urólogo Certificado
+              </div>
 
-          <ResponsiveContainer className="relative z-10">
-            <ScrollAnimation animation="fade-in-up">
-              <div className="text-center text-green-700 mb-16">
-                <h2 className="text-4xl font-bold mb-4">Conoce nuestras clínicas</h2>
-                <div className="w-20 h-1 bg-white mx-auto mb-6"></div>
-                <p className="text-xl">Dependiendo tu problema tenemos la solución para tí.</p>
+              <div className="bg-gradient-to-br from-white/10 to-transparent backdrop-blur-sm py-8 px-6 md:px-10 rounded-3xl border border-white/10 shadow-2xl">
+                <h1 className="font-bold text-4xl sm:text-5xl md:text-6xl lg:text-7xl tracking-tight text-white mb-6">
+                  Dr. Mario Martínez Thomas
+                </h1>
+                <div className="w-32 h-1 bg-gradient-to-r from-transparent via-white/80 to-transparent mx-auto mb-6" />
+                <p className="text-white/95 font-medium text-xl md:text-2xl lg:text-3xl leading-relaxed max-w-4xl mx-auto">
+                  Urólogo en Ciudad de México experto en Cirugía de Próstata, VPH y Circuncisión
+                </p>
+              </div>
+
+              <div className="flex flex-col sm:flex-row gap-6 pt-8 justify-center">
+                <Button
+                  className="bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-500 hover:to-emerald-500 rounded-full px-10 py-6 shadow-2xl text-lg md:text-xl font-medium tracking-wide transition-all transform hover:scale-105"
+                  onClick={openWhatsApp}
+                >
+                  <Phone className="h-5 w-5 mr-2" />
+                  Agenda por WhatsApp
+                </Button>
+                <Button
+                  variant="outline"
+                  className="border-2 border-white text-white bg-white/10 hover:bg-white/20 rounded-full px-10 py-6 text-lg md:text-xl font-medium backdrop-blur-sm shadow-lg tracking-wide transition-all transform hover:scale-105"
+                  onClick={() => document.getElementById("servicios")?.scrollIntoView({ behavior: "smooth" })}
+                >
+                  Conocer Servicios
+                </Button>
               </div>
             </ScrollAnimation>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 items-stretch">
-              <ScrollAnimation animation="fade-in-up" delay={100}>
-                <div className="bg-white rounded-xl p-8 text-center text-green-700 hover:bg-green-50 transition-all duration-300 h-full flex flex-col">
-                  <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                    <Award className="h-8 w-8 text-green-700" />
+            <div className="absolute top-6 right-6 bg-gradient-to-r from-emerald-700/90 to-green-700/90 backdrop-blur-sm border border-white/20 rounded-full px-6 py-3 shadow-xl flex items-center gap-3 z-30">
+              <Star className="h-5 w-5 text-white fill-current" />
+              <span className="text-white font-medium tracking-wide">15+ Años de Experiencia</span>
+            </div>
+          </ResponsiveContainer>
+        </section>
+
+        <QuienSoySection />
+
+        {/* Services Section */}
+        <Section id="servicios" background="gradient" spacing="xl" hasDivider={true} dividerType="curve">
+          <ResponsiveContainer>
+            <ScrollAnimation animation="fade-in-up">
+              <div className="text-center max-w-4xl mx-auto mb-16">
+                <div className="inline-flex items-center gap-2 bg-white/90 text-green-700 px-6 py-3 rounded-full text-sm font-medium mb-6 shadow-lg">
+                  <Stethoscope className="h-4 w-4" />
+                  Servicios Especializados
+                </div>
+                <h2 className="text-4xl lg:text-5xl xl:text-6xl font-bold text-white mb-6">
+                  Tratamientos Urológicos de Vanguardia
+                </h2>
+                <div className="w-32 h-1 bg-white mx-auto mb-6"></div>
+                <p className="text-xl lg:text-2xl text-white/95 leading-relaxed">
+                  Diagnóstico preciso y tratamientos innovadores con tecnología de última generación 
+                  para garantizar los mejores resultados y una recuperación óptima.
+                </p>
+              </div>
+            </ScrollAnimation>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+              {services.map((service, index) => (
+                <ScrollAnimation key={service.name} animation="fade-in-up" delay={index * 100}>
+                  <div className="group bg-white rounded-3xl p-6 shadow-xl hover:shadow-2xl transition-all duration-500 border-2 border-green-100 h-full flex flex-col">
+                    <div className="flex items-center gap-4 mb-6">
+                      <div className="bg-gradient-to-br from-green-100 to-green-50 p-4 rounded-2xl group-hover:scale-110 transition-transform duration-300 shadow-inner">
+                        {getServiceIcon(service.name, "h-8 w-8 text-green-700")}
+                      </div>
+                      <div className="flex-1">
+                        <h3 className="font-bold text-green-700 text-lg leading-tight">
+                          {service.name}
+                        </h3>
+                      </div>
+                    </div>
+
+                    <p className="text-gray-600 mb-6 leading-relaxed flex-grow text-sm">
+                      {service.description}
+                    </p>
+
+                    <div className="space-y-3 mb-6">
+                      {service.highlights.map((highlight, idx) => (
+                        <div key={idx} className="flex items-center gap-3">
+                          <CheckCircle className="h-4 w-4 text-green-600 flex-shrink-0" />
+                          <span className="text-sm text-gray-700 font-medium">{highlight}</span>
+                        </div>
+                      ))}
+                    </div>
+
+                    <Button
+                      onClick={openWhatsApp}
+                      variant="outline"
+                      className="w-full border-green-200 text-green-700 hover:bg-green-50 hover:border-green-300 transition-all duration-300 mt-auto rounded-full py-3"
+                    >
+                      Consultar Especialista
+                      <ArrowRight className="h-4 w-4 ml-2 group-hover:translate-x-1 transition-transform" />
+                    </Button>
                   </div>
-                  <h3 className="text-xl font-bold mb-4">Clínica de Cirugía de Próstata</h3>
-                  <p className="text-gray-600 flex-grow">
-                    ¿Problemas de próstata? Nuestra clínica es la ideal para ti y tu problema.
-                  </p>
-                  <div className="mt-6">
+                </ScrollAnimation>
+              ))}
+            </div>
+          </ResponsiveContainer>
+        </Section>
+
+        {/* Specialized Clinics Section */}
+        <Section id="clinicas" background="white" spacing="xl" hasDivider={true} dividerType="wave">
+          <ResponsiveContainer>
+            <ScrollAnimation animation="fade-in-up">
+              <div className="text-center max-w-4xl mx-auto mb-16">
+                <div className="inline-flex items-center gap-2 bg-green-100 text-green-700 px-6 py-3 rounded-full text-sm font-medium mb-6">
+                  <Users className="h-4 w-4" />
+                  Clínicas Especializadas
+                </div>
+                <h2 className="text-4xl lg:text-5xl xl:text-6xl font-bold text-green-700 mb-6">
+                  Centros de Excelencia Médica
+                </h2>
+                <div className="w-32 h-1 bg-gradient-to-r from-green-600 to-green-400 mx-auto mb-6"></div>
+                <p className="text-xl lg:text-2xl text-gray-600 leading-relaxed">
+                  Clínicas especializadas con protocolos específicos y tecnología dedicada 
+                  para cada condición urológica.
+                </p>
+              </div>
+            </ScrollAnimation>
+
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+              <ScrollAnimation animation="fade-in-up" delay={100}>
+                <div className="group relative bg-gradient-to-br from-green-50 to-white rounded-3xl p-8 border-2 border-green-100 hover:border-green-200 hover:shadow-2xl transition-all duration-500 h-full">
+                  <div className="absolute top-6 right-6">
+                    <div className="bg-green-100 p-3 rounded-xl group-hover:scale-110 transition-transform duration-300">
+                      <Award className="h-8 w-8 text-green-700" />
+                    </div>
+                  </div>
+                  
+                  <div className="pt-4">
+                    <h3 className="text-2xl font-bold text-green-700 mb-4">
+                      Clínica de Cirugía de Próstata
+                    </h3>
+                    <p className="text-gray-600 mb-6 leading-relaxed">
+                      Centro especializado en el diagnóstico y tratamiento integral de enfermedades prostáticas 
+                      con técnicas láser de última generación y cirugía mínimamente invasiva.
+                    </p>
+                    
+                    <div className="space-y-3 mb-8">
+                      <div className="flex items-center gap-3">
+                        <CheckCircle className="h-5 w-5 text-green-600" />
+                        <span className="text-gray-700 font-medium">Enucleación con Láser</span>
+                      </div>
+                      <div className="flex items-center gap-3">
+                        <CheckCircle className="h-5 w-5 text-green-600" />
+                        <span className="text-gray-700 font-medium">Resección Transuretral (RTU)</span>
+                      </div>
+                      <div className="flex items-center gap-3">
+                        <CheckCircle className="h-5 w-5 text-green-600" />
+                        <span className="text-gray-700 font-medium">Biopsia de Próstata Guiada</span>
+                      </div>
+                    </div>
+
                     <Link href="/clinica-prostata">
-                      <Button
-                        variant="outline"
-                        className="border-white text-green-700 hover:bg-white hover:text-green-700 rounded-full px-6 py-2 transition-colors focus-visible-ring"
-                      >
-                        Ir a clínica
+                      <Button className="w-full bg-green-700 hover:bg-green-600 text-white py-3 rounded-full font-medium transition-all duration-300">
+                        Conocer Clínica
+                        <ArrowRight className="h-4 w-4 ml-2" />
                       </Button>
                     </Link>
                   </div>
@@ -204,19 +428,41 @@ export default function Home() {
               </ScrollAnimation>
 
               <ScrollAnimation animation="fade-in-up" delay={200}>
-                <div className="bg-white rounded-xl p-8 text-center text-green-700 hover:bg-green-50 transition-all duration-300 h-full flex flex-col">
-                  <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                    <Shield className="h-8 w-8 text-green-700" />
+                <div className="group relative bg-gradient-to-br from-green-50 to-white rounded-3xl p-8 border-2 border-green-100 hover:border-green-200 hover:shadow-2xl transition-all duration-500 h-full">
+                  <div className="absolute top-6 right-6">
+                    <div className="bg-green-100 p-3 rounded-xl group-hover:scale-110 transition-transform duration-300">
+                      <Shield className="h-8 w-8 text-green-700" />
+                    </div>
                   </div>
-                  <h3 className="text-xl font-bold mb-4">Clínica de VPH</h3>
-                  <p className="text-gray-600 flex-grow">Atiende hoy tu problema de VPH con los expertos en el tema.</p>
-                  <div className="mt-6">
+                  
+                  <div className="pt-4">
+                    <h3 className="text-2xl font-bold text-green-700 mb-4">
+                      Clínica de VPH
+                    </h3>
+                    <p className="text-gray-600 mb-6 leading-relaxed">
+                      Diagnóstico temprano y tratamiento especializado del Virus del Papiloma Humano 
+                      con tecnología de última generación en un ambiente confidencial y profesional.
+                    </p>
+                    
+                    <div className="space-y-3 mb-8">
+                      <div className="flex items-center gap-3">
+                        <CheckCircle className="h-5 w-5 text-green-600" />
+                        <span className="text-gray-700 font-medium">Electrocauterización</span>
+                      </div>
+                      <div className="flex items-center gap-3">
+                        <CheckCircle className="h-5 w-5 text-green-600" />
+                        <span className="text-gray-700 font-medium">Láser CO2</span>
+                      </div>
+                      <div className="flex items-center gap-3">
+                        <CheckCircle className="h-5 w-5 text-green-600" />
+                        <span className="text-gray-700 font-medium">Seguimiento especializado</span>
+                      </div>
+                    </div>
+
                     <Link href="/clinica-vph">
-                      <Button
-                        variant="outline"
-                        className="border-white text-green-700 hover:bg-white hover:text-green-700 rounded-full px-6 py-2 transition-colors focus-visible-ring"
-                      >
-                        Ir a clínica
+                      <Button className="w-full bg-green-700 hover:bg-green-600 text-white py-3 rounded-full font-medium transition-all duration-300">
+                        Conocer Clínica
+                        <ArrowRight className="h-4 w-4 ml-2" />
                       </Button>
                     </Link>
                   </div>
@@ -224,21 +470,41 @@ export default function Home() {
               </ScrollAnimation>
 
               <ScrollAnimation animation="fade-in-up" delay={300}>
-                <div className="bg-white rounded-xl p-8 text-center text-green-700 hover:bg-green-50 transition-all duration-300 h-full flex flex-col">
-                  <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                    <Users className="h-8 w-8 text-green-700" />
+                <div className="group relative bg-gradient-to-br from-green-50 to-white rounded-3xl p-8 border-2 border-green-100 hover:border-green-200 hover:shadow-2xl transition-all duration-500 h-full">
+                  <div className="absolute top-6 right-6">
+                    <div className="bg-green-100 p-3 rounded-xl group-hover:scale-110 transition-transform duration-300">
+                      <Users className="h-8 w-8 text-green-700" />
+                    </div>
                   </div>
-                  <h3 className="text-xl font-bold mb-4">Clínica de Circuncisión</h3>
-                  <p className="text-gray-600 flex-grow">
-                    Termina con tus problemas de balanitis y fimosis con la ayuda de nuestros especialistas.
-                  </p>
-                  <div className="mt-6">
+                  
+                  <div className="pt-4">
+                    <h3 className="text-2xl font-bold text-green-700 mb-4">
+                      Clínica de Circuncisión
+                    </h3>
+                    <p className="text-gray-600 mb-6 leading-relaxed">
+                      Procedimientos de circuncisión con tecnología láser para máxima precisión, 
+                      mínimo dolor y cicatrización óptima. Solución definitiva para fimosis y balanitis.
+                    </p>
+                    
+                    <div className="space-y-3 mb-8">
+                      <div className="flex items-center gap-3">
+                        <CheckCircle className="h-5 w-5 text-green-600" />
+                        <span className="text-gray-700 font-medium">Circuncisión Tradicional</span>
+                      </div>
+                      <div className="flex items-center gap-3">
+                        <CheckCircle className="h-5 w-5 text-green-600" />
+                        <span className="text-gray-700 font-medium">Circuncisión con Láser</span>
+                      </div>
+                      <div className="flex items-center gap-3">
+                        <CheckCircle className="h-5 w-5 text-green-600" />
+                        <span className="text-gray-700 font-medium">Frenuloplastía</span>
+                      </div>
+                    </div>
+
                     <Link href="/clinica-circuncision">
-                      <Button
-                        variant="outline"
-                        className="border-white text-green-700 hover:bg-white hover:text-green-700 rounded-full px-6 py-2 transition-colors focus-visible-ring"
-                      >
-                        Ir a clínica
+                      <Button className="w-full bg-green-700 hover:bg-green-600 text-white py-3 rounded-full font-medium transition-all duration-300">
+                        Conocer Clínica
+                        <ArrowRight className="h-4 w-4 ml-2" />
                       </Button>
                     </Link>
                   </div>
@@ -246,382 +512,188 @@ export default function Home() {
               </ScrollAnimation>
             </div>
           </ResponsiveContainer>
-        </section>
+        </Section>
 
-        {/* Services Section */}
-        <Section id="servicios" background="white" spacing="lg" hasDivider={true} dividerType="wave">
+        {/* Instalaciones Section */}
+        <Section id="instalaciones" background="primary-light" spacing="xl" hasDivider={true} dividerType="angle">
           <ResponsiveContainer>
             <ScrollAnimation animation="fade-in-up">
-              <div className="text-center content-narrow mb-16">
-                <TypographyH2 className="mb-4 text-green-700">Servicios de urología</TypographyH2>
-                <div className="w-20 h-1 bg-green-700 mx-auto mb-6"></div>
-                <TypographyP className="text-green-700">
-                  Ofrecemos diagnóstico y tratamiento especializado para todas las condiciones urológicas, utilizando
-                  las técnicas más avanzadas y mínimamente invasivas.
-                </TypographyP>
+              <div className="text-center max-w-4xl mx-auto mb-16">
+                <div className="inline-flex items-center gap-2 bg-white text-green-700 px-6 py-3 rounded-full text-sm font-medium mb-6 shadow-lg">
+                  <Building2 className="h-4 w-4" />
+                  Nuestras Instalaciones
+                </div>
+                <h2 className="text-4xl lg:text-5xl xl:text-6xl font-bold text-white mb-6">
+                  Instalaciones
+                </h2>
+                <div className="w-32 h-1 bg-white mx-auto mb-6"></div>
+                <p className="text-xl lg:text-2xl text-white/95 leading-relaxed">
+                  Espacios diseñados para brindar la máxima comodidad y confianza a nuestros pacientes, 
+                  equipados con la tecnología más avanzada.
+                </p>
               </div>
             </ScrollAnimation>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-8 auto-rows-fr">
-              {services.map((service, index) => (
-                <ScrollAnimation key={index} animation="fade-in-up" delay={index * 100}>
-                  <div className="group relative bg-green-50 rounded-xl overflow-hidden transition-all duration-300 hover:shadow-xl h-full flex flex-col border-2 border-white/10">
-                    {/* Decorative top border with gradient */}
-                    <div className="absolute top-0 left-0 right-0 h-2 bg-gradient-to-r from-green-400 via-green-600 to-green-400"></div>
-
-                    {/* Decorative corner accent */}
-                    <div className="absolute top-0 right-0 w-16 h-16 overflow-hidden">
-                      <div className="absolute transform rotate-45 bg-green-100 text-green-700 font-medium text-xs py-1 right-[-40px] top-[16px] w-[170%] text-center">
-                        Especializado
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8">
+              {facilityImages.map((image, index) => (
+                <ScrollAnimation key={image.id} animation="fade-in-up" delay={index * 150}>
+                  <div className="group relative bg-white rounded-3xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-500">
+                    <div className="relative h-80 overflow-hidden">
+                      <Image
+                        src={image.src}
+                        alt={image.alt}
+                        fill
+                        className="object-cover group-hover:scale-110 transition-transform duration-700"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                      <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm p-3 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                        <Camera className="h-5 w-5 text-green-700" />
                       </div>
                     </div>
-
-                    <div className="p-8 flex flex-col items-center text-center flex-grow">
-                      {/* Icon with animated background */}
-                      <div className="relative mb-6 group-hover:scale-110 transition-transform duration-300">
-                        <div className="absolute inset-0 bg-green-100 rounded-full blur-sm opacity-80 group-hover:opacity-100 transition-opacity"></div>
-                        <div className="relative z-10 w-20 h-20 flex items-center justify-center rounded-full bg-gradient-to-br from-green-50 to-green-100 border border-green-200 shadow-inner">
-                          {getServiceIcon(service.name, "h-10 w-10 text-green-700")}
-                        </div>
-                      </div>
-
-                      {/* Service name with underline animation */}
-                      <h3 className="font-medium text-green-700 mb-3 text-lg relative inline-block h-14 flex items-center justify-center shadow-text">
-                        {service.name}
-                        <span className="absolute bottom-0 left-0 w-full h-0.5 bg-green-100 transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-300"></span>
-                      </h3>
-
-                      {/* Description - solo visible cuando está expandido */}
-                      <div
-                        className={`overflow-hidden transition-all duration-300 ${
-                          expandedService === index ? "max-h-60 opacity-100 mb-6" : "max-h-0 opacity-0"
-                        }`}
-                      >
-                        <p className="text-gray-600 shadow-text">{service.description}</p>
-                      </div>
-                    </div>
-
-                    {/* Button with arrow animation - now in a separate div at the bottom */}
-                    <div className="w-full pt-2 border-t border-green-100/30 mt-auto">
-                      <Button
-                        variant="ghost"
-                        className="w-full text-green-700 hover:text-green-800 flex items-center justify-center gap-2 py-3 group-hover:bg-green-50 transition-colors focus-visible-ring"
-                        onClick={() => setExpandedService(expandedService === index ? null : index)}
-                      >
-                        <span>{expandedService === index ? "Ver menos" : "Saber más"}</span>
-                        <ArrowRight
-                          className={`h-4 w-4 transition-transform ${
-                            expandedService === index ? "rotate-90" : "group-hover:translate-x-1"
-                          }`}
-                        />
-                      </Button>
+                    <div className="p-6">
+                      <h3 className="font-bold text-green-700 text-xl mb-2">{image.alt}</h3>
+                      <p className="text-gray-600 leading-relaxed">{image.caption}</p>
                     </div>
                   </div>
                 </ScrollAnimation>
               ))}
             </div>
-
-            <ScrollAnimation animation="fade-in-up" delay={400}>
-              <div className="flex justify-center mt-12">
-                <Button
-                  className="bg-green-700 hover:bg-green-600 btn-elegant rounded-full px-8 py-6 focus-visible-ring"
-                  onClick={() => window.open("https://api.whatsapp.com/send?phone=5215516942925", "_blank")}
-                >
-                  Conoce todos nuestros servicios
-                </Button>
-              </div>
-            </ScrollAnimation>
           </ResponsiveContainer>
         </Section>
-
-        {/* About Doctor Section */}
-        <Section id="sobre-mi" background="primary-light" spacing="lg" hasDivider={true} dividerType="angle">
-          <ResponsiveContainer>
-            <div className="flex flex-col lg:flex-row items-center gap-8 lg:gap-12">
-              <ScrollAnimation animation="fade-in-right" className="lg:w-2/5">
-                <div className="relative max-w-md mx-auto lg:max-w-none">
-                  <ParallaxEffect speed={0.02}>
-                    <div className="absolute -inset-4 bg-green-100 rounded-2xl blur-xl opacity-50 rotate-3"></div>
-                  </ParallaxEffect>
-                  <div className="img-hover-zoom">
-                    <Image
-                      src="/images/doctor-profile.png"
-                      alt="Dr. Mario Martínez Thomas"
-                      width={500}
-                      height={600}
-                      className="rounded-2xl shadow-xl relative z-10 elegant-shadow"
-                    />
-                  </div>
-                </div>
-              </ScrollAnimation>
-
-              <ScrollAnimation animation="fade-in-left" className="md:w-3/5 space-y-8">
-                <div>
-                  <h3 className="text-xl text-green-600 mb-2">Conoce un poco más sobre mí</h3>
-                  <TypographyH2 className="mb-4 gradient-text">Dr. Mario Martínez Thomas</TypographyH2>
-                  <div className="w-20 h-1 bg-green-500 mb-6"></div>
-                </div>
-
-                <TypographyP>
-                  Cirujano Urólogo egresado de CMN 20 de Noviembre, con mención honorífica otorgada por la Universidad
-                  Nacional Autónoma de México. Mi compromiso es ofrecer la más alta calidad en atención urológica,
-                  combinando experiencia clínica con las técnicas más avanzadas.
-                </TypographyP>
-
-                <div className="space-y-6">
-                  <div className="flex items-start gap-5 p-4 rounded-xl hover:bg-green-50 transition-colors hover-glow">
-                    <div className="bg-green-100 p-3 rounded-full">
-                      <Image src="/images/certification-icon.png" alt="Certificación" width={24} height={24} />
-                    </div>
-                    <div>
-                      <h4 className="font-medium text-green-700 text-lg mb-1">
-                        Certificación en laparoscopia urológica avanzada
-                      </h4>
-                      <p className="text-gray-600">
-                        en IRCAD Latinoamérica, uno de los mejores centros de entrenamiento a nivel mundial en cirugía
-                        laparoscópica y robótica.
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="flex items-start gap-5 p-4 rounded-xl hover:bg-green-50 transition-colors hover-glow">
-                    <div className="bg-green-100 p-3 rounded-full">
-                      <Image src="/images/certification-icon.png" alt="Certificación" width={24} height={24} />
-                    </div>
-                    <div>
-                      <h4 className="font-medium text-green-700 text-lg mb-1">
-                        Certificación vigente por el Consejo Nacional Mexicano de Urología
-                      </h4>
-                    </div>
-                  </div>
-
-                  <div className="flex items-start gap-5 p-4 rounded-xl hover:bg-green-50 transition-colors hover-glow">
-                    <div className="bg-green-100 p-3 rounded-full">
-                      <Image src="/images/membership-icon.png" alt="Membresía" width={24} height={24} />
-                    </div>
-                    <div>
-                      <h4 className="font-medium text-green-700 text-lg mb-1">
-                        Miembro de la asociación americana de urología
-                      </h4>
-                    </div>
-                  </div>
-
-                  <div className="flex items-start gap-5 p-4 rounded-xl hover:bg-green-50 transition-colors hover-glow">
-                    <div className="bg-green-100 p-3 rounded-full">
-                      <Image src="/images/membership-icon.png" alt="Membresía" width={24} height={24} />
-                    </div>
-                    <div>
-                      <h4 className="font-medium text-green-700 text-lg mb-1">
-                        Miembro de la asociación europea de urología
-                      </h4>
-                    </div>
-                  </div>
-                </div>
-              </ScrollAnimation>
-            </div>
-          </ResponsiveContainer>
-        </Section>
-
-        {/* Appointment Section */}
-        <Section id="contacto" background="gradient" spacing="lg">
-          <ResponsiveContainer>
-            <ScrollAnimation animation="fade-in-up">
-              <div className="bg-white rounded-2xl shadow-xl overflow-hidden elegant-shadow">
-                <div className="relative">
-                  <Image
-                    src="/images/clinic-background.png"
-                    alt="Clínica Urodex"
-                    width={1200}
-                    height={400}
-                    className="w-full h-80 object-cover"
-                  />
-                  <div className="absolute inset-0 bg-green-700/70"></div>
-                </div>
-
-                <div className="p-8 md:p-12">
-                  <h3 className="text-2xl font-bold text-green-700 mb-8 text-center">
-                    Agenda tu cita de valoración, estaremos en contacto muy pronto
-                  </h3>
-
-                  <form className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8 max-w-4xl mx-auto">
-                    <div className="space-y-2">
-                      <label htmlFor="nombre" className="text-sm font-medium text-gray-600">
-                        Nombre
-                      </label>
-                      <Input id="nombre" placeholder="Nombre" className="input-elegant" aria-required="true" />
-                    </div>
-
-                    <div className="space-y-2">
-                      <label htmlFor="diagnostico" className="text-sm font-medium text-gray-600">
-                        ¿Cuenta con diagnóstico previo?
-                      </label>
-                      <Select>
-                        <SelectTrigger className="input-elegant">
-                          <SelectValue placeholder="Seleccione una opción" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="si">Sí</SelectItem>
-                          <SelectItem value="no">No</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-
-                    <div className="space-y-2">
-                      <label htmlFor="correo" className="text-sm font-medium text-gray-600">
-                        Correo
-                      </label>
-                      <Input
-                        id="correo"
-                        type="email"
-                        placeholder="Correo"
-                        className="input-elegant"
-                        aria-required="true"
-                      />
-                    </div>
-
-                    <div className="space-y-2">
-                      <label htmlFor="celular" className="text-sm font-medium text-gray-600">
-                        Celular
-                      </label>
-                      <Input id="celular" placeholder="Celular" className="input-elegant" aria-required="true" />
-                    </div>
-
-                    <div className="space-y-2 md:col-span-2">
-                      <label htmlFor="comentarios" className="text-sm font-medium text-gray-600">
-                        Comentarios
-                      </label>
-                      <Textarea id="comentarios" placeholder="Comentarios" className="textarea-elegant" />
-                    </div>
-
-                    <div className="md:col-span-2 flex justify-center">
-                      <Button className="bg-green-700 hover:bg-green-600 btn-elegant rounded-full px-10 py-6 text-lg focus-visible-ring">
-                        Enviar
-                      </Button>
-                    </div>
-                  </form>
-                </div>
-              </div>
-            </ScrollAnimation>
-          </ResponsiveContainer>
-        </Section>
-
-        {/* Blog Section */}
-        <HomeBlogSection />
 
         {/* FAQ Section */}
-        <Section background="white" spacing="lg" className="texture-dots">
+        <Section background="white" spacing="xl" hasDivider={true} dividerType="wave">
           <ResponsiveContainer>
             <ScrollAnimation animation="fade-in-up">
-              <div className="text-center content-narrow mb-16">
-                <TypographyH2 className="mb-4 gradient-text">Preguntas Frecuentes</TypographyH2>
-                <div className="w-20 h-1 bg-green-500 mx-auto mb-6"></div>
-                <TypographyP>
-                  Respuestas a las dudas más comunes sobre la atención urológica y nuestros servicios.
-                </TypographyP>
+              <div className="text-center max-w-4xl mx-auto mb-16">
+                <div className="inline-flex items-center gap-2 bg-green-100 text-green-700 px-6 py-3 rounded-full text-sm font-medium mb-6">
+                  <Award className="h-4 w-4" />
+                  Preguntas Frecuentes
+                </div>
+                <h2 className="text-4xl lg:text-5xl xl:text-6xl font-bold text-green-700 mb-6">
+                  Resolvemos Tus Dudas
+                </h2>
+                <div className="w-32 h-1 bg-gradient-to-r from-green-600 to-green-400 mx-auto mb-6"></div>
+                <p className="text-xl lg:text-2xl text-gray-600 leading-relaxed">
+                  Información clara y profesional sobre los tratamientos urológicos más comunes.
+                </p>
               </div>
             </ScrollAnimation>
 
-            <div className="content-medium">
+            <div className="max-w-4xl mx-auto">
               <ScrollAnimation animation="fade-in-up" delay={100}>
                 <Accordion type="single" collapsible className="space-y-4">
                   <AccordionItem
                     value="item-1"
-                    className="border border-green-100 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow"
+                    className="bg-gradient-to-br from-green-50 to-white border-0 rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300"
                   >
-                    <AccordionTrigger className="hover:bg-green-50 px-6 py-4 text-left font-medium text-green-800 text-lg focus-visible-ring">
-                      ¿Cuándo debo acudir a un urólogo?
+                    <AccordionTrigger className="hover:bg-green-50/50 px-8 py-6 text-left font-bold text-green-800 text-lg [&[data-state=open]]:bg-green-50/50">
+                      ¿Cuándo debo consultar a un urólogo?
                     </AccordionTrigger>
-                    <AccordionContent className="px-6 pb-4 text-gray-600">
-                      <p>
-                        Debes consultar a un urólogo si presentas síntomas como dolor al orinar, sangre en la orina,
-                        incontinencia, infecciones urinarias recurrentes, disfunción eréctil o dificultad para orinar.
-                        De igual forma se debe consultar al urólogo al cumplir los 45 años.
-                      </p>
+                    <AccordionContent className="px-8 pb-6 text-gray-700 leading-relaxed">
+                      Debes consultar a un urólogo si presentas síntomas como dolor al orinar, sangre en la orina,
+                      incontinencia, infecciones urinarias recurrentes, disfunción eréctil o dificultad para orinar.
+                      También se recomienda una evaluación preventiva anual a partir de los 45 años.
                     </AccordionContent>
                   </AccordionItem>
 
                   <AccordionItem
                     value="item-2"
-                    className="border border-green-100 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow"
+                    className="bg-gradient-to-br from-green-50 to-white border-0 rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300"
                   >
-                    <AccordionTrigger className="hover:bg-green-50 px-6 py-4 text-left font-medium text-green-800 text-lg focus-visible-ring">
-                      ¿Qué enfermedades trata un urólogo?
+                    <AccordionTrigger className="hover:bg-green-50/50 px-8 py-6 text-left font-bold text-green-800 text-lg [&[data-state=open]]:bg-green-50/50">
+                      ¿Qué ventajas tiene la cirugía láser de próstata?
                     </AccordionTrigger>
-                    <AccordionContent className="px-6 pb-4 text-gray-600">
-                      <p className="mb-3">
-                        Un urólogo trata enfermedades del aparato urinario en hombres y mujeres, y del aparato
-                        reproductor masculino. Algunas de las más comunes son:
+                    <AccordionContent className="px-8 pb-6 text-gray-700 leading-relaxed">
+                      <p className="mb-4">
+                        La cirugía láser de próstata ofrece múltiples beneficios comparada con técnicas tradicionales:
                       </p>
-                      <ul className="list-disc pl-6 space-y-2">
-                        <li>Infecciones urinarias</li>
-                        <li>Cálculos renales o piedras en las vías urinarias</li>
-                        <li>Hiperplasia prostática benigna (agrandamiento de la próstata)</li>
-                        <li>Cáncer de riñón, vejiga, próstata y testículos</li>
-                        <li>Disfunción eréctil y problemas de eyaculación</li>
-                        <li>Incontinencia urinaria</li>
-                        <li>Varicocele y problemas de fertilidad masculina</li>
-                        <li>Estenosis uretral (estrechamiento de la uretra)</li>
-                        <li>Prostatitis (inflamación de la próstata)</li>
-                        <li>Enfermedades del pene, testículos y escroto</li>
+                      <ul className="space-y-2 ml-4">
+                        <li className="flex items-start gap-2">
+                          <CheckCircle className="h-4 w-4 text-green-600 mt-1 flex-shrink-0" />
+                          <span>Menor tiempo de recuperación y hospitalización</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <CheckCircle className="h-4 w-4 text-green-600 mt-1 flex-shrink-0" />
+                          <span>Preservación de la función sexual y continencia</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <CheckCircle className="h-4 w-4 text-green-600 mt-1 flex-shrink-0" />
+                          <span>Procedimiento ambulatorio en la mayoría de casos</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <CheckCircle className="h-4 w-4 text-green-600 mt-1 flex-shrink-0" />
+                          <span>Resultados inmediatos y duraderos</span>
+                        </li>
                       </ul>
-                      <p className="mt-3">
-                        El cirujano urólogo también realiza procedimientos quirúrgicos como circuncisión, vasectomía,
-                        resección prostática o cirugías mínimamente invasivas para tratar estos problemas.
-                      </p>
                     </AccordionContent>
                   </AccordionItem>
 
                   <AccordionItem
                     value="item-3"
-                    className="border border-green-100 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow"
+                    className="bg-gradient-to-br from-green-50 to-white border-0 rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300"
                   >
-                    <AccordionTrigger className="hover:bg-green-50 px-6 py-4 text-left font-medium text-green-800 text-lg focus-visible-ring">
-                      ¿Cuál es la diferencia entre un urólogo y un nefrólogo?
+                    <AccordionTrigger className="hover:bg-green-50/50 px-8 py-6 text-left font-bold text-green-800 text-lg [&[data-state=open]]:bg-green-50/50">
+                      ¿El tratamiento urológico también es para mujeres?
                     </AccordionTrigger>
-                    <AccordionContent className="px-6 pb-4 text-gray-600">
-                      <p className="mb-3">
-                        La principal diferencia es que el urólogo es un médico cirujano especializado en el tratamiento
-                        de enfermedades del aparato urinario (riñones, uréteres, vejiga y uretra) y del aparato
-                        reproductor masculino. Además de tratar médicamente, también realiza cirugías.
+                    <AccordionContent className="px-8 pb-6 text-gray-700 leading-relaxed">
+                      <p className="mb-4">
+                        Absolutamente. El urólogo trata diversas condiciones del aparato urinario femenino:
                       </p>
-                      <p className="mb-3">
-                        El nefrólogo, en cambio, es un médico no cirujano que se especializa en el diagnóstico y
-                        tratamiento médico de enfermedades del riñón, como la insuficiencia renal, la hipertensión renal
-                        o el síndrome nefrótico. No realiza cirugías, pero se enfoca en preservar la función renal y
-                        prevenir complicaciones.
-                      </p>
-                      <p>
-                        En muchos casos, ambos especialistas trabajan en conjunto para ofrecer un tratamiento integral.
-                      </p>
+                      <ul className="space-y-2 ml-4">
+                        <li className="flex items-start gap-2">
+                          <CheckCircle className="h-4 w-4 text-green-600 mt-1 flex-shrink-0" />
+                          <span>Infecciones urinarias recurrentes</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <CheckCircle className="h-4 w-4 text-green-600 mt-1 flex-shrink-0" />
+                          <span>Incontinencia urinaria</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <CheckCircle className="h-4 w-4 text-green-600 mt-1 flex-shrink-0" />
+                          <span>Cálculos renales y vesicales</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <CheckCircle className="h-4 w-4 text-green-600 mt-1 flex-shrink-0" />
+                          <span>Cistitis intersticial y vejiga hiperactiva</span>
+                        </li>
+                      </ul>
                     </AccordionContent>
                   </AccordionItem>
 
                   <AccordionItem
                     value="item-4"
-                    className="border border-green-100 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow"
+                    className="bg-gradient-to-br from-green-50 to-white border-0 rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300"
                   >
-                    <AccordionTrigger className="hover:bg-green-50 px-6 py-4 text-left font-medium text-green-800 text-lg focus-visible-ring">
-                      ¿Qué trata el urólogo en una mujer?
+                    <AccordionTrigger className="hover:bg-green-50/50 px-8 py-6 text-left font-bold text-green-800 text-lg [&[data-state=open]]:bg-green-50/50">
+                      ¿Qué incluye una consulta urológica?
                     </AccordionTrigger>
-                    <AccordionContent className="px-6 pb-4 text-gray-600">
-                      <p className="mb-3">
-                        El urólogo trata diversas afecciones del aparato urinario femenino. Entre las más comunes se
-                        encuentran:
+                    <AccordionContent className="px-8 pb-6 text-gray-700 leading-relaxed">
+                      <p className="mb-4">
+                        Una consulta urológica completa incluye:
                       </p>
-                      <ul className="list-disc pl-6 space-y-2">
-                        <li>Infecciones urinarias recurrentes</li>
-                        <li>Incontinencia urinaria (pérdida involuntaria de orina)</li>
-                        <li>Cistitis intersticial (síndrome de vejiga dolorosa)</li>
-                        <li>Cálculos renales o vesicales</li>
-                        <li>Problemas de vaciamiento vesical</li>
-                        <li>Prolapsos del tracto urinario</li>
-                        <li>Tumores o cáncer de vejiga, riñón o uretra</li>
-                        <li>Estenosis uretral (estrechamiento de la uretra)</li>
+                      <ul className="space-y-2 ml-4">
+                        <li className="flex items-start gap-2">
+                          <CheckCircle className="h-4 w-4 text-green-600 mt-1 flex-shrink-0" />
+                          <span>Historia clínica detallada y evaluación de síntomas</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <CheckCircle className="h-4 w-4 text-green-600 mt-1 flex-shrink-0" />
+                          <span>Examen físico especializado</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <CheckCircle className="h-4 w-4 text-green-600 mt-1 flex-shrink-0" />
+                          <span>Análisis de estudios previos</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <CheckCircle className="h-4 w-4 text-green-600 mt-1 flex-shrink-0" />
+                          <span>Plan de tratamiento personalizado</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <CheckCircle className="h-4 w-4 text-green-600 mt-1 flex-shrink-0" />
+                          <span>Resolución de dudas y orientación</span>
+                        </li>
                       </ul>
-                      <p className="mt-3">
-                        Aunque comúnmente se asocia al urólogo con la salud masculina, también es el especialista
-                        indicado para atender trastornos urinarios en mujeres de todas las edades.
-                      </p>
                     </AccordionContent>
                   </AccordionItem>
                 </Accordion>
@@ -630,127 +702,259 @@ export default function Home() {
           </ResponsiveContainer>
         </Section>
 
-        {/* Schedule and Map Section */}
-        <Section background="dark" spacing="md" hasDivider={true} dividerType="curve">
+        {/* Contact Section with Mailchimp Integration */}
+        <Section id="contacto" background="white" spacing="xl">
           <ResponsiveContainer>
             <ScrollAnimation animation="fade-in-up">
-              <div className="bg-white rounded-2xl p-8 md:p-12 shadow-xl elegant-shadow text-gray-900">
-                <div className="flex flex-col xl:flex-row gap-8">
-                  {/* Desktop: Información a la izquierda, Mobile: Todo apilado */}
-                  <div className="xl:w-1/2">
-                    <div className="inline-block px-4 py-1 bg-green-100 text-green-700 rounded-full text-sm font-medium mb-2">
-                      Visítanos
-                    </div>
-                    <h2 className="text-3xl font-bold text-green-700 mb-4 gradient-text">Agenda tu cita hoy</h2>
-                    <div className="mb-6"></div>
-
-                    <div className="mb-6">
-                      <p className="text-gray-900 font-bold mb-3">Selecciona una ubicación:</p>
-                      <div className="flex flex-col xs:flex-row gap-3">
-                        <Button
-                          type="button"
-                          variant={selectedLocation === "polanco" ? "default" : "outline"}
-                          className={`flex-1 flex items-center justify-center gap-2 py-6 rounded-full ${
-                            selectedLocation === "polanco"
-                              ? "bg-green-700 hover:bg-green-600 text-white"
-                              : "border-green-700 text-green-700 hover:bg-green-50"
-                          }`}
-                          onClick={() => setSelectedLocation("polanco")}
-                        >
-                          <MapPinned className="h-5 w-5" />
-                          <span className="font-medium">Polanco</span>
-                        </Button>
-                        <Button
-                          type="button"
-                          variant={selectedLocation === "satelite" ? "default" : "outline"}
-                          className={`flex-1 flex items-center justify-center gap-2 py-6 rounded-full ${
-                            selectedLocation === "satelite"
-                              ? "bg-green-700 hover:bg-green-600 text-white"
-                              : "border-green-700 text-green-700 hover:bg-green-50"
-                          }`}
-                          onClick={() => setSelectedLocation("satelite")}
-                        >
-                          <MapPinned className="h-5 w-5" />
-                          <span className="font-medium">Satélite</span>
-                        </Button>
-                      </div>
-                    </div>
-
-                    {/* Desktop: Grid 2x2, Mobile: Stack vertical */}
-                    <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 mb-6">
-                      <div className="flex items-center gap-3 hover-lift p-3 rounded-lg hover:bg-green-50 transition-colors bg-gray-100">
-                        <div className="bg-green-100 p-2 rounded-full">
-                          <Clock className="h-5 w-5 text-green-700" />
-                        </div>
-                        <div>
-                          <p className="text-gray-900 font-bold">Lunes a Viernes</p>
-                          <p className="text-gray-800 font-medium">{currentLocation.schedule.weekdays}</p>
-                        </div>
-                      </div>
-
-                      <div className="flex items-center gap-3 hover-lift p-3 rounded-lg hover:bg-green-50 transition-colors bg-gray-100">
-                        <div className="bg-green-100 p-2 rounded-full">
-                          <Clock className="h-5 w-5 text-green-700" />
-                        </div>
-                        <div>
-                          <p className="text-gray-900 font-bold">Sábados</p>
-                          <p className="text-gray-800 font-medium">{currentLocation.schedule.saturday}</p>
-                        </div>
-                      </div>
-
-                      <div className="flex items-start gap-4 hover-lift p-3 rounded-lg hover:bg-green-50 transition-colors bg-gray-100 xl:col-span-2">
-                        <div className="bg-green-100 p-2 rounded-full mt-0.5">
-                          <MapPin className="h-5 w-5 text-green-700" />
-                        </div>
-                        <div>
-                          <p className="text-gray-900 font-bold">Dirección</p>
-                          <p className="text-gray-800 font-medium">{currentLocation.address}</p>
-                          <p className="text-gray-700 text-sm mt-1">Fácil acceso y estacionamiento disponible</p>
-                        </div>
-                      </div>
-
-                      <div className="flex items-start gap-4 hover-lift p-3 rounded-lg hover:bg-green-50 transition-colors bg-gray-100 xl:col-span-2">
-                        <div className="bg-green-100 p-2 rounded-full mt-0.5">
-                          <Phone className="h-5 w-5 text-green-700" />
-                        </div>
-                        <div>
-                          <p className="text-gray-900 font-bold">Teléfono y WhatsApp</p>
-                          <p className="text-gray-800 font-medium">{currentLocation.phone}</p>
-                          <p className="text-gray-700 text-sm mt-1">Respuesta rápida y atención personalizada</p>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="pt-4">
-                      <Button
-                        className="bg-green-700 hover:bg-green-600 btn-elegant rounded-full px-8 py-6 text-lg w-full flex items-center justify-center gap-2 focus-visible-ring"
-                        onClick={() => window.open("https://api.whatsapp.com/send?phone=5215516942925", "_blank")}
-                      >
-                        <Calendar className="h-5 w-5" />
-                        Agendar Cita
-                      </Button>
+              <div className="bg-gradient-to-br from-green-50 to-white rounded-3xl shadow-2xl overflow-hidden border border-green-100">
+                <div className="relative h-64 md:h-80">
+                  <Image
+                    src="/images/clinic-background.png"
+                    alt="Clínica Urodex - Instalaciones modernas"
+                    width={1200}
+                    height={400}
+                    className="w-full h-full object-cover"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-r from-green-700/80 to-green-600/60"></div>
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <div className="text-center text-white">
+                      <h3 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">
+                        Agenda tu cita de valoración, estaremos en contacto muy pronto
+                      </h3>
+                      <p className="text-xl md:text-2xl font-light">
+                        Atención profesional en instalaciones de primera clase
+                      </p>
                     </div>
                   </div>
+                </div>
 
-                  {/* Desktop: Mapa a la derecha, Mobile: Mapa abajo */}
-                  <div className="xl:w-1/2 h-[300px] sm:h-[400px] xl:h-[600px] relative">
-                    <div className="absolute -inset-1 bg-green-100 rounded-xl blur-sm opacity-50"></div>
-                    <GoogleMap className="relative z-10" address={currentLocation.address} />
-                    <div className="absolute top-4 right-4 z-20 bg-white p-2 rounded-lg shadow-md">
+                <div className="p-8 md:p-12">
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                    {/* Formulario con Mailchimp */}
+                    <div>
+                      <h4 className="text-2xl font-bold text-green-700 mb-6">
+                        Solicita tu Cita
+                      </h4>
+                      <form onSubmit={handleSubmit} className="space-y-6">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <div>
+                            <label htmlFor="nombre" className="block text-sm font-medium text-gray-700 mb-2">
+                              Nombre completo *
+                            </label>
+                            <Input 
+                              id="nombre" 
+                              placeholder="Tu nombre completo" 
+                              className="border-green-200 focus:border-green-500 focus:ring-green-500" 
+                              value={formData.nombre}
+                              onChange={(e) => handleInputChange('nombre', e.target.value)}
+                              required 
+                            />
+                          </div>
+                          <div>
+                            <label htmlFor="celular" className="block text-sm font-medium text-gray-700 mb-2">
+                              Teléfono *
+                            </label>
+                            <Input 
+                              id="celular" 
+                              placeholder="(55) 1234-5678" 
+                              className="border-green-200 focus:border-green-500 focus:ring-green-500" 
+                              value={formData.celular}
+                              onChange={(e) => handleInputChange('celular', e.target.value)}
+                              required 
+                            />
+                          </div>
+                        </div>
+
+                        <div>
+                          <label htmlFor="correo" className="block text-sm font-medium text-gray-700 mb-2">
+                            Correo electrónico *
+                          </label>
+                          <Input
+                            id="correo"
+                            type="email"
+                            placeholder="tu.email@ejemplo.com"
+                            className="border-green-200 focus:border-green-500 focus:ring-green-500"
+                            value={formData.correo}
+                            onChange={(e) => handleInputChange('correo', e.target.value)}
+                            required
+                          />
+                        </div>
+
+                        <div>
+                          <label htmlFor="diagnostico" className="block text-sm font-medium text-gray-700 mb-2">
+                            ¿Cuenta con diagnóstico previo?
+                          </label>
+                          <Select value={formData.diagnostico} onValueChange={(value) => handleInputChange('diagnostico', value)}>
+                            <SelectTrigger className="border-green-200 focus:border-green-500 focus:ring-green-500">
+                              <SelectValue placeholder="Seleccione una opción" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="si">Sí, tengo diagnóstico</SelectItem>
+                              <SelectItem value="no">No, es primera consulta</SelectItem>
+                              <SelectItem value="revision">Busco segunda opinión</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+
+                        <div>
+                          <label htmlFor="comentarios" className="block text-sm font-medium text-gray-700 mb-2">
+                            Comentarios
+                          </label>
+                          <Textarea 
+                            id="comentarios" 
+                            placeholder="Describe brevemente tu motivo de consulta o síntomas..." 
+                            className="border-green-200 focus:border-green-500 focus:ring-green-500 min-h-[100px]" 
+                            value={formData.comentarios}
+                            onChange={(e) => handleInputChange('comentarios', e.target.value)}
+                          />
+                        </div>
+
+                        <Button 
+                          type="submit"
+                          className="w-full bg-gradient-to-r from-green-700 to-green-600 hover:from-green-800 hover:to-green-700 text-white py-4 rounded-full text-lg font-medium shadow-lg hover:shadow-xl transition-all duration-300"
+                        >
+                          <Calendar className="h-5 w-5 mr-2" />
+                          Enviar
+                        </Button>
+                      </form>
+                    </div>
+
+                    {/* Información de contacto */}
+                    <div>
+                      <h4 className="text-2xl font-bold text-green-700 mb-6">
+                        Ubicaciones y Horarios
+                      </h4>
+
+                      <div className="mb-6">
+                        <div className="flex flex-col gap-3 mb-4">
+                          <Button
+                            type="button"
+                            variant={selectedLocation === "polanco" ? "default" : "outline"}
+                            className={`py-3 rounded-full transition-all duration-300 ${
+                              selectedLocation === "polanco"
+                                ? "bg-green-700 hover:bg-green-600 text-white"
+                                : "border-green-300 text-green-700 hover:bg-green-50"
+                            }`}
+                            onClick={() => setSelectedLocation("polanco")}
+                          >
+                            <MapPinned className="h-4 w-4 mr-2" />
+                            Polanco
+                          </Button>
+                          <Button
+                            type="button"
+                            variant={selectedLocation === "satelite" ? "default" : "outline"}
+                            className={`py-3 rounded-full transition-all duration-300 ${
+                              selectedLocation === "satelite"
+                                ? "bg-green-700 hover:bg-green-600 text-white"
+                                : "border-green-300 text-green-700 hover:bg-green-50"
+                            }`}
+                            onClick={() => setSelectedLocation("satelite")}
+                          >
+                            <MapPinned className="h-4 w-4 mr-2" />
+                            Satélite
+                          </Button>
+                          <Button
+                            type="button"
+                            variant={selectedLocation === "intermed" ? "default" : "outline"}
+                            className={`py-3 rounded-full transition-all duration-300 ${
+                              selectedLocation === "intermed"
+                                ? "bg-green-700 hover:bg-green-600 text-white"
+                                : "border-green-300 text-green-700 hover:bg-green-50"
+                            }`}
+                            onClick={() => setSelectedLocation("intermed")}
+                          >
+                            <MapPinned className="h-4 w-4 mr-2" />
+                            INTERMED
+                          </Button>
+                        </div>
+                      </div>
+
+                      <div className="space-y-6">
+                        <div className="bg-white rounded-2xl p-6 border border-green-100 shadow-sm">
+                          <div className="flex items-start gap-4">
+                            <div className="bg-green-100 p-3 rounded-xl">
+                              <MapPin className="h-6 w-6 text-green-700" />
+                            </div>
+                            <div>
+                              <h5 className="font-bold text-gray-900 mb-2">{currentLocation.name}</h5>
+                              <p className="text-gray-700 mb-3">{currentLocation.address}</p>
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                className="text-green-700 hover:text-green-800 p-0 h-auto"
+                                onClick={() => window.open(currentLocation.mapUrl, "_blank")}
+                              >
+                                Ver en Google Maps →
+                              </Button>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <div className="bg-white rounded-2xl p-6 border border-green-100 shadow-sm">
+                            <div className="flex items-center gap-3 mb-2">
+                              <Clock className="h-5 w-5 text-green-700" />
+                              <span className="font-bold text-gray-900">Lun - Vie</span>
+                            </div>
+                            <p className="text-gray-700 font-medium">{currentLocation.schedule.weekdays}</p>
+                          </div>
+
+                          <div className="bg-white rounded-2xl p-6 border border-green-100 shadow-sm">
+                            <div className="flex items-center gap-3 mb-2">
+                              <Clock className="h-5 w-5 text-green-700" />
+                              <span className="font-bold text-gray-900">Sábados</span>
+                            </div>
+                            <p className="text-gray-700 font-medium">{currentLocation.schedule.saturday}</p>
+                          </div>
+                        </div>
+
+                        <div className="bg-white rounded-2xl p-6 border border-green-100 shadow-sm">
+                          <div className="flex items-center gap-4">
+                            <div className="bg-green-100 p-3 rounded-xl">
+                              <Phone className="h-6 w-6 text-green-700" />
+                            </div>
+                            <div>
+                              <h5 className="font-bold text-gray-900 mb-1">Contacto Directo</h5>
+                              <p className="text-gray-700 font-medium">{currentLocation.phone}</p>
+                              <p className="text-sm text-gray-600">WhatsApp disponible 24/7</p>
+                            </div>
+                          </div>
+                        </div>
+
+                        <Button
+                          onClick={openWhatsApp}
+                          className="w-full bg-green-600 hover:bg-green-700 text-white py-4 rounded-full font-medium shadow-lg hover:shadow-xl transition-all duration-300"
+                        >
+                          <Phone className="h-5 w-5 mr-2" />
+                          Contactar por WhatsApp
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </ScrollAnimation>
+          </ResponsiveContainer>
+        </Section>
+
+        {/* Map Section */}
+        <Section background="secondary" spacing="md">
+          <ResponsiveContainer>
+            <ScrollAnimation animation="fade-in-up">
+              <div className="bg-white rounded-3xl p-2 shadow-2xl">
+                <div className="h-96 md:h-[500px] relative rounded-2xl overflow-hidden">
+                  <GoogleMap address={currentLocation.address} />
+                  <div className="absolute top-4 right-4 z-10 bg-white/95 backdrop-blur p-4 rounded-xl shadow-lg">
+                    <div className="text-center">
+                      <h5 className="font-bold text-green-700 mb-1">{currentLocation.name}</h5>
+                      <p className="text-sm text-gray-600 mb-3">Fácil acceso y estacionamiento</p>
                       <Button
-                        variant="ghost"
                         size="sm"
-                        className="text-green-700 p-0 h-auto flex items-center gap-1 text-sm focus-visible-ring"
-                        onClick={() => {
-                          const mapUrl =
-                            selectedLocation === "polanco"
-                              ? "https://maps.app.goo.gl/YFminzdq8uixrNxB9?g_st=com.google.maps.preview.copy"
-                              : "https://maps.app.goo.gl/Yx5Yx5Yx5Yx5Yx5Y6" // Reemplazar con la URL correcta para Ciudad Satélite
-                          window.open(mapUrl, "_blank")
-                        }}
+                        className="bg-green-700 hover:bg-green-600 text-white px-4 py-2 rounded-full"
+                        onClick={() => window.open(currentLocation.mapUrl, "_blank")}
                       >
-                        <MapPin className="h-4 w-4" />
-                        Abrir en Google Maps
+                        <MapPin className="h-4 w-4 mr-1" />
+                        Cómo llegar
                       </Button>
                     </div>
                   </div>
@@ -759,156 +963,137 @@ export default function Home() {
             </ScrollAnimation>
           </ResponsiveContainer>
         </Section>
+
+        {/* Blog Section */}
+        <HomeBlogSection />
       </main>
 
-      <footer className="bg-green-700 text-white py-16">
-        <ResponsiveContainer>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">
-            <div>
-              <div className="flex items-center gap-3 mb-6">
-                <Image
-                  src="/images/urodex-logo-white.png"
-                  alt="Urodex Logo"
-                  width={40}
-                  height={40}
-                  className="h-12 w-auto"
-                />
-                <span className="text-2xl font-serif font-bold">URODEX</span>
+      {/* Footer */}
+      <footer className="bg-gradient-to-r from-green-800 to-green-700 text-white">
+        <div className="py-16">
+          <ResponsiveContainer>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">
+              <div className="lg:col-span-1">
+                <div className="flex items-center gap-3 mb-6">
+                  <Image
+                    src="/images/urodex-logo-white.png"
+                    alt="Urodex Logo"
+                    width={48}
+                    height={48}
+                    className="h-12 w-auto"
+                  />
+                  <span className="text-3xl font-serif font-bold">URODEX</span>
+                </div>
+                <p className="text-green-100 leading-relaxed mb-6">
+                  Clínica especializada en urología y cirugía de próstata en Ciudad de México, 
+                  comprometida con la excelencia médica y el cuidado personalizado.
+                </p>
+                <div className="flex space-x-4">
+                  <Link 
+                    href="https://www.facebook.com/drmariomartinezuro/" 
+                    target="_blank"
+                    className="text-white hover:text-green-200 transition-colors p-2 rounded-full hover:bg-green-600"
+                  >
+                    <Facebook className="h-5 w-5" />
+                  </Link>
+                  <Link 
+                    href="https://www.instagram.com/urologo.mariothomas" 
+                    target="_blank"
+                    className="text-white hover:text-green-200 transition-colors p-2 rounded-full hover:bg-green-600"
+                  >
+                    <Instagram className="h-5 w-5" />
+                  </Link>
+                </div>
               </div>
-              <p className="text-green-100 text-base leading-relaxed">
-                Clínica especializada en urología y cirugía de próstata en Ciudad de México, ofreciendo atención médica
-                de la más alta calidad.
+
+              <div>
+                <h3 className="font-bold text-xl mb-6 text-white">Navegación</h3>
+                <ul className="space-y-3">
+                  {[
+                    { href: "#inicio", label: "Inicio" },
+                    { href: "#sobre-mi", label: "Dr. Mario Martínez" },
+                    { href: "#servicios", label: "Servicios" },
+                    { href: "#clinicas", label: "Clínicas" },
+                    { href: "#contacto", label: "Contacto" },
+                  ].map((link) => (
+                    <li key={link.href}>
+                      <Link
+                        href={link.href}
+                        className="text-green-100 hover:text-white transition-all duration-300 hover:translate-x-1 inline-block"
+                      >
+                        {link.label}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              <div>
+                <h3 className="font-bold text-xl mb-6 text-white">Especialidades</h3>
+                <ul className="space-y-3">
+                  {[
+                    "Cirugía de Próstata",
+                    "Tratamiento de VPH",
+                    "Circuncisión Láser",
+                    "Cálculos Renales",
+                    "Cáncer Urológico",
+                  ].map((service) => (
+                    <li key={service}>
+                      <span className="text-green-100 hover:text-white transition-colors cursor-pointer">
+                        {service}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              <div>
+                <h3 className="font-bold text-xl mb-6 text-white">Contacto</h3>
+                <div className="space-y-4">
+                  <div className="flex items-start gap-3">
+                    <Phone className="h-5 w-5 text-green-300 mt-1 flex-shrink-0" />
+                    <div>
+                      <p className="text-white font-medium">(55) 1694 2925</p>
+                      <p className="text-green-100 text-sm">WhatsApp 24/7</p>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <MapPin className="h-5 w-5 text-green-300 mt-1 flex-shrink-0" />
+                    <div>
+                      <p className="text-white font-medium">Polanco, Satélite & INTERMED</p>
+                      <p className="text-green-100 text-sm">Ciudad de México</p>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <Clock className="h-5 w-5 text-green-300 mt-1 flex-shrink-0" />
+                    <div>
+                      <p className="text-white font-medium">Lun - Vie: 9:00 - 19:00</p>
+                      <p className="text-green-100 text-sm">Sáb: 9:00 - 14:00</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </ResponsiveContainer>
+        </div>
+
+        <div className="border-t border-green-600">
+          <ResponsiveContainer>
+            <div className="py-6 flex flex-col md:flex-row justify-between items-center gap-4">
+              <p className="text-green-100 text-center md:text-left">
+                © {new Date().getFullYear()} Urodex - Dr. Mario Martínez Thomas. Todos los derechos reservados.
               </p>
-
-              <div className="flex space-x-4 mt-6">
-                <Link href="#" className="text-white hover:text-green-200 transition-colors focus-visible-ring">
-                  <Facebook className="h-6 w-6 social-icon" />
-                  <span className="sr-only">Facebook</span>
+              <div className="flex items-center gap-6 text-sm text-green-100">
+                <Link href="/privacidad" className="hover:text-white transition-colors">
+                  Política de Privacidad
                 </Link>
-                <Link href="#" className="text-white hover:text-green-200 transition-colors focus-visible-ring">
-                  <Instagram className="h-6 w-6 social-icon" />
-                  <span className="sr-only">Instagram</span>
-                </Link>
-                <Link href="#" className="text-white hover:text-green-200 transition-colors focus-visible-ring">
-                  <Twitter className="h-6 w-6 social-icon" />
-                  <span className="sr-only">Twitter</span>
+                <Link href="/terminos" className="hover:text-white transition-colors">
+                  Términos y Condiciones
                 </Link>
               </div>
             </div>
-
-            <div>
-              <h3 className="font-medium text-xl mb-6 font-serif">Enlaces Rápidos</h3>
-              <ul className="space-y-4">
-                <li>
-                  <Link
-                    href="#inicio"
-                    className="text-green-100 hover:text-white text-base transition-colors elegant-underline focus-visible-ring"
-                  >
-                    Inicio
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="#servicios"
-                    className="text-green-100 hover:text-white text-base transition-colors elegant-underline focus-visible-ring"
-                  >
-                    Servicios
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="#sobre-mi"
-                    className="text-green-100 hover:text-white text-base transition-colors elegant-underline focus-visible-ring"
-                  >
-                    Sobre Mí
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="/blog"
-                    className="text-green-100 hover:text-white text-base transition-colors elegant-underline focus-visible-ring"
-                  >
-                    Blog
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="#contacto"
-                    className="text-green-100 hover:text-white text-base transition-colors elegant-underline focus-visible-ring"
-                  >
-                    Contacto
-                  </Link>
-                </li>
-              </ul>
-            </div>
-
-            <div>
-              <h3 className="font-medium text-xl mb-6 font-serif">Servicios</h3>
-              <ul className="space-y-4">
-                <li>
-                  <Link
-                    href="#"
-                    className="text-green-100 hover:text-white text-base transition-colors elegant-underline focus-visible-ring"
-                  >
-                    Cáncer urológico
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="#"
-                    className="text-green-100 hover:text-white text-base transition-colors elegant-underline focus-visible-ring"
-                  >
-                    Cálculos en vía urinaria
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="#"
-                    className="text-green-100 hover:text-white text-base transition-colors elegant-underline focus-visible-ring"
-                  >
-                    Hiperplasia Prostática Benigna
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="#"
-                    className="text-green-100 hover:text-white text-base transition-colors elegant-underline focus-visible-ring"
-                  >
-                    Ver todos los servicios
-                  </Link>
-                </li>
-              </ul>
-            </div>
-
-            <div>
-              <h3 className="font-medium text-xl mb-6 font-serif">Contacto</h3>
-              <ul className="space-y-5">
-                <li className="flex items-start gap-4 hover-lift">
-                  <div className="bg-green-600 p-2 rounded-full mt-0.5">
-                    <Phone className="h-5 w-5 text-white" />
-                  </div>
-                  <span className="text-green-100 text-base">(55) 1694 2925</span>
-                </li>
-                <li className="flex items-start gap-4 hover-lift">
-                  <div className="bg-green-600 p-2 rounded-full mt-0.5">
-                    <Mail className="h-5 w-5 text-white" />
-                  </div>
-                  <span className="text-green-100 text-base">WhatsApp: (55) 1694 2925</span>
-                </li>
-                <li className="flex items-start gap-4 hover-lift">
-                  <div className="bg-green-600 p-2 rounded-full mt-0.5">
-                    <MapPin className="h-5 w-5 text-white" />
-                  </div>
-                  <span className="text-green-100 text-base">Polanco y Ciudad Satélite</span>
-                </li>
-              </ul>
-            </div>
-          </div>
-
-          <div className="border-t border-green-600 mt-12 pt-8 text-center text-green-100 text-base">
-            <p>© {new Date().getFullYear()} Urodex. Todos los derechos reservados.</p>
-          </div>
-        </ResponsiveContainer>
+          </ResponsiveContainer>
+        </div>
       </footer>
     </div>
   )

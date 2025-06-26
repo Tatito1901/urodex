@@ -5,34 +5,36 @@ import { ScrollProgressBar, CustomCursor } from "@/components/scroll-animations"
 import { Header } from "@/components/header"
 import { Section } from "@/components/section"
 import { ResponsiveContainer } from "@/components/responsive-container"
-import { TypographyH1, TypographyH2, TypographyP } from "@/components/typography"
 import { Button } from "@/components/ui/button"
 import {
-  ChevronRight,
-  Award,
-  Facebook,
-  Instagram,
-  Twitter,
-  Shield,
-  Heart,
-  Activity,
-  CheckCircle,
   Phone,
   Mail,
   MapPin,
+  Clock,
+  Award,
+  Facebook,
+  Instagram,
+  ArrowRight,
+  Shield,
+  CheckCircle,
+  Star,
+  Stethoscope,
+  Calendar,
+  Target,
+  Zap,
+  Heart,
 } from "lucide-react"
 import Link from "next/link"
 import Image from "next/image"
-import { ScrollAnimation, ParallaxEffect } from "@/components/scroll-animations"
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
+import { ScrollAnimation } from "@/components/scroll-animations"
 
-export default function ClinicaProstataPage() {
+export default function ClinicaProstata() {
   const [activeSection, setActiveSection] = useState("inicio")
 
   useEffect(() => {
     const handleScroll = () => {
-      const sections = ["inicio", "servicios", "sobre-mi"]
-
+      const sections = ["inicio", "tratamientos", "sobre-mi", "contacto"]
+      
       for (const section of sections) {
         const element = document.getElementById(section)
         if (!element) continue
@@ -45,219 +47,176 @@ export default function ClinicaProstataPage() {
       }
     }
 
-    window.addEventListener("scroll", handleScroll)
+    window.addEventListener("scroll", handleScroll, { passive: true })
     return () => window.removeEventListener("scroll", handleScroll)
   }, [])
 
-  const benefits = [
-    {
-      icon: <Award className="h-8 w-8 text-green-700" />,
-      title: "Cirugía Mínimamente Invasiva",
-      description:
-        "Técnicas laparoscópicas avanzadas que reducen el tiempo de recuperación y las molestias postoperatorias.",
-    },
-    {
-      icon: <Shield className="h-8 w-8 text-green-700" />,
-      title: "Preservación de la Función",
-      description: "Enfoque especializado en mantener la función urinaria y sexual después del procedimiento.",
-    },
-    {
-      icon: <Heart className="h-8 w-8 text-green-700" />,
-      title: "Atención Personalizada",
-      description: "Cada paciente recibe un plan de tratamiento individualizado según sus necesidades específicas.",
-    },
-    {
-      icon: <Activity className="h-8 w-8 text-green-700" />,
-      title: "Tecnología de Vanguardia",
-      description: "Equipos de última generación para diagnósticos precisos y cirugías más efectivas.",
-    },
-  ]
-
-  const procedures = [
-    {
-      name: "Prostatectomía Radical Laparoscópica",
-      description: "Cirugía mínimamente invasiva para el tratamiento del cáncer de próstata.",
-      duration: "2-3 horas",
-      recovery: "1-2 semanas",
-    },
+  const treatments = [
     {
       name: "Resección Transuretral (RTU)",
       description: "Procedimiento para tratar la hiperplasia prostática benigna.",
       duration: "1-2 horas",
       recovery: "3-5 días",
+      benefits: [
+        "Técnica mínimamente invasiva",
+        "Recuperación rápida",
+        "Mejora inmediata de síntomas",
+        "Preservación de la función sexual"
+      ]
     },
     {
       name: "Enucleación con Láser",
       description: "Técnica moderna para el tratamiento de próstata agrandada.",
       duration: "1-2 horas",
       recovery: "1-3 días",
+      benefits: [
+        "Tecnología láser de vanguardia",
+        "Sangrado mínimo",
+        "Hospitalización corta",
+        "Resultados duraderos"
+      ]
     },
     {
       name: "Biopsia de Próstata Guiada",
       description: "Diagnóstico preciso mediante biopsia con guía ecográfica.",
       duration: "30-45 minutos",
       recovery: "Mismo día",
-    },
+      benefits: [
+        "Diagnóstico preciso",
+        "Guía ecográfica avanzada",
+        "Procedimiento ambulatorio",
+        "Mínimas molestias"
+      ]
+    }
   ]
 
+  const openWhatsApp = () => {
+    window.open("https://api.whatsapp.com/send?phone=5215516942925", "_blank")
+  }
+
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="flex flex-col min-h-screen bg-gradient-to-b from-green-50/30 to-white">
       <ScrollProgressBar />
       <CustomCursor />
-
       <Header activeSection={activeSection} />
 
       <main className="flex-1">
         {/* Hero Section */}
-        <section id="inicio" className="relative bg-white overflow-hidden min-h-[calc(100vh-5rem)]">
-          {/* Decorative elements */}
-          <div className="absolute top-0 right-0 w-[800px] h-[800px] rounded-full bg-green-100/50 -translate-y-1/2 translate-x-1/3"></div>
-          <div className="absolute bottom-0 left-0 w-[600px] h-[600px] rounded-full bg-green-100/50 translate-y-1/2 -translate-x-1/3"></div>
-          <div className="absolute top-20 left-20 w-16 h-16 rounded-full bg-green-200/30"></div>
-          <div className="absolute bottom-40 right-40 w-24 h-24 rounded-full bg-green-200/40"></div>
+        <section id="inicio" className="relative overflow-hidden min-h-[70vh] flex items-center">
+          <div className="absolute inset-0 w-full h-full">
+            <Image
+              src="/images/prostata-clinic-hero.jpg"
+              alt="Clínica de Cirugía de Próstata"
+              fill
+              className="object-cover"
+              priority
+            />
+            <div className="absolute inset-0 bg-gradient-to-r from-green-800/90 via-green-700/85 to-green-600/80"></div>
+          </div>
 
-          {/* Subtle grid pattern */}
-          <div
-            className="absolute inset-0 opacity-[0.03]"
-            style={{
-              backgroundImage: `radial-gradient(#0e5041 1px, transparent 1px)`,
-              backgroundSize: "30px 30px",
-            }}
-          ></div>
-
-          <ResponsiveContainer className="py-12 md:py-20 lg:py-28 relative flex flex-col justify-center min-h-[calc(100vh-5rem)]">
-            <ScrollAnimation animation="fade-in-up" className="max-w-4xl mx-auto text-center space-y-4 md:space-y-6">
-              <div className="inline-block px-3 py-1 md:px-4 bg-green-100 text-green-700 rounded-full text-xs md:text-sm font-medium mb-2">
-                Clínica Especializada
-              </div>
-
-              <TypographyH1 className="text-green-800 font-bold text-2xl md:text-4xl lg:text-5xl xl:text-6xl">
-                Cirugía de Próstata
-              </TypographyH1>
-
-              <div className="w-16 md:w-24 h-1 bg-green-500 mx-auto"></div>
-
-              <TypographyP className="text-green-800 font-medium text-lg md:text-xl lg:text-2xl px-4">
-                Tratamiento especializado para problemas de próstata con las técnicas más avanzadas y mínimamente
-                invasivas.
-              </TypographyP>
-
-              <div className="flex flex-col sm:flex-row flex-wrap gap-3 md:gap-4 pt-4 md:pt-6 justify-center px-4">
-                <Button
-                  className="bg-green-700 hover:bg-green-600 btn-elegant rounded-full px-6 md:px-8 py-4 md:py-6 shadow-lg focus-visible-ring text-sm md:text-base"
-                  onClick={() => window.open("https://api.whatsapp.com/send?phone=5215516942925", "_blank")}
-                >
-                  Agenda tu Consulta
-                </Button>
-                <Button
-                  variant="outline"
-                  className="border-green-700 text-green-700 hover:bg-green-50 rounded-full px-6 md:px-8 py-4 md:py-6 focus-visible-ring text-sm md:text-base"
-                  onClick={() => {
-                    const serviciosSection = document.getElementById("servicios")
-                    if (serviciosSection) {
-                      serviciosSection.scrollIntoView({ behavior: "smooth" })
-                    }
-                  }}
-                >
-                  Conocer Procedimientos
-                </Button>
-              </div>
-            </ScrollAnimation>
-
-            {/* Stats */}
-            <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
-              <ScrollAnimation animation="fade-in-up" delay={200}>
-                <div className="text-center">
-                  <div className="text-3xl md:text-4xl font-bold text-green-700 mb-2">500+</div>
-                  <div className="text-gray-600">Cirugías Exitosas</div>
+          <ResponsiveContainer className="relative z-10">
+            <div className="max-w-4xl">
+              <ScrollAnimation animation="fade-in-up">
+                <div className="inline-flex items-center gap-2 bg-white/15 backdrop-blur-sm text-white border border-white/20 rounded-full px-6 py-3 text-sm font-medium mb-6">
+                  <Target className="h-4 w-4" />
+                  Especialistas en Próstata
                 </div>
-              </ScrollAnimation>
-              <ScrollAnimation animation="fade-in-up" delay={300}>
-                <div className="text-center">
-                  <div className="text-3xl md:text-4xl font-bold text-green-700 mb-2">98%</div>
-                  <div className="text-gray-600">Tasa de Éxito</div>
-                </div>
-              </ScrollAnimation>
-              <ScrollAnimation animation="fade-in-up" delay={400}>
-                <div className="text-center">
-                  <div className="text-3xl md:text-4xl font-bold text-green-700 mb-2">15+</div>
-                  <div className="text-gray-600">Años de Experiencia</div>
+                
+                <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6">
+                  Clínica de Cirugía de Próstata
+                </h1>
+                
+                <div className="w-32 h-1 bg-white mb-8"></div>
+                
+                <p className="text-xl md:text-2xl text-white/95 leading-relaxed mb-8 max-w-3xl">
+                  Centro especializado en el diagnóstico y tratamiento integral de enfermedades prostáticas 
+                  con técnicas láser de última generación y cirugía mínimamente invasiva.
+                </p>
+
+                <div className="flex flex-col sm:flex-row gap-4">
+                  <Button
+                    onClick={openWhatsApp}
+                    className="bg-white text-green-700 hover:bg-green-50 rounded-full px-8 py-4 text-lg font-medium shadow-xl transition-all duration-300"
+                  >
+                    <Calendar className="h-5 w-5 mr-2" />
+                    Agendar Consulta
+                  </Button>
+                  <Button
+                    variant="outline"
+                    className="border-2 border-white text-white bg-white/10 hover:bg-white/20 rounded-full px-8 py-4 text-lg backdrop-blur-sm"
+                    onClick={() => document.getElementById("tratamientos")?.scrollIntoView({ behavior: "smooth" })}
+                  >
+                    Ver Tratamientos
+                  </Button>
                 </div>
               </ScrollAnimation>
             </div>
           </ResponsiveContainer>
         </section>
 
-        {/* Benefits Section */}
-        <Section background="primary-light" spacing="lg">
+        {/* Treatments Section */}
+        <Section id="tratamientos" background="white" spacing="xl" hasDivider={true} dividerType="wave">
           <ResponsiveContainer>
             <ScrollAnimation animation="fade-in-up">
-              <div className="text-center content-narrow mb-16">
-                <TypographyH2 className="mb-4 text-green-700">¿Por qué elegir nuestra clínica?</TypographyH2>
-                <div className="w-20 h-1 bg-green-700 mx-auto mb-6"></div>
-                <TypographyP className="text-green-700">
-                  Ofrecemos la más alta calidad en cirugía de próstata con tecnología de vanguardia y un enfoque
-                  centrado en el paciente.
-                </TypographyP>
+              <div className="text-center max-w-4xl mx-auto mb-16">
+                <div className="inline-flex items-center gap-2 bg-green-100 text-green-700 px-6 py-3 rounded-full text-sm font-medium mb-6">
+                  <Stethoscope className="h-4 w-4" />
+                  Tratamientos Especializados
+                </div>
+                <h2 className="text-4xl lg:text-5xl font-bold text-green-700 mb-6">
+                  Procedimientos de Vanguardia
+                </h2>
+                <div className="w-32 h-1 bg-gradient-to-r from-green-600 to-green-400 mx-auto mb-6"></div>
+                <p className="text-xl text-gray-600 leading-relaxed">
+                  Ofrecemos los tratamientos más avanzados para problemas prostáticos, 
+                  garantizando los mejores resultados con la máxima seguridad.
+                </p>
               </div>
             </ScrollAnimation>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              {benefits.map((benefit, index) => (
-                <ScrollAnimation key={index} animation="fade-in-up" delay={index * 100}>
-                  <div className="bg-white rounded-xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-2">
-                    <div className="flex items-start gap-4">
-                      <div className="bg-green-100 p-3 rounded-full flex-shrink-0">{benefit.icon}</div>
-                      <div>
-                        <h3 className="text-xl font-bold text-green-700 mb-3">{benefit.title}</h3>
-                        <p className="text-gray-600">{benefit.description}</p>
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+              {treatments.map((treatment, index) => (
+                <ScrollAnimation key={treatment.name} animation="fade-in-up" delay={index * 150}>
+                  <div className="bg-gradient-to-br from-green-50 to-white rounded-3xl p-8 border-2 border-green-100 hover:border-green-200 hover:shadow-2xl transition-all duration-500 h-full">
+                    <div className="text-center mb-6">
+                      <div className="w-16 h-16 bg-green-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                        <Zap className="h-8 w-8 text-green-700" />
+                      </div>
+                      <h3 className="text-2xl font-bold text-green-700 mb-3">
+                        {treatment.name}
+                      </h3>
+                      <p className="text-gray-600 leading-relaxed mb-6">
+                        {treatment.description}
+                      </p>
+                    </div>
+
+                    <div className="space-y-4 mb-6">
+                      <div className="flex justify-between items-center bg-white p-3 rounded-xl">
+                        <span className="font-medium text-gray-700">Duración</span>
+                        <span className="font-bold text-green-700">{treatment.duration}</span>
+                      </div>
+                      <div className="flex justify-between items-center bg-white p-3 rounded-xl">
+                        <span className="font-medium text-gray-700">Recuperación</span>
+                        <span className="font-bold text-green-700">{treatment.recovery}</span>
                       </div>
                     </div>
-                  </div>
-                </ScrollAnimation>
-              ))}
-            </div>
-          </ResponsiveContainer>
-        </Section>
 
-        {/* Procedures Section */}
-        <Section id="servicios" background="white" spacing="lg">
-          <ResponsiveContainer>
-            <ScrollAnimation animation="fade-in-up">
-              <div className="text-center content-narrow mb-16">
-                <TypographyH2 className="mb-4 gradient-text">Procedimientos Especializados</TypographyH2>
-                <div className="w-20 h-1 bg-green-500 mx-auto mb-6"></div>
-                <TypographyP>
-                  Realizamos una amplia gama de procedimientos urológicos especializados en próstata con las técnicas
-                  más avanzadas.
-                </TypographyP>
-              </div>
-            </ScrollAnimation>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              {procedures.map((procedure, index) => (
-                <ScrollAnimation key={index} animation="fade-in-up" delay={index * 100}>
-                  <div className="bg-gradient-to-br from-green-50 to-white rounded-xl p-8 border border-green-100 hover:shadow-lg transition-all duration-300">
-                    <h3 className="text-xl font-bold text-green-700 mb-4">{procedure.name}</h3>
-                    <p className="text-gray-600 mb-6">{procedure.description}</p>
-
-                    <div className="grid grid-cols-2 gap-4 mb-6">
-                      <div>
-                        <div className="text-sm text-gray-500 mb-1">Duración</div>
-                        <div className="font-medium text-green-700">{procedure.duration}</div>
-                      </div>
-                      <div>
-                        <div className="text-sm text-gray-500 mb-1">Recuperación</div>
-                        <div className="font-medium text-green-700">{procedure.recovery}</div>
-                      </div>
+                    <div className="space-y-3 mb-8">
+                      <h4 className="font-bold text-gray-800 mb-3">Beneficios:</h4>
+                      {treatment.benefits.map((benefit, idx) => (
+                        <div key={idx} className="flex items-center gap-3">
+                          <CheckCircle className="h-4 w-4 text-green-600 flex-shrink-0" />
+                          <span className="text-sm text-gray-700">{benefit}</span>
+                        </div>
+                      ))}
                     </div>
 
                     <Button
-                      variant="outline"
-                      className="w-full border-green-700 text-green-700 hover:bg-green-50 rounded-full"
-                      onClick={() => window.open("https://api.whatsapp.com/send?phone=5215516942925", "_blank")}
+                      onClick={openWhatsApp}
+                      className="w-full bg-green-700 hover:bg-green-600 text-white py-3 rounded-full font-medium transition-all duration-300"
                     >
                       Consultar Procedimiento
+                      <ArrowRight className="h-4 w-4 ml-2" />
                     </Button>
                   </div>
                 </ScrollAnimation>
@@ -267,292 +226,208 @@ export default function ClinicaProstataPage() {
         </Section>
 
         {/* Doctor Section */}
-        <Section id="sobre-mi" background="gradient" spacing="lg">
+        <Section id="sobre-mi" background="primary-light" spacing="xl" hasDivider={true} dividerType="angle">
           <ResponsiveContainer>
-            <div className="flex flex-col lg:flex-row items-center gap-8 lg:gap-12">
+            <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-16">
               <ScrollAnimation animation="fade-in-right" className="lg:w-2/5">
-                <div className="relative max-w-md mx-auto lg:max-w-none">
-                  <ParallaxEffect speed={0.02}>
-                    <div className="absolute -inset-4 bg-green-100 rounded-2xl blur-xl opacity-50 rotate-3"></div>
-                  </ParallaxEffect>
-                  <div className="img-hover-zoom">
+                <div className="relative">
+                  <div className="absolute -inset-6 bg-gradient-to-tr from-white via-green-50 to-white rounded-3xl blur-2xl opacity-60"></div>
+                  <div className="relative bg-white rounded-3xl p-3 shadow-2xl">
                     <Image
-                      src="/images/doctor-profile.png"
-                      alt="Dr. Mario Martínez Thomas"
+                      src="/images/dr_mario_martinez.jpg"
+                      alt="Dr. Mario Martínez Thomas - Especialista en Próstata"
                       width={500}
                       height={600}
-                      className="rounded-2xl shadow-xl relative z-10 elegant-shadow"
+                      className="rounded-2xl w-full h-auto"
                     />
+                    <div className="absolute -bottom-6 -right-6 bg-gradient-to-r from-green-700 to-green-600 text-white p-6 rounded-2xl shadow-xl">
+                      <div className="flex items-center gap-3 mb-2">
+                        <Star className="h-6 w-6 fill-current" />
+                        <span className="font-bold text-2xl">1000+</span>
+                      </div>
+                      <p className="text-sm font-medium">Cirugías de próstata</p>
+                    </div>
                   </div>
                 </div>
               </ScrollAnimation>
 
-              <ScrollAnimation animation="fade-in-left" className="md:w-3/5 space-y-8">
+              <ScrollAnimation animation="fade-in-left" className="lg:w-3/5 space-y-8">
                 <div>
-                  <h3 className="text-xl text-green-600 mb-2">Tu especialista en cirugía de próstata</h3>
-                  <TypographyH2 className="mb-4 gradient-text">Dr. Mario Martínez Thomas</TypographyH2>
-                  <div className="w-20 h-1 bg-green-500 mb-6"></div>
+                  <div className="inline-flex items-center gap-2 bg-white text-green-700 px-6 py-3 rounded-full text-sm font-medium mb-6">
+                    <Award className="h-4 w-4" />
+                    Especialista en Próstata
+                  </div>
+                  <h2 className="text-4xl lg:text-5xl font-bold text-white mb-6">
+                    Dr. Mario Martínez Thomas
+                  </h2>
+                  <div className="w-32 h-1 bg-white mb-8"></div>
+                  <p className="text-xl text-white/95 leading-relaxed">
+                    Cirujano Urólogo egresado de CMN 20 de Noviembre, con mención honorífica otorgada 
+                    por la Universidad Nacional Autónoma de México. Mi compromiso es ofrecer la más 
+                    alta calidad en atención urológica, combinando experiencia clínica con las técnicas más avanzadas.
+                  </p>
                 </div>
 
-                <TypographyP>
-                  Cirujano Urólogo especializado en cirugía de próstata con más de 15 años de experiencia. Certificado
-                  por el Consejo Nacional Mexicano de Urología y entrenado en las técnicas más avanzadas de cirugía
-                  mínimamente invasiva.
-                </TypographyP>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="bg-white/95 backdrop-blur p-6 rounded-2xl border border-white/20 hover:shadow-xl transition-all duration-300">
+                    <div className="flex items-start gap-4">
+                      <div className="bg-green-100 p-3 rounded-xl">
+                        <Target className="h-6 w-6 text-green-700" />
+                      </div>
+                      <div>
+                        <h4 className="font-bold text-green-700 text-lg mb-2">Certificación IRCAD</h4>
+                        <p className="text-gray-600 text-sm leading-relaxed">
+                          Laparoscopia urológica avanzada en IRCAD Latinoamérica.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
 
-                <div className="space-y-4">
-                  <div className="flex items-center gap-3">
-                    <CheckCircle className="h-5 w-5 text-green-600" />
-                    <span className="text-gray-700">Más de 500 cirugías de próstata realizadas</span>
+                  <div className="bg-white/95 backdrop-blur p-6 rounded-2xl border border-white/20 hover:shadow-xl transition-all duration-300">
+                    <div className="flex items-start gap-4">
+                      <div className="bg-green-100 p-3 rounded-xl">
+                        <CheckCircle className="h-6 w-6 text-green-700" />
+                      </div>
+                      <div>
+                        <h4 className="font-bold text-green-700 text-lg mb-2">Certificación Vigente</h4>
+                        <p className="text-gray-600 text-sm leading-relaxed">
+                          Consejo Nacional Mexicano de Urología.
+                        </p>
+                      </div>
+                    </div>
                   </div>
-                  <div className="flex items-center gap-3">
-                    <CheckCircle className="h-5 w-5 text-green-600" />
-                    <span className="text-gray-700">Certificación en laparoscopia urológica avanzada</span>
+
+                  <div className="bg-white/95 backdrop-blur p-6 rounded-2xl border border-white/20 hover:shadow-xl transition-all duration-300">
+                    <div className="flex items-start gap-4">
+                      <div className="bg-green-100 p-3 rounded-xl">
+                        <Heart className="h-6 w-6 text-green-700" />
+                      </div>
+                      <div>
+                        <h4 className="font-bold text-green-700 text-lg mb-2">Miembro AUA</h4>
+                        <p className="text-gray-600 text-sm leading-relaxed">
+                          Asociación Americana de Urología.
+                        </p>
+                      </div>
+                    </div>
                   </div>
-                  <div className="flex items-center gap-3">
-                    <CheckCircle className="h-5 w-5 text-green-600" />
-                    <span className="text-gray-700">Miembro de la Asociación Americana de Urología</span>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <CheckCircle className="h-5 w-5 text-green-600" />
-                    <span className="text-gray-700">Especialista en preservación de función sexual</span>
+
+                  <div className="bg-white/95 backdrop-blur p-6 rounded-2xl border border-white/20 hover:shadow-xl transition-all duration-300">
+                    <div className="flex items-start gap-4">
+                      <div className="bg-green-100 p-3 rounded-xl">
+                        <Shield className="h-6 w-6 text-green-700" />
+                      </div>
+                      <div>
+                        <h4 className="font-bold text-green-700 text-lg mb-2">Miembro EAU</h4>
+                        <p className="text-gray-600 text-sm leading-relaxed">
+                          Asociación Europea de Urología.
+                        </p>
+                      </div>
+                    </div>
                   </div>
                 </div>
 
-                <Button
-                  className="bg-green-700 hover:bg-green-600 btn-elegant rounded-full px-8 py-4"
-                  onClick={() => window.open("https://api.whatsapp.com/send?phone=5215516942925", "_blank")}
-                >
-                  Agendar Consulta Especializada
-                </Button>
+                <div className="pt-6">
+                  <Button
+                    onClick={openWhatsApp}
+                    className="bg-white text-green-700 hover:bg-green-50 px-10 py-6 rounded-full text-lg font-medium shadow-xl hover:shadow-2xl transition-all duration-300"
+                  >
+                    <Calendar className="h-5 w-5 mr-3" />
+                    Consulta con el Especialista
+                  </Button>
+                </div>
               </ScrollAnimation>
             </div>
           </ResponsiveContainer>
         </Section>
 
-        {/* FAQ Section */}
-        <Section background="white" spacing="lg">
+        {/* Contact Section */}
+        <Section id="contacto" background="white" spacing="xl">
           <ResponsiveContainer>
             <ScrollAnimation animation="fade-in-up">
-              <div className="text-center content-narrow mb-16">
-                <TypographyH2 className="mb-4 gradient-text">
-                  Preguntas Frecuentes sobre Cirugía de Próstata
-                </TypographyH2>
-                <div className="w-20 h-1 bg-green-500 mx-auto mb-6"></div>
-                <TypographyP>Respuestas a las dudas más comunes sobre los procedimientos de próstata.</TypographyP>
+              <div className="bg-gradient-to-br from-green-50 to-white rounded-3xl shadow-2xl overflow-hidden border border-green-100">
+                <div className="text-center p-12">
+                  <h3 className="text-3xl md:text-4xl font-bold text-green-700 mb-6">
+                    ¿Tienes problemas de próstata?
+                  </h3>
+                  <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
+                    No esperes más. Agenda tu consulta especializada y recupera tu calidad de vida 
+                    con los tratamientos más avanzados.
+                  </p>
+                  <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                    <Button
+                      onClick={openWhatsApp}
+                      className="bg-green-700 hover:bg-green-600 text-white px-8 py-4 rounded-full text-lg font-medium shadow-lg hover:shadow-xl transition-all duration-300"
+                    >
+                      <Phone className="h-5 w-5 mr-2" />
+                      Contactar por WhatsApp
+                    </Button>
+                    <Link href="/#contacto">
+                      <Button
+                        variant="outline"
+                        className="border-green-300 text-green-700 hover:bg-green-50 px-8 py-4 rounded-full text-lg font-medium"
+                      >
+                        Ver Ubicaciones
+                      </Button>
+                    </Link>
+                  </div>
+                </div>
               </div>
             </ScrollAnimation>
-
-            <div className="content-medium">
-              <ScrollAnimation animation="fade-in-up" delay={100}>
-                <Accordion type="single" collapsible className="space-y-4">
-                  <AccordionItem
-                    value="item-1"
-                    className="border border-green-100 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow"
-                  >
-                    <AccordionTrigger className="hover:bg-green-50 px-6 py-4 text-left font-medium text-green-800 text-lg focus-visible-ring">
-                      ¿Cuándo es necesaria una cirugía de próstata?
-                    </AccordionTrigger>
-                    <AccordionContent className="px-6 pb-4 text-gray-600">
-                      <p>
-                        La cirugía de próstata puede ser necesaria en casos de cáncer de próstata localizado,
-                        hiperplasia prostática benigna severa que no responde a medicamentos, o cuando hay obstrucción
-                        urinaria significativa que afecta la calidad de vida del paciente.
-                      </p>
-                    </AccordionContent>
-                  </AccordionItem>
-
-                  <AccordionItem
-                    value="item-2"
-                    className="border border-green-100 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow"
-                  >
-                    <AccordionTrigger className="hover:bg-green-50 px-6 py-4 text-left font-medium text-green-800 text-lg focus-visible-ring">
-                      ¿Qué ventajas tiene la cirugía laparoscópica?
-                    </AccordionTrigger>
-                    <AccordionContent className="px-6 pb-4 text-gray-600">
-                      <p>
-                        La cirugía laparoscópica ofrece múltiples ventajas: menor dolor postoperatorio, cicatrices más
-                        pequeñas, menor pérdida de sangre, recuperación más rápida, menor riesgo de infección y mejor
-                        preservación de la función sexual y urinaria.
-                      </p>
-                    </AccordionContent>
-                  </AccordionItem>
-
-                  <AccordionItem
-                    value="item-3"
-                    className="border border-green-100 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow"
-                  >
-                    <AccordionTrigger className="hover:bg-green-50 px-6 py-4 text-left font-medium text-green-800 text-lg focus-visible-ring">
-                      ¿Cuánto tiempo dura la recuperación?
-                    </AccordionTrigger>
-                    <AccordionContent className="px-6 pb-4 text-gray-600">
-                      <p>
-                        El tiempo de recuperación varía según el tipo de procedimiento. Para cirugías mínimamente
-                        invasivas, la mayoría de pacientes pueden retomar actividades normales en 1-2 semanas, mientras
-                        que la recuperación completa puede tomar 4-6 semanas.
-                      </p>
-                    </AccordionContent>
-                  </AccordionItem>
-
-                  <AccordionItem
-                    value="item-4"
-                    className="border border-green-100 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow"
-                  >
-                    <AccordionTrigger className="hover:bg-green-50 px-6 py-4 text-left font-medium text-green-800 text-lg focus-visible-ring">
-                      ¿Se puede preservar la función sexual?
-                    </AccordionTrigger>
-                    <AccordionContent className="px-6 pb-4 text-gray-600">
-                      <p>
-                        Sí, utilizamos técnicas de preservación nerviosa que mantienen la función sexual en la mayoría
-                        de los casos. El éxito depende de factores como la edad del paciente, la función preoperatoria y
-                        la extensión del procedimiento requerido.
-                      </p>
-                    </AccordionContent>
-                  </AccordionItem>
-                </Accordion>
-              </ScrollAnimation>
-            </div>
           </ResponsiveContainer>
         </Section>
       </main>
 
-      <footer className="bg-green-700 text-white py-16">
+      {/* Footer */}
+      <footer className="bg-gradient-to-r from-green-800 to-green-700 text-white py-12">
         <ResponsiveContainer>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center md:text-left">
             <div>
-              <div className="flex items-center gap-3 mb-6">
+              <div className="flex items-center justify-center md:justify-start gap-3 mb-4">
                 <Image
                   src="/images/urodex-logo-white.png"
                   alt="Urodex Logo"
                   width={40}
                   height={40}
-                  className="h-12 w-auto"
+                  className="h-10 w-auto"
                 />
                 <span className="text-2xl font-serif font-bold">URODEX</span>
               </div>
-              <p className="text-green-100 text-base leading-relaxed">
-                Clínica especializada en cirugía de próstata en Ciudad de México, ofreciendo atención médica de la más
-                alta calidad.
+              <p className="text-green-100">
+                Especialistas en cirugía de próstata
               </p>
+            </div>
 
-              <div className="flex space-x-4 mt-6">
-                <Link href="#" className="text-white hover:text-green-200 transition-colors focus-visible-ring">
-                  <Facebook className="h-6 w-6 social-icon" />
-                  <span className="sr-only">Facebook</span>
-                </Link>
-                <Link href="#" className="text-white hover:text-green-200 transition-colors focus-visible-ring">
-                  <Instagram className="h-6 w-6 social-icon" />
-                  <span className="sr-only">Instagram</span>
-                </Link>
-                <Link href="#" className="text-white hover:text-green-200 transition-colors focus-visible-ring">
-                  <Twitter className="h-6 w-6 social-icon" />
-                  <span className="sr-only">Twitter</span>
-                </Link>
+            <div>
+              <h3 className="font-bold text-lg mb-4">Contacto</h3>
+              <div className="space-y-2 text-green-100">
+                <p>(55) 1694 2925</p>
+                <p>WhatsApp 24/7</p>
               </div>
             </div>
 
             <div>
-              <h3 className="font-medium text-xl mb-6 font-serif">Enlaces Rápidos</h3>
-              <ul className="space-y-4">
-                <li>
-                  <Link
-                    href="/"
-                    className="text-green-100 hover:text-white text-base transition-colors flex items-center gap-2 elegant-underline focus-visible-ring"
-                  >
-                    <ChevronRight className="h-4 w-4" />
-                    Inicio
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="#servicios"
-                    className="text-green-100 hover:text-white text-base transition-colors flex items-center gap-2 elegant-underline focus-visible-ring"
-                  >
-                    <ChevronRight className="h-4 w-4" />
-                    Procedimientos
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="#sobre-mi"
-                    className="text-green-100 hover:text-white text-base transition-colors flex items-center gap-2 elegant-underline focus-visible-ring"
-                  >
-                    <ChevronRight className="h-4 w-4" />
-                    Dr. Martínez
-                  </Link>
-                </li>
-              </ul>
-            </div>
-
-            <div>
-              <h3 className="font-medium text-xl mb-6 font-serif">Procedimientos</h3>
-              <ul className="space-y-4">
-                <li>
-                  <Link
-                    href="#"
-                    className="text-green-100 hover:text-white text-base transition-colors flex items-center gap-2 elegant-underline focus-visible-ring"
-                  >
-                    <ChevronRight className="h-4 w-4" />
-                    Prostatectomía Laparoscópica
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="#"
-                    className="text-green-100 hover:text-white text-base transition-colors flex items-center gap-2 elegant-underline focus-visible-ring"
-                  >
-                    <ChevronRight className="h-4 w-4" />
-                    Resección Transuretral
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="#"
-                    className="text-green-100 hover:text-white text-base transition-colors flex items-center gap-2 elegant-underline focus-visible-ring"
-                  >
-                    <ChevronRight className="h-4 w-4" />
-                    Enucleación con Láser
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="#"
-                    className="text-green-100 hover:text-white text-base transition-colors flex items-center gap-2 elegant-underline focus-visible-ring"
-                  >
-                    <ChevronRight className="h-4 w-4" />
-                    Biopsia Guiada
-                  </Link>
-                </li>
-              </ul>
-            </div>
-
-            <div>
-              <h3 className="font-medium text-xl mb-6 font-serif">Contacto</h3>
-              <ul className="space-y-5">
-                <li className="flex items-start gap-4 hover-lift">
-                  <div className="bg-green-600 p-2 rounded-full mt-0.5">
-                    <Phone className="h-5 w-5 text-white" />
-                  </div>
-                  <span className="text-green-100 text-base">(55) 1694 2925</span>
-                </li>
-                <li className="flex items-start gap-4 hover-lift">
-                  <div className="bg-green-600 p-2 rounded-full mt-0.5">
-                    <Mail className="h-5 w-5 text-white" />
-                  </div>
-                  <span className="text-green-100 text-base">WhatsApp: (55) 1694 2925</span>
-                </li>
-                <li className="flex items-start gap-4 hover-lift">
-                  <div className="bg-green-600 p-2 rounded-full mt-0.5">
-                    <MapPin className="h-5 w-5 text-white" />
-                  </div>
-                  <span className="text-green-100 text-base">Polanco y Ciudad Satélite</span>
-                </li>
-              </ul>
+              <h3 className="font-bold text-lg mb-4">Síguenos</h3>
+              <div className="flex justify-center md:justify-start space-x-4">
+                <Link 
+                  href="https://www.facebook.com/drmariomartinezuro/" 
+                  target="_blank"
+                  className="text-white hover:text-green-200 transition-colors"
+                >
+                  <Facebook className="h-5 w-5" />
+                </Link>
+                <Link 
+                  href="https://www.instagram.com/urologo.mariothomas" 
+                  target="_blank"
+                  className="text-white hover:text-green-200 transition-colors"
+                >
+                  <Instagram className="h-5 w-5" />
+                </Link>
+              </div>
             </div>
           </div>
 
-          <div className="border-t border-green-600 mt-12 pt-8 text-center text-green-100 text-base">
-            <p>© {new Date().getFullYear()} Urodex - Clínica de Cirugía de Próstata. Todos los derechos reservados.</p>
+          <div className="border-t border-green-600 mt-8 pt-6 text-center text-green-100">
+            <p>© {new Date().getFullYear()} Urodex - Dr. Mario Martínez Thomas. Todos los derechos reservados.</p>
           </div>
         </ResponsiveContainer>
       </footer>

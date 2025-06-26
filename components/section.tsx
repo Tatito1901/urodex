@@ -32,12 +32,13 @@ export function Section({
   hasDivider = false,
   dividerType = "none",
 }: SectionProps) {
+  // Espaciado vertical estandarizado para mantener consistencia entre secciones
   const spacingClasses = {
     none: "",
-    sm: "py-8 md:py-12",
-    md: "py-12 md:py-16 lg:py-20",
-    lg: "py-16 md:py-24 lg:py-32",
-    xl: "py-20 md:py-32 lg:py-40",
+    sm: "py-16 md:py-20", // Mínimo espaciado para secciones pequeñas
+    md: "py-20 md:py-24 lg:py-28", // Espaciado estándar para la mayoría de secciones
+    lg: "py-24 md:py-28 lg:py-32", // Espaciado amplio para secciones principales
+    xl: "py-28 md:py-32 lg:py-40", // Espaciado extra para secciones destacadas
   }
 
   const backgroundClasses = {

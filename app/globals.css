@@ -3,358 +3,632 @@
 @tailwind utilities;
 
 /* ====================================
-   VARIABLES CSS - SOLO MODO CLARO
+   VARIABLES MINIMALISTAS
    ==================================== */
 @layer base {
   :root {
+    /* Sistema de colores refinado */
     --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    --foreground: 215 25% 27%;
     --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
-    --primary: 162 76% 18%;
-    --primary-foreground: 210 40% 98%;
-    --secondary: 162 30% 96%;
-    --secondary-foreground: 162 76% 18%;
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
-    --accent: 162 30% 96%;
-    --accent-foreground: 162 76% 18%;
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 162 76% 18%;
-    --radius: 0.5rem;
+    --card-foreground: 215 25% 27%;
+    --primary: 158 64% 52%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 158 30% 96%;
+    --secondary-foreground: 158 64% 27%;
+    --muted: 210 40% 98%;
+    --muted-foreground: 215 16% 47%;
+    --accent: 158 30% 94%;
+    --accent-foreground: 158 64% 27%;
+    --border: 214 32% 91%;
+    --input: 214 32% 91%;
+    --ring: 158 64% 52%;
+
+    /* Sombras elegantes y sutiles */
+    --shadow-minimal: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
+    --shadow-elegant: 0 4px 12px -2px rgba(0, 0, 0, 0.05);
+    --shadow-sophisticated: 0 8px 25px -5px rgba(0, 0, 0, 0.08);
+    --shadow-premium: 0 16px 40px -12px rgba(0, 0, 0, 0.12);
+
+    /* Espaciado refinado */
+    --space-micro: 0.125rem;   /* 2px */
+    --space-xs: 0.375rem;      /* 6px */
+    --space-sm: 0.625rem;      /* 10px */
+    --space-md: 1.25rem;       /* 20px */
+    --space-lg: 2rem;          /* 32px */
+    --space-xl: 3.5rem;        /* 56px */
+    --space-2xl: 6rem;         /* 96px */
+
+    /* Tipografía sofisticada */
+    --font-weight-light: 300;
+    --font-weight-normal: 400;
+    --font-weight-medium: 500;
+    --font-weight-semibold: 600;
+    --font-weight-bold: 700;
+
+    /* Bordes y radios minimalistas */
+    --radius-sm: 0.375rem;
+    --radius-md: 0.75rem;
+    --radius-lg: 1rem;
+    --radius-xl: 1.5rem;
   }
 }
 
 /* ====================================
-   ESTILOS BASE
+   BASE STYLES REFINADOS
    ==================================== */
 @layer base {
   * {
     @apply border-border;
+    box-sizing: border-box;
+  }
+
+  *::before,
+  *::after {
+    box-sizing: border-box;
   }
 
   html {
     scroll-behavior: smooth;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    font-feature-settings: "kern" 1, "liga" 1, "calt" 1;
   }
 
   body {
     @apply bg-background text-foreground;
-    font-feature-settings: "rlig" 1, "calt" 1;
     line-height: 1.6;
+    font-weight: var(--font-weight-normal);
+    letter-spacing: -0.011em;
   }
 
-  /* Tipografía mejorada */
+  /* Tipografía elegante y refinada */
   h1, h2, h3, h4, h5, h6 {
-    @apply font-biosans tracking-wide;
-    letter-spacing: 0.01em;
     line-height: 1.2;
+    letter-spacing: -0.025em;
+    font-weight: var(--font-weight-bold);
+    color: hsl(158 64% 27%);
   }
 
-  h1 { @apply text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold; }
-  h2 { @apply text-2xl md:text-3xl lg:text-4xl font-bold; }
-  h3 { @apply text-xl md:text-2xl font-semibold; }
-  h4 { @apply text-lg md:text-xl font-medium; }
+  h1 { 
+    @apply text-4xl md:text-5xl lg:text-6xl;
+    font-weight: var(--font-weight-bold);
+    letter-spacing: -0.04em;
+  }
+
+  h2 { 
+    @apply text-3xl md:text-4xl lg:text-5xl;
+    font-weight: var(--font-weight-bold);
+    letter-spacing: -0.035em;
+  }
+
+  h3 { 
+    @apply text-2xl md:text-3xl;
+    font-weight: var(--font-weight-semibold);
+    letter-spacing: -0.025em;
+  }
+
+  h4 { 
+    @apply text-xl md:text-2xl;
+    font-weight: var(--font-weight-semibold);
+  }
+
+  h5 { 
+    @apply text-lg md:text-xl;
+    font-weight: var(--font-weight-medium);
+  }
+
+  h6 { 
+    @apply text-base md:text-lg;
+    font-weight: var(--font-weight-medium);
+  }
 
   p {
-    @apply leading-relaxed;
-    letter-spacing: 0.01em;
+    line-height: 1.7;
+    letter-spacing: -0.006em;
+    color: hsl(215 16% 47%);
   }
 
-  /* Accesibilidad mejorada */
+  /* Estados de foco minimalistas */
   :focus-visible {
-    @apply outline-none ring-2 ring-primary ring-offset-2 ring-offset-background;
+    @apply outline-none;
+    box-shadow: 0 0 0 2px hsl(158 64% 52%);
+    border-radius: var(--radius-sm);
+  }
+
+  /* Selección de texto elegante */
+  ::selection {
+    background: hsl(158 30% 94%);
+    color: hsl(158 64% 27%);
   }
 }
 
 /* ====================================
-   SISTEMA DE SOMBRAS UNIFICADO
+   COMPONENTES SOFISTICADOS
    ==================================== */
-.shadow-elegant {
-  box-shadow: 0 4px 12px -4px rgba(0, 0, 0, 0.05);
-}
+@layer components {
+  /* Botones elegantes */
+  .btn {
+    @apply inline-flex items-center justify-center rounded-lg font-medium transition-all duration-200;
+    font-weight: var(--font-weight-medium);
+    letter-spacing: -0.006em;
+  }
 
-.shadow-elegant-md {
-  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.08);
-}
+  .btn-primary {
+    @apply bg-green-600 hover:bg-green-700 text-white;
+    box-shadow: var(--shadow-minimal);
+  }
 
-.shadow-elegant-lg {
-  box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.12);
+  .btn-primary:hover {
+    box-shadow: var(--shadow-elegant);
+    transform: translateY(-1px);
+  }
+
+  .btn-secondary {
+    @apply border border-green-200 text-green-700 hover:bg-green-50 bg-white;
+    box-shadow: var(--shadow-minimal);
+  }
+
+  .btn-secondary:hover {
+    border-color: hsl(158 30% 85%);
+  }
+
+  .btn-ghost {
+    @apply text-green-700 hover:bg-green-50;
+  }
+
+  /* Tarjetas minimalistas */
+  .card {
+    @apply bg-white rounded-xl border border-gray-100;
+    box-shadow: var(--shadow-minimal);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .card:hover {
+    box-shadow: var(--shadow-sophisticated);
+    transform: translateY(-2px);
+    border-color: hsl(158 30% 85%);
+  }
+
+  /* Formularios refinados */
+  .input {
+    @apply bg-white border border-gray-200 rounded-lg px-4 py-3;
+    @apply focus:border-green-400 focus:ring-1 focus:ring-green-400;
+    @apply transition-all duration-200;
+    box-shadow: var(--shadow-minimal);
+  }
+
+  .input:focus {
+    box-shadow: var(--shadow-elegant);
+  }
+
+  .textarea {
+    @apply bg-white border border-gray-200 rounded-lg p-4 min-h-[120px];
+    @apply focus:border-green-400 focus:ring-1 focus:ring-green-400;
+    @apply transition-all duration-200 resize-y;
+    box-shadow: var(--shadow-minimal);
+  }
+
+  .textarea:focus {
+    box-shadow: var(--shadow-elegant);
+  }
 }
 
 /* ====================================
-   SISTEMA DE TARJETAS
+   UTILIDADES ELEGANTES
    ==================================== */
-.card {
-  @apply bg-white rounded-xl overflow-hidden;
-  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-}
+@layer utilities {
+  /* Sombras sofisticadas */
+  .shadow-minimal {
+    box-shadow: var(--shadow-minimal);
+  }
 
-.card-hover:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 15px 30px -10px rgba(0, 0, 0, 0.1);
-}
+  .shadow-elegant {
+    box-shadow: var(--shadow-elegant);
+  }
 
-.card-interactive {
-  @apply card card-hover cursor-pointer;
+  .shadow-sophisticated {
+    box-shadow: var(--shadow-sophisticated);
+  }
+
+  .shadow-premium {
+    box-shadow: var(--shadow-premium);
+  }
+
+  /* Gradientes sutiles */
+  .gradient-elegant {
+    background: linear-gradient(135deg, 
+      hsl(158 30% 98%) 0%, 
+      hsl(158 20% 95%) 100%);
+  }
+
+  .gradient-medical {
+    background: linear-gradient(135deg, 
+      hsl(158 64% 52%) 0%, 
+      hsl(158 64% 45%) 100%);
+  }
+
+  .gradient-text {
+    background: linear-gradient(135deg, 
+      hsl(158 64% 27%) 0%, 
+      hsl(158 64% 52%) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* Efectos hover sutiles */
+  .hover-minimal {
+    transition: all 0.2s ease;
+  }
+
+  .hover-minimal:hover {
+    transform: translateY(-1px);
+  }
+
+  .hover-elegant {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .hover-elegant:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-sophisticated);
+  }
+
+  /* Bordes elegantes */
+  .border-elegant {
+    border: 1px solid hsl(158 30% 85%);
+  }
+
+  .border-elegant:hover {
+    border-color: hsl(158 30% 75%);
+  }
 }
 
 /* ====================================
-   SISTEMA DE BOTONES
+   NAVEGACIÓN MINIMALISTA
    ==================================== */
-.btn {
-  @apply rounded-full transition-all duration-300 font-medium relative overflow-hidden;
-  position: relative;
+@layer components {
+  .header {
+    @apply sticky top-0 z-40 w-full transition-all duration-300;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    background: rgba(255, 255, 255, 0.85);
+  }
+
+  .header.scrolled {
+    box-shadow: var(--shadow-elegant);
+    border-bottom: 1px solid hsl(158 30% 90%);
+  }
+
+  .nav-link {
+    @apply relative px-3 py-2 text-gray-600 hover:text-green-700 font-medium;
+    @apply transition-colors duration-200;
+    letter-spacing: -0.006em;
+  }
+
+  .nav-link::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    width: 0;
+    height: 2px;
+    background: hsl(158 64% 52%);
+    transition: all 0.3s ease;
+    transform: translateX(-50%);
+  }
+
+  .nav-link:hover::after,
+  .nav-link.active::after {
+    width: 100%;
+  }
 }
 
-.btn-primary {
-  @apply bg-green-700 hover:bg-green-600 text-white shadow-elegant;
+/* ====================================
+   ANIMACIONES REFINADAS
+   ==================================== */
+@layer utilities {
+  @keyframes fade-in-elegant {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes slide-in-subtle {
+    from {
+      opacity: 0;
+      transform: translateX(-20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  @keyframes float-minimal {
+    0%, 100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-4px);
+    }
+  }
+
+  .animate-fade-in {
+    animation: fade-in-elegant 0.6s ease-out;
+  }
+
+  .animate-slide-in {
+    animation: slide-in-subtle 0.5s ease-out;
+  }
+
+  .animate-float {
+    animation: float-minimal 4s ease-in-out infinite;
+  }
 }
 
-.btn-secondary {
-  @apply border border-green-700 text-green-700 hover:bg-green-50 bg-white;
+/* ====================================
+   SCROLL ANIMATIONS
+   ==================================== */
+@layer utilities {
+  .fade-in-up {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+  }
+
+  .fade-in-up.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .fade-in-right {
+    opacity: 0;
+    transform: translateX(-20px);
+    transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+  }
+
+  .fade-in-right.visible {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  .fade-in-left {
+    opacity: 0;
+    transform: translateX(20px);
+    transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+  }
+
+  .fade-in-left.visible {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }
 
-.btn-elegant::after {
-  content: "";
-  position: absolute;
-  width: 100%;
-  height: 100%;
+/* ====================================
+   PROGRESS BAR ELEGANTE
+   ==================================== */
+.scroll-progress {
+  position: fixed;
   top: 0;
-  left: -100%;
-  background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.2) 50%, transparent 100%);
-  transition: left 0.6s ease;
-}
-
-.btn-elegant:hover::after {
-  left: 100%;
-}
-
-/* ====================================
-   FONDOS Y GRADIENTES
-   ==================================== */
-.gradient-bg {
-  background: linear-gradient(135deg, #e6f5f0 0%, #d1ebe2 100%);
-}
-
-.gradient-bg-strong {
-  background: linear-gradient(135deg, #0e5041 0%, #2a9b77 100%);
-  color: white;
-}
-
-.bg-pattern {
-  background-color: white;
-  background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%232a9b77' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
-}
-
-/* ====================================
-   ANIMACIONES
-   ==================================== */
-@keyframes float {
-  0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-10px); }
-}
-
-.floating {
-  animation: float 6s ease-in-out infinite;
-}
-
-.fade-in {
-  opacity: 0;
-  transform: translateY(20px);
-  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
-}
-
-.fade-in.visible {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-/* ====================================
-   EFECTOS HOVER UNIFICADOS
-   ==================================== */
-.hover-lift {
-  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-}
-
-.hover-lift:hover {
-  transform: translateY(-5px);
-}
-
-.hover-glow:hover {
-  box-shadow: 0 0 15px rgba(14, 80, 65, 0.2);
-  transform: translateY(-2px);
-}
-
-/* ====================================
-   FORMULARIOS
-   ==================================== */
-.input-elegant {
-  @apply bg-green-50 border-green-100 rounded-lg h-12 px-4 
-         focus:ring-2 focus:ring-green-500 focus:border-transparent 
-         transition-all duration-200;
-}
-
-.textarea-elegant {
-  @apply bg-green-50 border-green-100 rounded-lg p-4 min-h-[120px]
-         focus:ring-2 focus:ring-green-500 focus:border-transparent 
-         transition-all duration-200 resize-y;
-}
-
-/* ====================================
-   LAYOUT Y ESPACIADO
-   ==================================== */
-.container {
-  @apply px-4 sm:px-6 lg:px-8 mx-auto max-w-7xl;
-}
-
-.section-spacing {
-  @apply py-12 md:py-16 lg:py-20;
-}
-
-.section-spacing-sm {
-  @apply py-8 md:py-12;
-}
-
-.section-spacing-lg {
-  @apply py-16 md:py-24 lg:py-32;
-}
-
-/* Sistema de rejilla responsivo */
-.grid-responsive {
-  @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8;
-}
-
-.grid-responsive-4 {
-  @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8;
-}
-
-/* ====================================
-   DIVISORES DE SECCIÓN
-   ==================================== */
-.section-divider {
-  height: 1px;
-  background: linear-gradient(90deg, transparent 0%, rgba(14, 80, 65, 0.3) 50%, transparent 100%);
-  margin: 2rem 0;
-}
-
-.section-divider-wave {
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 120' preserveAspectRatio='none'%3E%3Cpath d='M0,0V46.29c47.79,22.2,103.59,32.17,158,28,70.36-5.37,136.33-33.31,206.8-37.5C438.64,32.43,512.34,53.67,583,72.05c69.27,18,138.3,24.88,209.4,13.08,36.15-6,69.85-17.84,104.45-29.34C989.49,25,1113-14.29,1200,52.47V0Z' fill='white'%3E%3C/path%3E%3C/svg%3E");
-  background-size: cover;
-  height: 60px;
-}
-
-/* ====================================
-   NAVEGACIÓN
-   ==================================== */
-.sticky-header {
-  @apply sticky top-0 z-40 w-full border-b bg-white/90 backdrop-blur-md 
-         transition-all duration-200;
-}
-
-.sticky-header.scrolled {
-  @apply shadow-md;
-}
-
-.mobile-nav-item {
-  @apply text-xl font-medium text-green-700 hover:text-green-600 
-         transition-colors text-center py-3;
-}
-
-/* ====================================
-   UTILIDADES
-   ==================================== */
-.gradient-text {
-  background: linear-gradient(135deg, #0e5041 0%, #1a7d67 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-.elegant-underline {
-  position: relative;
-  display: inline-block;
-}
-
-.elegant-underline::after {
-  content: "";
-  position: absolute;
-  width: 100%;
-  transform: scaleX(0);
-  height: 1px;
-  bottom: -2px;
   left: 0;
-  background-color: currentColor;
-  transform-origin: bottom right;
-  transition: transform 0.3s ease-out;
-}
-
-.elegant-underline:hover::after {
-  transform: scaleX(1);
-  transform-origin: bottom left;
+  z-index: 50;
+  height: 2px;
+  background: linear-gradient(90deg, 
+    hsl(158 64% 52%) 0%, 
+    hsl(158 64% 45%) 100%);
+  width: 100%;
+  transform-origin: 0%;
+  transition: transform 0.1s ease-out;
 }
 
 /* ====================================
-   RESPONSIVO Y ACCESIBILIDAD
+   SCROLLBAR MINIMALISTA
    ==================================== */
-.sr-only {
-  @apply absolute w-px h-px p-0 -m-px overflow-hidden whitespace-nowrap border-0;
-}
-
-/* Scrollbar personalizada */
 @media (min-width: 768px) {
   ::-webkit-scrollbar {
-    width: 8px;
+    width: 6px;
   }
 
   ::-webkit-scrollbar-track {
-    background: #f1f5f9;
+    background: hsl(158 30% 96%);
   }
 
   ::-webkit-scrollbar-thumb {
-    background: rgba(14, 80, 65, 0.3);
-    border-radius: 4px;
+    background: hsl(158 64% 52%);
+    border-radius: 3px;
   }
 
   ::-webkit-scrollbar-thumb:hover {
-    background: rgba(14, 80, 65, 0.5);
+    background: hsl(158 64% 45%);
   }
 }
 
 /* ====================================
-   MEDIA QUERIES Y PRINT
+   LAYOUT SPACING
+   ==================================== */
+@layer utilities {
+  .container-elegant {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+
+  .section-spacing {
+    padding-top: var(--space-2xl);
+    padding-bottom: var(--space-2xl);
+  }
+
+  .section-spacing-sm {
+    padding-top: var(--space-xl);
+    padding-bottom: var(--space-xl);
+  }
+
+  .section-spacing-lg {
+    padding-top: calc(var(--space-2xl) * 1.5);
+    padding-bottom: calc(var(--space-2xl) * 1.5);
+  }
+
+  .content-center {
+    @apply max-w-4xl mx-auto;
+  }
+
+  .content-narrow {
+    @apply max-w-2xl mx-auto;
+  }
+
+  .content-wide {
+    @apply max-w-6xl mx-auto;
+  }
+}
+
+/* ====================================
+   RESPONSIVE REFINEMENTS
+   ==================================== */
+@media (max-width: 640px) {
+  .section-spacing {
+    padding-top: var(--space-xl);
+    padding-bottom: var(--space-xl);
+  }
+
+  h1 {
+    font-size: 2.25rem; /* 36px */
+    line-height: 1.1;
+  }
+
+  h2 {
+    font-size: 1.875rem; /* 30px */
+    line-height: 1.15;
+  }
+}
+
+/* ====================================
+   ACCESSIBILITY IMPROVEMENTS
+   ==================================== */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .scroll-progress {
+    transition: none;
+  }
+}
+
+@media (prefers-contrast: high) {
+  .btn-primary {
+    @apply bg-green-800 border border-green-900;
+  }
+
+  .gradient-text {
+    color: hsl(158 64% 27%);
+    background: none;
+    -webkit-text-fill-color: unset;
+  }
+}
+
+/* ====================================
+   PRINT STYLES
    ==================================== */
 @media print {
-  .no-print { display: none !important; }
-  
+  .no-print {
+    display: none !important;
+  }
+
   body {
     font-size: 12pt;
     line-height: 1.5;
     color: #000;
     background: #fff;
   }
-  
-  .container {
-    max-width: 100%;
-    padding: 0;
+
+  .shadow-minimal,
+  .shadow-elegant,
+  .shadow-sophisticated,
+  .shadow-premium {
+    box-shadow: none !important;
   }
 }
 
 /* ====================================
-   TEXT SHADOWS
+   LOADING STATES
    ==================================== */
-@layer utilities {
-  .text-shadow {
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+@keyframes pulse-elegant {
+  0%, 100% {
+    opacity: 1;
   }
-  .text-shadow-lg {
-    text-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+  50% {
+    opacity: 0.5;
   }
-  .text-shadow-none {
-    text-shadow: none;
+}
+
+.loading-pulse {
+  animation: pulse-elegant 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+.loading-skeleton {
+  background: linear-gradient(90deg, 
+    hsl(158 30% 96%) 25%, 
+    hsl(158 30% 92%) 50%, 
+    hsl(158 30% 96%) 75%);
+  background-size: 200% 100%;
+  animation: loading-skeleton 1.5s ease-in-out infinite;
+}
+
+@keyframes loading-skeleton {
+  0% {
+    background-position: 200% 0;
   }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+/* ====================================
+   UTILITY CLASSES
+   ==================================== */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.focus-ring {
+  @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-500 focus-visible:ring-offset-2;
+}
+
+/* ====================================
+   GLASS EFFECT MINIMAL
+   ==================================== */
+.glass-minimal {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+/* ====================================
+   TEXT UTILITIES
+   ==================================== */
+.text-balance {
+  text-wrap: balance;
+}
+
+.text-pretty {
+  text-wrap: pretty;
 }
