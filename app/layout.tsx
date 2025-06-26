@@ -3,7 +3,6 @@ import type { Metadata } from "next"
 import { Roboto, Roboto_Serif } from "next/font/google"
 import localFont from "next/font/local"
 import "./globals.css"
-import { ThemeProvider } from "@/components/theme-provider"
 
 const roboto = Roboto({
   subsets: ["latin"],
@@ -17,17 +16,6 @@ const robotoSerif = Roboto_Serif({
   weight: ["300", "400", "500", "600", "700"],
 })
 
-// Importar Bio Sans Bold como fuente local
-/* const bioSans = localFont({
-  src: [
-    {
-      path: "../public/fonts/BioSans-Bold.woff2",
-      weight: "700",
-      style: "normal",
-    },
-  ],
-  variable: "--font-biosans",
-}) */
 
 export const metadata: Metadata = {
   title: "Urodex - Dr. Mario Martínez Thomas | Urólogo Especialista",
@@ -44,9 +32,7 @@ export default function RootLayout({
   return (
     <html lang="es" suppressHydrationWarning>
             <body className={`${roboto.variable} ${robotoSerif.variable} font-sans`}>
-        <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
           {children}
-        </ThemeProvider>
       </body>
     </html>
   )
