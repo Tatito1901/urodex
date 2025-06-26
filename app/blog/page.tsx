@@ -1,7 +1,6 @@
 import type { Metadata } from "next"
 import Image from "next/image"
 import { BlogCard } from "@/components/blog-card"
-import { getBlogPosts } from "@/lib/sanity.client"
 import { ScrollAnimation } from "@/components/scroll-animations"
 
 export const metadata: Metadata = {
@@ -10,16 +9,18 @@ export const metadata: Metadata = {
     "Artículos y noticias sobre urología, salud masculina y avances médicos por el Dr. Mario Martínez Thomas.",
 }
 
-export default async function BlogPage() {
-  // Añadimos manejo de errores y valor por defecto
-  let posts = []
-  try {
-    const fetchedPosts = await getBlogPosts()
-    posts = fetchedPosts || []
-  } catch (error) {
-    console.error("Error fetching blog posts:", error)
-    // Dejamos posts como un array vacío en caso de error
-  }
+export default function BlogPage() {
+  // Datos de ejemplo mientras no hay Sanity
+  const posts: {
+    _id: string
+    title: string
+    slug: { current: string }
+    mainImage?: any
+    publishedAt: string
+    excerpt?: string
+    categories?: string[]
+    author?: string
+  }[] = []
 
   return (
     <main className="flex-1">

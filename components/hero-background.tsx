@@ -1,349 +1,373 @@
-"use client"
+// components/HeroBackground.tsx
+'use client';
 
-import { useEffect, useRef } from "react"
+import { useEffect, useRef } from 'react';
 
+// --- TIPOS Y CONSTANTES CENTRALIZADAS ---
+
+/** Paleta de colores para la animación, exportada como una constante para asegurar la inmutabilidad. */
+const COLOR_PALETTE = {
+  primary: 'rgba(14, 80, 65, 0.04)',
+  secondary: 'rgba(26, 125, 103, 0.05)',
+  accent: 'rgba(42, 155, 119, 0.06)',
+  light: 'rgba(230, 245, 240, 0.08)',
+  highlight: 'rgba(42, 155, 119, 0.1)',
+} as const;
+
+/** Tipos de formas que pueden ser renderizadas, basados en un array constante. */
+const SHAPE_TYPES = ['hexagon', 'cross', 'diamond', 'circle', 'plus'] as const;
+type ShapeType = (typeof SHAPE_TYPES)[number];
+
+// --- LÓGICA DE LA ANIMACIÓN (SEPARADA DEL COMPONENTE REACT) ---
+
+/**
+ * Gestiona toda la lógica de renderizado y animación del canvas.
+ * Esta clase encapsula el estado y los comportamientos de la animación,
+ * permitiendo que el componente React se mantenga simple y declarativo.
+ */
+class CanvasAnimator {
+  private readonly canvas: HTMLCanvasElement;
+  private readonly ctx: CanvasRenderingContext2D;
+  private animationFrameId: number | null = null;
+  
+  private gridLines: GridLine[] = [];
+  private medicalShapes: MedicalShape[] = [];
+  private particles: Particle[] = [];
+  
+  private width = 0;
+  private height = 0;
+  private dpr = 1;
+
+  constructor(canvas: HTMLCanvasElement) {
+    this.canvas = canvas;
+    const context = canvas.getContext('2d');
+    if (!context) {
+      throw new Error('No se pudo obtener el contexto 2D del canvas.');
+    }
+    this.ctx = context;
+    this.setup();
+  }
+  
+  /** Configura las dimensiones iniciales, los elementos y los listeners de eventos. */
+  private setup(): void {
+    this.setCanvasDimensions();
+    this.createElements();
+    window.addEventListener('resize', this.debouncedResize);
+  }
+
+  /** Establece las dimensiones del canvas, ajustándose a la densidad de píxeles del dispositivo. */
+  private setCanvasDimensions = (): void => {
+    this.dpr = window.devicePixelRatio || 1;
+    this.width = window.innerWidth;
+    this.height = window.innerHeight;
+
+    this.canvas.width = this.width * this.dpr;
+    this.canvas.height = this.height * this.dpr;
+    this.canvas.style.width = `${this.width}px`;
+    this.canvas.style.height = `${this.height}px`;
+    this.ctx.scale(this.dpr, this.dpr);
+  }
+
+  /** Crea las instancias iniciales de todos los elementos visuales. */
+  private createElements(): void {
+    const horizontalLines = 8;
+    const verticalLines = 12;
+
+    this.gridLines = [];
+    for (let i = 0; i < horizontalLines; i++) {
+        const line = GridLine.create(true, this.ctx, this.width, this.height);
+        line.y = (this.height / (horizontalLines - 1)) * i;
+        this.gridLines.push(line);
+    }
+    for (let i = 0; i < verticalLines; i++) {
+        this.gridLines.push(GridLine.create(false, this.ctx, this.width, this.height));
+    }
+    
+    const shapeCount = Math.max(1, Math.min(Math.floor(this.width / 200), 8));
+    this.medicalShapes = Array.from({ length: shapeCount }, () => new MedicalShape(this.ctx, this.width, this.height));
+    
+    const particleCount = Math.max(10, Math.min(Math.floor(this.width / 50), 30));
+    this.particles = Array.from({ length: particleCount }, () => new Particle(this.ctx, this.width, this.height));
+  }
+
+  /** Manejador de redimensionamiento optimizado con debounce para mejorar el rendimiento. */
+  private debouncedResize = debounce(() => {
+    this.setCanvasDimensions();
+    this.createElements();
+  }, 250);
+
+  /** El bucle principal de la animación que se ejecuta en cada frame. */
+  private animate = (): void => {
+    this.ctx.clearRect(0, 0, this.width, this.height);
+
+    this.gridLines.forEach(l => { l.update(this.width); l.draw(); });
+    this.medicalShapes.forEach(s => { s.update(); s.draw(); });
+    this.particles.forEach(p => { p.update(this.width, this.height); p.draw(); });
+    this.connectParticles();
+    
+    this.animationFrameId = requestAnimationFrame(this.animate);
+  }
+  
+  /** Dibuja líneas de conexión entre partículas cercanas. */
+  private connectParticles(): void {
+      const maxDistance = 150;
+      for (let a = 0; a < this.particles.length; a++) {
+        for (let b = a + 1; b < this.particles.length; b++) {
+          const dx = this.particles[a].x - this.particles[b].x;
+          const dy = this.particles[a].y - this.particles[b].y;
+          const distance = Math.sqrt(dx * dx + dy * dy);
+          if (distance < maxDistance) {
+            const opacity = (1 - distance / maxDistance) * 0.05;
+            this.ctx.strokeStyle = `rgba(42, 155, 119, ${opacity})`;
+            this.ctx.lineWidth = 0.5;
+            this.ctx.beginPath();
+            this.ctx.moveTo(this.particles[a].x, this.particles[a].y);
+            this.ctx.lineTo(this.particles[b].x, this.particles[b].y);
+            this.ctx.stroke();
+          }
+        }
+      }
+  }
+
+  /** Inicia el bucle de animación. */
+  public start(): void {
+    if (!this.animationFrameId) {
+      this.animate();
+    }
+  }
+
+  /** Detiene la animación y limpia los recursos (listeners, frames) para evitar fugas de memoria. */
+  public destroy(): void {
+    if (this.animationFrameId) {
+      cancelAnimationFrame(this.animationFrameId);
+      this.animationFrameId = null;
+    }
+    window.removeEventListener('resize', this.debouncedResize);
+  }
+}
+
+// --- CLASES DE ELEMENTOS DE LA ANIMACIÓN ---
+
+class GridLine {
+  constructor(
+    public readonly ctx: CanvasRenderingContext2D,
+    public readonly isHorizontal: boolean,
+    public x: number,
+    public y: number,
+    public width: number,
+    public height: number,
+    public readonly speed: number,
+    public opacity: number,
+    public readonly color: string
+  ) {}
+
+  static create(isHorizontal: boolean, ctx: CanvasRenderingContext2D, canvasWidth: number, canvasHeight: number): GridLine {
+    const colorOptions = [COLOR_PALETTE.primary, COLOR_PALETTE.secondary, COLOR_PALETTE.accent];
+    const color = colorOptions[Math.floor(Math.random() * colorOptions.length)];
+    const opacity = Math.random() * 0.07 + 0.02;
+
+    if (isHorizontal) {
+      return new GridLine(ctx, true, 0, Math.random() * canvasHeight, canvasWidth, Math.random() + 0.5, 0, opacity, color);
+    } else {
+      const speed = (Math.random() * 0.2 + 0.05) * (Math.random() > 0.5 ? 1 : -1);
+      return new GridLine(ctx, false, Math.random() * canvasWidth, 0, Math.random() + 0.5, canvasHeight, speed, opacity, color);
+    }
+  }
+
+  update(canvasWidth: number): void {
+    if (!this.isHorizontal) {
+      this.x += this.speed;
+      if ((this.speed > 0 && this.x > canvasWidth) || (this.speed < 0 && this.x + this.width < 0)) {
+        this.x = this.speed > 0 ? -this.width : canvasWidth;
+        this.opacity = Math.random() * 0.07 + 0.02;
+      }
+    }
+  }
+
+  draw(): void {
+    this.ctx.fillStyle = this.color.replace(/[\d.]+\)$/g, `${this.opacity})`);
+    this.ctx.fillRect(this.x, this.y, this.width, this.height);
+  }
+}
+
+class MedicalShape {
+  private readonly ctx: CanvasRenderingContext2D;
+  x: number; y: number; size: number; rotation: number; rotationSpeed: number;
+  shape: ShapeType; color: string; opacity: number; pulsePhase: number; pulseSpeed: number;
+
+  constructor(ctx: CanvasRenderingContext2D, canvasWidth: number, canvasHeight: number) {
+    this.ctx = ctx;
+    this.x = Math.random() * canvasWidth;
+    this.y = Math.random() * canvasHeight;
+    this.size = Math.random() * 40 + 20;
+    this.rotation = Math.random() * Math.PI * 2;
+    this.rotationSpeed = (Math.random() * 0.001 - 0.0005) * Math.PI;
+    this.shape = SHAPE_TYPES[Math.floor(Math.random() * SHAPE_TYPES.length)];
+    this.color = Math.random() > 0.7 ? COLOR_PALETTE.highlight : COLOR_PALETTE.light;
+    this.opacity = Math.random() * 0.1 + 0.05;
+    this.pulsePhase = Math.random() * Math.PI * 2;
+    this.pulseSpeed = Math.random() * 0.02 + 0.01;
+  }
+
+  update(): void {
+    this.rotation += this.rotationSpeed;
+    this.pulsePhase += this.pulseSpeed;
+    const isHighlight = this.color === COLOR_PALETTE.highlight;
+    this.opacity = (Math.sin(this.pulsePhase) * 0.05 + 0.1) * (isHighlight ? 1 : 0.6);
+  }
+
+  draw(): void {
+    this.ctx.save();
+    this.ctx.translate(this.x, this.y);
+    this.ctx.rotate(this.rotation);
+    this.ctx.fillStyle = this.color.replace(/[\d.]+\)$/g, `${this.opacity})`);
+    this.ctx.strokeStyle = this.color.replace(/[\d.]+\)$/g, `${this.opacity * 1.5})`);
+    this.ctx.lineWidth = 0.5;
+
+    // Llama al método de dibujo correspondiente a la forma
+    switch (this.shape) {
+      case 'hexagon': this.drawHexagon(); break;
+      case 'cross': this.drawCross(); break;
+      case 'diamond': this.drawDiamond(); break;
+      case 'circle': this.drawCircle(); break;
+      case 'plus': this.drawPlus(); break;
+    }
+    
+    this.ctx.restore();
+  }
+
+  private drawHexagon(): void {
+    this.ctx.beginPath();
+    for (let i = 0; i < 6; i++) {
+      const angle = (Math.PI / 3) * i;
+      const x = this.size * Math.cos(angle);
+      const y = this.size * Math.sin(angle);
+      i === 0 ? this.ctx.moveTo(x, y) : this.ctx.lineTo(x, y);
+    }
+    this.ctx.closePath();
+    this.ctx.fill();
+    this.ctx.stroke();
+  }
+
+  private drawCross(): void {
+    const s = this.size * 0.8;
+    this.ctx.beginPath();
+    this.ctx.moveTo(-s, -s / 5); this.ctx.lineTo(-s / 5, -s / 5); this.ctx.lineTo(-s / 5, -s);
+    this.ctx.lineTo(s / 5, -s); this.ctx.lineTo(s / 5, -s / 5); this.ctx.lineTo(s, -s / 5);
+    this.ctx.lineTo(s, s / 5); this.ctx.lineTo(s / 5, s / 5); this.ctx.lineTo(s / 5, s);
+    this.ctx.lineTo(-s / 5, s); this.ctx.lineTo(-s / 5, s / 5); this.ctx.lineTo(-s, s / 5);
+    this.ctx.closePath();
+    this.ctx.fill();
+    this.ctx.stroke();
+  }
+
+  private drawDiamond(): void {
+    this.ctx.beginPath();
+    this.ctx.moveTo(0, -this.size); this.ctx.lineTo(this.size, 0);
+    this.ctx.lineTo(0, this.size); this.ctx.lineTo(-this.size, 0);
+    this.ctx.closePath();
+    this.ctx.fill();
+    this.ctx.stroke();
+  }
+
+  private drawCircle(): void {
+    this.ctx.beginPath();
+    this.ctx.arc(0, 0, this.size, 0, Math.PI * 2);
+    this.ctx.fill();
+    this.ctx.stroke();
+  }
+
+  private drawPlus(): void {
+    const s = this.size * 0.8;
+    const w = this.size * 0.25;
+    this.ctx.beginPath();
+    this.ctx.rect(-s, -w, s * 2, w * 2);
+    this.ctx.rect(-w, -s, w * 2, s * 2);
+    this.ctx.fill();
+    this.ctx.stroke();
+  }
+}
+
+class Particle {
+  x: number; y: number; size: number; speedX: number; speedY: number; readonly color: string; opacity: number;
+  
+  constructor(private readonly ctx: CanvasRenderingContext2D, canvasWidth: number, canvasHeight: number) {
+    this.x = Math.random() * canvasWidth;
+    this.y = Math.random() * canvasHeight;
+    this.size = Math.random() * 2 + 1;
+    this.speedX = (Math.random() - 0.5) * 0.3;
+    this.speedY = (Math.random() - 0.5) * 0.3;
+    this.color = COLOR_PALETTE.primary;
+    this.opacity = Math.random() * 0.3 + 0.05;
+  }
+  
+  update(canvasWidth: number, canvasHeight: number): void {
+    this.x += this.speedX;
+    this.y += this.speedY;
+    if (this.x < 0 || this.x > canvasWidth) this.speedX *= -1;
+    if (this.y < 0 || this.y > canvasHeight) this.speedY *= -1;
+  }
+
+  draw(): void {
+    this.ctx.fillStyle = this.color.replace(/[\d.]+\)$/g, `${this.opacity})`);
+    this.ctx.beginPath();
+    this.ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+    this.ctx.fill();
+  }
+}
+
+// --- FUNCIÓN DE UTILIDAD ---
+
+/**
+ * Crea una versión "debounced" de una función que retrasa su ejecución
+ * hasta que haya pasado un tiempo determinado sin ser llamada.
+ * @param func La función a la que se le aplicará debounce.
+ * @param waitFor El tiempo de espera en milisegundos.
+ */
+function debounce<F extends (...args: any[]) => any>(func: F, waitFor: number) {
+  let timeoutId: ReturnType<typeof setTimeout> | null = null;
+  return (...args: Parameters<F>): void => {
+    if (timeoutId) {
+      clearTimeout(timeoutId);
+    }
+    timeoutId = setTimeout(() => func(...args), waitFor);
+  };
+}
+
+// --- COMPONENTE REACT (SIMPLIFICADO Y ROBUSTO) ---
+
+/**
+ * Renderiza un fondo animado de canvas.
+ * Este componente es un 'Client Component' y delega toda la lógica de la animación
+ * a la clase CanvasAnimator para mantener la separación de responsabilidades y la testabilidad.
+ */
 export function HeroBackground() {
-  const canvasRef = useRef<HTMLCanvasElement>(null)
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
   useEffect(() => {
-    const canvas = canvasRef.current
-    if (!canvas) return
+    if (!canvasRef.current) return;
 
-    const ctx = canvas.getContext("2d")
-    if (!ctx) return
-
-    // Configurar el canvas para que ocupe toda la pantalla
-    const setCanvasDimensions = () => {
-      const { innerWidth, innerHeight } = window
-      canvas.width = innerWidth
-      canvas.height = innerHeight
+    let animator: CanvasAnimator | null = null;
+    try {
+      animator = new CanvasAnimator(canvasRef.current);
+      animator.start();
+    } catch (error) {
+      console.error("Fallo al inicializar la animación del canvas:", error);
+      // En un caso real, podríamos tener un estado para mostrar un fondo estático como fallback.
     }
 
-    setCanvasDimensions()
-    window.addEventListener("resize", setCanvasDimensions)
-
-    // Colores profesionales en la paleta de verdes
-    const colors = {
-      primary: "rgba(14, 80, 65, 0.04)", // Verde oscuro (muy sutil)
-      secondary: "rgba(26, 125, 103, 0.05)", // Verde medio
-      accent: "rgba(42, 155, 119, 0.06)", // Verde principal
-      light: "rgba(230, 245, 240, 0.08)", // Verde muy claro
-      highlight: "rgba(42, 155, 119, 0.1)", // Para destacar elementos
-    }
-
-    // Clase para líneas de cuadrícula
-    class GridLine {
-      x: number
-      y: number
-      width: number
-      height: number
-      speed: number
-      opacity: number
-      color: string
-      isHorizontal: boolean
-
-      constructor(isHorizontal: boolean) {
-        this.isHorizontal = isHorizontal
-        this.opacity = Math.random() * 0.07 + 0.02
-        this.color = [colors.primary, colors.secondary, colors.accent][Math.floor(Math.random() * 3)]
-
-        if (isHorizontal) {
-          this.x = 0
-          this.y = Math.random() * canvas.height
-          this.width = canvas.width
-          this.height = Math.random() * 1 + 0.5
-          this.speed = 0 // Las líneas horizontales no se mueven
-        } else {
-          this.x = Math.random() * canvas.width
-          this.y = 0
-          this.width = Math.random() * 1 + 0.5
-          this.height = canvas.height
-          this.speed = (Math.random() * 0.2 + 0.05) * (Math.random() > 0.5 ? 1 : -1)
-        }
-      }
-
-      update() {
-        if (!this.isHorizontal) {
-          this.x += this.speed
-
-          // Si la línea sale de la pantalla, reiniciarla
-          if ((this.speed > 0 && this.x > canvas.width) || (this.speed < 0 && this.x + this.width < 0)) {
-            this.x = this.speed > 0 ? 0 : canvas.width
-            this.opacity = Math.random() * 0.07 + 0.02
-          }
-        }
-      }
-
-      draw() {
-        ctx.fillStyle = this.color.replace(/[\d.]+\)$/g, `${this.opacity})`)
-        ctx.fillRect(this.x, this.y, this.width, this.height)
-      }
-    }
-
-    // Clase para figuras médicas modernas
-    class MedicalShape {
-      x: number
-      y: number
-      size: number
-      rotation: number
-      rotationSpeed: number
-      shape: string
-      color: string
-      opacity: number
-      pulsePhase: number
-      pulseSpeed: number
-
-      constructor() {
-        this.x = Math.random() * canvas.width
-        this.y = Math.random() * canvas.height
-        this.size = Math.random() * 40 + 20
-        this.rotation = Math.random() * Math.PI * 2
-        this.rotationSpeed = (Math.random() * 0.001 - 0.0005) * Math.PI
-
-        // Figuras: hexágono, cruz, rombos, círculos
-        const shapes = ["hexagon", "cross", "diamond", "circle", "plus"]
-        this.shape = shapes[Math.floor(Math.random() * shapes.length)]
-
-        this.color = Math.random() > 0.7 ? colors.highlight : colors.light
-        this.opacity = Math.random() * 0.1 + 0.05
-
-        // Para el efecto de pulsación
-        this.pulsePhase = Math.random() * Math.PI * 2
-        this.pulseSpeed = Math.random() * 0.02 + 0.01
-      }
-
-      update() {
-        this.rotation += this.rotationSpeed
-        this.pulsePhase += this.pulseSpeed
-        // La opacidad pulsa suavemente
-        this.opacity = (Math.sin(this.pulsePhase) * 0.05 + 0.1) * (this.color === colors.highlight ? 1 : 0.6)
-      }
-
-      draw() {
-        ctx.save()
-        ctx.translate(this.x, this.y)
-        ctx.rotate(this.rotation)
-
-        ctx.fillStyle = this.color.replace(/[\d.]+\)$/g, `${this.opacity})`)
-        ctx.strokeStyle = this.color.replace(/[\d.]+\)$/g, `${this.opacity * 1.5})`)
-        ctx.lineWidth = 0.5
-
-        switch (this.shape) {
-          case "hexagon":
-            this.drawHexagon()
-            break
-          case "cross":
-            this.drawCross()
-            break
-          case "diamond":
-            this.drawDiamond()
-            break
-          case "circle":
-            this.drawCircle()
-            break
-          case "plus":
-            this.drawPlus()
-            break
-        }
-
-        ctx.restore()
-      }
-
-      drawHexagon() {
-        ctx.beginPath()
-        for (let i = 0; i < 6; i++) {
-          const angle = (Math.PI / 3) * i
-          const x = this.size * Math.cos(angle)
-          const y = this.size * Math.sin(angle)
-          if (i === 0) ctx.moveTo(x, y)
-          else ctx.lineTo(x, y)
-        }
-        ctx.closePath()
-        ctx.fill()
-        ctx.stroke()
-      }
-
-      drawCross() {
-        const size = this.size * 0.8
-        ctx.beginPath()
-        ctx.moveTo(-size, -size / 5)
-        ctx.lineTo(-size / 5, -size / 5)
-        ctx.lineTo(-size / 5, -size)
-        ctx.lineTo(size / 5, -size)
-        ctx.lineTo(size / 5, -size / 5)
-        ctx.lineTo(size, -size / 5)
-        ctx.lineTo(size, size / 5)
-        ctx.lineTo(size / 5, size / 5)
-        ctx.lineTo(size / 5, size)
-        ctx.lineTo(-size / 5, size)
-        ctx.lineTo(-size / 5, size / 5)
-        ctx.lineTo(-size, size / 5)
-        ctx.closePath()
-        ctx.fill()
-        ctx.stroke()
-      }
-
-      drawDiamond() {
-        ctx.beginPath()
-        ctx.moveTo(0, -this.size)
-        ctx.lineTo(this.size, 0)
-        ctx.lineTo(0, this.size)
-        ctx.lineTo(-this.size, 0)
-        ctx.closePath()
-        ctx.fill()
-        ctx.stroke()
-      }
-
-      drawCircle() {
-        ctx.beginPath()
-        ctx.arc(0, 0, this.size, 0, Math.PI * 2)
-        ctx.fill()
-        ctx.stroke()
-      }
-
-      drawPlus() {
-        const size = this.size * 0.8
-        const width = this.size * 0.25
-
-        ctx.beginPath()
-        // Horizontal rectangle
-        ctx.rect(-size, -width, size * 2, width * 2)
-        // Vertical rectangle
-        ctx.rect(-width, -size, width * 2, size * 2)
-        ctx.fill()
-        ctx.stroke()
-      }
-    }
-
-    // Sistema de partículas para efecto de movimiento
-    class Particle {
-      x: number
-      y: number
-      size: number
-      speedX: number
-      speedY: number
-      color: string
-      opacity: number
-
-      constructor() {
-        this.x = Math.random() * canvas.width
-        this.y = Math.random() * canvas.height
-        this.size = Math.random() * 2 + 1
-        this.speedX = (Math.random() - 0.5) * 0.3
-        this.speedY = (Math.random() - 0.5) * 0.3
-        this.color = colors.primary
-        this.opacity = Math.random() * 0.3 + 0.05
-      }
-
-      update() {
-        this.x += this.speedX
-        this.y += this.speedY
-
-        // Mantener dentro del canvas
-        if (this.x < 0 || this.x > canvas.width) this.speedX *= -1
-        if (this.y < 0 || this.y > canvas.height) this.speedY *= -1
-      }
-
-      draw() {
-        ctx.fillStyle = this.color.replace(/[\d.]+\)$/g, `${this.opacity})`)
-        ctx.beginPath()
-        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2)
-        ctx.fill()
-      }
-    }
-
-    // Crear arrays de elementos
-    const gridLines: GridLine[] = []
-    const horizontalLines = 8
-    const verticalLines = 12
-
-    // Líneas horizontales igualmente espaciadas
-    for (let i = 0; i < horizontalLines; i++) {
-      const line = new GridLine(true)
-      line.y = (canvas.height / (horizontalLines - 1)) * i
-      gridLines.push(line)
-    }
-
-    // Líneas verticales
-    for (let i = 0; i < verticalLines; i++) {
-      gridLines.push(new GridLine(false))
-    }
-
-    // Crear formas médicas
-    const medicalShapes: MedicalShape[] = []
-    const shapeCount = Math.min(window.innerWidth / 200, 8) // Número responsivo de formas
-
-    for (let i = 0; i < shapeCount; i++) {
-      medicalShapes.push(new MedicalShape())
-    }
-
-    // Crear partículas para el efecto de movimiento
-    const particles: Particle[] = []
-    const particleCount = Math.min(window.innerWidth / 50, 30) // Número responsivo de partículas
-
-    for (let i = 0; i < particleCount; i++) {
-      particles.push(new Particle())
-    }
-
-    // Función para conectar partículas cercanas con líneas sutiles
-    const connectParticles = () => {
-      const maxDistance = 150
-      for (let a = 0; a < particles.length; a++) {
-        for (let b = a; b < particles.length; b++) {
-          const dx = particles[a].x - particles[b].x
-          const dy = particles[a].y - particles[b].y
-          const distance = Math.sqrt(dx * dx + dy * dy)
-
-          if (distance < maxDistance) {
-            const opacity = (1 - distance / maxDistance) * 0.05
-            ctx.strokeStyle = `rgba(42, 155, 119, ${opacity})`
-            ctx.lineWidth = 0.5
-            ctx.beginPath()
-            ctx.moveTo(particles[a].x, particles[a].y)
-            ctx.lineTo(particles[b].x, particles[b].y)
-            ctx.stroke()
-          }
-        }
-      }
-    }
-
-    // Animación
-    const animate = () => {
-      ctx.clearRect(0, 0, canvas.width, canvas.height)
-
-      // Dibujar y actualizar líneas de cuadrícula
-      for (let i = 0; i < gridLines.length; i++) {
-        gridLines[i].update()
-        gridLines[i].draw()
-      }
-
-      // Dibujar y actualizar formas médicas
-      for (let i = 0; i < medicalShapes.length; i++) {
-        medicalShapes[i].update()
-        medicalShapes[i].draw()
-      }
-
-      // Dibujar y actualizar partículas
-      for (let i = 0; i < particles.length; i++) {
-        particles[i].update()
-        particles[i].draw()
-      }
-
-      // Conectar partículas
-      connectParticles()
-
-      requestAnimationFrame(animate)
-    }
-
-    animate()
-
-    // Limpieza
+    // La función de limpieza de useEffect es crucial para la gestión de recursos.
+    // Se asegura de que la animación se detenga y los listeners se eliminen cuando el componente se desmonte.
     return () => {
-      window.removeEventListener("resize", setCanvasDimensions)
-    }
-  }, [])
+      animator?.destroy();
+    };
+  }, []); // El array de dependencias vacío asegura que esto se ejecuta solo en mount/unmount.
 
   return (
-    <canvas ref={canvasRef} className="absolute inset-0 w-full h-full pointer-events-none z-0" aria-hidden="true" />
-  )
+    <canvas 
+      ref={canvasRef} 
+      className="absolute inset-0 -z-10 h-full w-full pointer-events-none" 
+      aria-hidden="true" 
+    />
+  );
 }

@@ -3,7 +3,6 @@ import Link from "next/link"
 import { Card, CardContent } from "@/components/ui/card"
 import { Calendar } from "lucide-react"
 import { formatDate } from "@/lib/utils"
-import { urlForImage } from "@/lib/sanity.image"
 
 interface BlogCardProps {
   post: {
@@ -28,11 +27,7 @@ export function BlogCard({ post }: BlogCardProps) {
     <Card className="overflow-hidden group hover:shadow-lg transition-all duration-300 h-full flex flex-col">
       <div className="relative h-56 overflow-hidden">
         <Image
-          src={
-            post.mainImage
-              ? urlForImage(post.mainImage).url()
-              : "/placeholder.svg?height=400&width=600&query=medical+blog"
-          }
+          src="/placeholder.svg?height=400&width=600&query=medical+blog"
           alt={post.title}
           fill
           className="object-cover transition-transform duration-300 group-hover:scale-105"
