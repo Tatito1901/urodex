@@ -107,7 +107,7 @@ export function HeroSection() {
           }}
         >
           <source 
-            src="/images/Video_Quirúrgico_Urología_Moderna (1).mp4" 
+            src="/images/hero-video.mp4" 
             type="video/mp4" 
           />
           Tu navegador no soporta video HTML5.
