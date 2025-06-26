@@ -3,51 +3,27 @@
 import { useEffect, useState } from "react"
 import { ScrollProgressBar, CustomCursor } from "@/components/scroll-animations"
 import { QuienSoySection } from "@/components/quien-soy-section"
+import { TratamientosSection } from "@/components/tratamientos-section"
+import { ClinicasSection } from "@/components/clinicas-section"
+import { InstalacionesSection } from "@/components/instalaciones-section"
+import { FAQSection } from "@/components/faq-section"
+import { ContactoSection } from "@/components/contacto-section"
+import { Footer } from "@/components/footer"
 import { Header } from "@/components/header"
 import { Section } from "@/components/section"
 import { ResponsiveContainer } from "@/components/responsive-container"
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import {
-  Phone,
-  Mail,
-  MapPin,
-  Clock,
-  Award,
-  Facebook,
-  Instagram,
-  ArrowRight,
-  Shield,
-  Users,
-  MapPinned,
-  Calendar,
-  CheckCircle,
-  Star,
-  Stethoscope,
-  GraduationCap,
-  Play,
-  Pause,
-  Camera,
-  Building2,
-} from "lucide-react"
-import Link from "next/link"
+import { Phone, Shield, Star, MapPinned, Calendar, Play, Pause, Clock, ArrowRight, Award, Building2, Camera, CheckCircle, Facebook, Instagram, MapPin, Users } from "lucide-react"
 import Image from "next/image"
 import { ScrollAnimation, ParallaxEffect } from "@/components/scroll-animations"
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 import { HomeBlogSection } from "@/components/home-blog-section"
 import { GoogleMap } from "@/components/google-map"
-import {
-  CancerUrologicoSvg,
-  CalculosViaSvg,
-  EyaculacionPrecozSvg,
-  InfeccionViasSvg,
-  QuisteEpididimoSvg,
-  CircuncisionLaserSvg,
-  HiperplasiaSvg,
-  ItsSvg,
-} from "@/components/service-svgs"
+import Link from "next/dist/client/link"
+import { CancerUrologicoSvg, CalculosViaSvg, EyaculacionPrecozSvg, InfeccionViasSvg, QuisteEpididimoSvg, CircuncisionLaserSvg, HiperplasiaSvg, ItsSvg } from "@/components/service-svgs"
+import { Textarea } from "@/components/ui/textarea"
+import { Input } from "@/components/ui/input"
+import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@radix-ui/react-accordion"
 
 export default function Home() {
   const [activeSection, setActiveSection] = useState("inicio")
@@ -103,7 +79,7 @@ export default function Home() {
         if (!element) continue
 
         const rect = element.getBoundingClientRect()
-        if (rect.top <= 100 && rect.bottom >= 100) {
+        if (typeof rect.top === 'number' && typeof rect.bottom === 'number' && rect.top <= 100 && rect.bottom >= 100) {
           setActiveSection(section)
           break
         }
@@ -204,8 +180,9 @@ export default function Home() {
     window.open("https://api.whatsapp.com/send?phone=5215516942925", "_blank")
   }
 
-  const handleInputChange = (field: string, value: string) => {
-    setFormData(prev => ({ ...prev, [field]: value }))
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => { // Tipar los parámetros de los handlers onChange con React.ChangeEvent<HTMLInputElement>
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }))
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -301,68 +278,8 @@ export default function Home() {
 
         <QuienSoySection />
 
-        {/* Services Section */}
-        <Section id="servicios" background="gradient" spacing="xl" hasDivider={true} dividerType="curve">
-          <ResponsiveContainer>
-            <ScrollAnimation animation="fade-in-up">
-              <div className="text-center max-w-4xl mx-auto mb-16">
-                <div className="inline-flex items-center gap-2 bg-white/90 text-green-700 px-6 py-3 rounded-full text-sm font-medium mb-6 shadow-lg">
-                  <Stethoscope className="h-4 w-4" />
-                  Servicios Especializados
-                </div>
-                <h2 className="text-4xl lg:text-5xl xl:text-6xl font-bold text-white mb-6">
-                  Tratamientos Urológicos de Vanguardia
-                </h2>
-                <div className="w-32 h-1 bg-white mx-auto mb-6"></div>
-                <p className="text-xl lg:text-2xl text-white/95 leading-relaxed">
-                  Diagnóstico preciso y tratamientos innovadores con tecnología de última generación 
-                  para garantizar los mejores resultados y una recuperación óptima.
-                </p>
-              </div>
-            </ScrollAnimation>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-              {services.map((service, index) => (
-                <ScrollAnimation key={service.name} animation="fade-in-up" delay={index * 100}>
-                  <div className="group bg-white rounded-3xl p-6 shadow-xl hover:shadow-2xl transition-all duration-500 border-2 border-green-100 h-full flex flex-col">
-                    <div className="flex items-center gap-4 mb-6">
-                      <div className="bg-gradient-to-br from-green-100 to-green-50 p-4 rounded-2xl group-hover:scale-110 transition-transform duration-300 shadow-inner">
-                        {getServiceIcon(service.name, "h-8 w-8 text-green-700")}
-                      </div>
-                      <div className="flex-1">
-                        <h3 className="font-bold text-green-700 text-lg leading-tight">
-                          {service.name}
-                        </h3>
-                      </div>
-                    </div>
-
-                    <p className="text-gray-600 mb-6 leading-relaxed flex-grow text-sm">
-                      {service.description}
-                    </p>
-
-                    <div className="space-y-3 mb-6">
-                      {service.highlights.map((highlight, idx) => (
-                        <div key={idx} className="flex items-center gap-3">
-                          <CheckCircle className="h-4 w-4 text-green-600 flex-shrink-0" />
-                          <span className="text-sm text-gray-700 font-medium">{highlight}</span>
-                        </div>
-                      ))}
-                    </div>
-
-                    <Button
-                      onClick={openWhatsApp}
-                      variant="outline"
-                      className="w-full border-green-200 text-green-700 hover:bg-green-50 hover:border-green-300 transition-all duration-300 mt-auto rounded-full py-3"
-                    >
-                      Consultar Especialista
-                      <ArrowRight className="h-4 w-4 ml-2 group-hover:translate-x-1 transition-transform" />
-                    </Button>
-                  </div>
-                </ScrollAnimation>
-              ))}
-            </div>
-          </ResponsiveContainer>
-        </Section>
+        {/* Tratamientos Section */}
+        <TratamientosSection />
 
         {/* Specialized Clinics Section */}
         <Section id="clinicas" background="white" spacing="xl" hasDivider={true} dividerType="wave">
@@ -742,11 +659,12 @@ export default function Home() {
                               Nombre completo *
                             </label>
                             <Input 
-                              id="nombre" 
+                              id="nombre"
+                              name="nombre"
                               placeholder="Tu nombre completo" 
                               className="border-green-200 focus:border-green-500 focus:ring-green-500" 
                               value={formData.nombre}
-                              onChange={(e) => handleInputChange('nombre', e.target.value)}
+                              onChange={handleInputChange}
                               required 
                             />
                           </div>
@@ -755,11 +673,12 @@ export default function Home() {
                               Teléfono *
                             </label>
                             <Input 
-                              id="celular" 
+                              id="celular"
+                              name="celular"
                               placeholder="(55) 1234-5678" 
                               className="border-green-200 focus:border-green-500 focus:ring-green-500" 
                               value={formData.celular}
-                              onChange={(e) => handleInputChange('celular', e.target.value)}
+                              onChange={handleInputChange}
                               required 
                             />
                           </div>
@@ -771,11 +690,12 @@ export default function Home() {
                           </label>
                           <Input
                             id="correo"
+                            name="correo"
                             type="email"
                             placeholder="tu.email@ejemplo.com"
                             className="border-green-200 focus:border-green-500 focus:ring-green-500"
                             value={formData.correo}
-                            onChange={(e) => handleInputChange('correo', e.target.value)}
+                            onChange={handleInputChange}
                             required
                           />
                         </div>
@@ -784,7 +704,7 @@ export default function Home() {
                           <label htmlFor="diagnostico" className="block text-sm font-medium text-gray-700 mb-2">
                             ¿Cuenta con diagnóstico previo?
                           </label>
-                          <Select value={formData.diagnostico} onValueChange={(value) => handleInputChange('diagnostico', value)}>
+                          <Select name="diagnostico" value={formData.diagnostico} onValueChange={(value) => setFormData(prev => ({ ...prev, diagnostico: value }))}>
                             <SelectTrigger className="border-green-200 focus:border-green-500 focus:ring-green-500">
                               <SelectValue placeholder="Seleccione una opción" />
                             </SelectTrigger>
@@ -801,11 +721,12 @@ export default function Home() {
                             Comentarios
                           </label>
                           <Textarea 
-                            id="comentarios" 
+                            id="comentarios"
+                            name="comentarios"
                             placeholder="Describe brevemente tu motivo de consulta o síntomas..." 
                             className="border-green-200 focus:border-green-500 focus:ring-green-500 min-h-[100px]" 
                             value={formData.comentarios}
-                            onChange={(e) => handleInputChange('comentarios', e.target.value)}
+                            onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setFormData(prev => ({ ...prev, comentarios: e.target.value }))}
                           />
                         </div>
 
@@ -967,6 +888,10 @@ export default function Home() {
         {/* Blog Section */}
         <HomeBlogSection />
       </main>
+      <Footer />
+    </div>
+  )
+}
 
       {/* Footer */}
       <footer className="bg-gradient-to-r from-green-800 to-green-700 text-white">
@@ -980,24 +905,23 @@ export default function Home() {
                     alt="Urodex Logo"
                     width={48}
                     height={48}
-                    className="h-12 w-auto"
-                  />
+                    className="h-12 w-auto" />
                   <span className="text-3xl font-serif font-bold">URODEX</span>
                 </div>
                 <p className="text-green-100 leading-relaxed mb-6">
-                  Clínica especializada en urología y cirugía de próstata en Ciudad de México, 
+                  Clínica especializada en urología y cirugía de próstata en Ciudad de México,
                   comprometida con la excelencia médica y el cuidado personalizado.
                 </p>
                 <div className="flex space-x-4">
-                  <Link 
-                    href="https://www.facebook.com/drmariomartinezuro/" 
+                  <Link
+                    href="https://www.facebook.com/drmariomartinezuro/"
                     target="_blank"
                     className="text-white hover:text-green-200 transition-colors p-2 rounded-full hover:bg-green-600"
                   >
                     <Facebook className="h-5 w-5" />
                   </Link>
-                  <Link 
-                    href="https://www.instagram.com/urologo.mariothomas" 
+                  <Link
+                    href="https://www.instagram.com/urologo.mariothomas"
                     target="_blank"
                     className="text-white hover:text-green-200 transition-colors p-2 rounded-full hover:bg-green-600"
                   >
@@ -1076,7 +1000,6 @@ export default function Home() {
             </div>
           </ResponsiveContainer>
         </div>
-
         <div className="border-t border-green-600">
           <ResponsiveContainer>
             <div className="py-6 flex flex-col md:flex-row justify-between items-center gap-4">
@@ -1095,6 +1018,3 @@ export default function Home() {
           </ResponsiveContainer>
         </div>
       </footer>
-    </div>
-  )
-}

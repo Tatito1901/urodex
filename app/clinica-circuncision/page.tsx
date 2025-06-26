@@ -231,7 +231,7 @@ export default function ClinicaCircuncision() {
         </Section>
 
         {/* Treatments Section */}
-        <Section id="tratamientos" background="gray" spacing="xl" hasDivider={true} dividerType="curve">
+        <Section id="tratamientos" background="white" spacing="xl" hasDivider={true} dividerType="curve">
           <ResponsiveContainer>
             <ScrollAnimation animation="fade-in-up">
               <div className="text-center max-w-4xl mx-auto mb-16">

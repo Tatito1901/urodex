@@ -1,4 +1,5 @@
 import type { Config } from "tailwindcss"
+import colors from "tailwindcss/colors"
 
 const config = {
   darkMode: ["class"],
@@ -25,6 +26,11 @@ const config = {
         biosans: ["var(--font-biosans)"],
       },
       colors: {
+        // Accessible gray palette – ensure text meets WCAG contrast on white backgrounds
+        gray: {
+          ...colors.gray,
+          600: "#374151", // darker gray for 4.5:1 contrast ratio against white
+        },
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
