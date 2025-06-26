@@ -19,10 +19,36 @@ export function HeroSection() {
       setIsMobile(window.innerWidth < 768)
     }
     
-    checkMobile()
-    window.addEventListener('resize', checkMobile)
+    // Función para ajustar el tamaño del video
+    const adjustVideoSize = () => {
+      if (!videoRef.current) return;
+      
+      const videoAspectRatio = 16/9; // Relación estándar para la mayoría de videos
+      const windowWidth = window.innerWidth;
+      const windowHeight = window.innerHeight;
+      const windowAspectRatio = windowWidth / windowHeight;
+      
+      if (windowAspectRatio < videoAspectRatio) {
+        // La ventana es más alta que ancha en relación al video
+        videoRef.current.style.width = 'auto';
+        videoRef.current.style.height = '100%';
+      } else {
+        // La ventana es más ancha que alta en relación al video
+        videoRef.current.style.width = '100%';
+        videoRef.current.style.height = 'auto';
+      }
+    }
     
-    return () => window.removeEventListener('resize', checkMobile)
+    checkMobile()
+    adjustVideoSize()
+    
+    window.addEventListener('resize', checkMobile)
+    window.addEventListener('resize', adjustVideoSize)
+    
+    return () => {
+      window.removeEventListener('resize', checkMobile)
+      window.removeEventListener('resize', adjustVideoSize)
+    }
   }, [])
   
   // Manejar reproducción de video
@@ -68,13 +94,17 @@ export function HeroSection() {
       <div className="absolute inset-0 w-full h-full overflow-hidden">
         <video
           ref={videoRef}
-          className="absolute min-w-full min-h-full object-cover w-auto h-auto max-w-none"
+          className="absolute w-full h-full object-cover max-w-none"
           autoPlay
           muted
           loop
           playsInline
           poster="/images/CONSULTORIO_MARIO.png"
           preload="auto"
+          style={{ 
+            objectPosition: 'center center',
+            transform: 'scale(1.01)' // Evita bordes blancos durante animaciones
+          }}
         >
           <source 
             src="/images/Video_Quirúrgico_Urología_Moderna (1).mp4" 
@@ -84,12 +114,12 @@ export function HeroSection() {
         </video>
         
         {/* Overlay de gradiente profesional */}
-        <div className="absolute inset-0 bg-gradient-to-br from-emerald-900/85 via-teal-900/80 to-emerald-950/90"></div>
+        <div className="absolute inset-0 bg-gradient-to-br from-emerald-900/85 via-teal-900/80 to-emerald-950/90 z-10"></div>
         
         {/* Botón de control de video */}
         <button 
           onClick={togglePlay}
-          className="absolute bottom-4 right-4 md:bottom-6 md:right-6 z-40 bg-white/20 hover:bg-white/30 backdrop-blur-sm rounded-full p-3 border border-white/30 transition-all duration-300 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-white/50"
+          className="absolute bottom-4 right-4 md:bottom-6 md:right-6 z-40 bg-white/20 hover:bg-white/30 backdrop-blur-sm rounded-full p-3 border border-white/30 transition-all duration-300 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-white/50 shadow-lg"
           aria-label={isPlaying ? "Pausar video" : "Reproducir video"}
         >
           {isPlaying ? (
