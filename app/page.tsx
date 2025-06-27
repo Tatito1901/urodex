@@ -6,6 +6,7 @@ import { QuienSoySection } from "@/components/quien-soy-section"
 import { TratamientosSection } from "@/components/tratamientos-section"
 import { ContactSection } from "@/components/contact-section"
 import { Header } from "@/components/header"
+import { Footer } from "@/components/footer"
 import { ResponsiveContainer } from "@/components/responsive-container"
 import { Button } from "@/components/ui/button"
 import { Phone, Shield, Star, Calendar, ArrowRight, Award, Building2, Camera, CheckCircle, Facebook, Instagram, MapPin, Users, Clock } from "lucide-react"
@@ -502,138 +503,7 @@ export default function Home() {
         <HomeBlogSection />
       </main>
 
-      {/* Footer - Gradiente elegante y profesional */}
-      <footer className="bg-gradient-to-br from-slate-800 via-emerald-900 to-slate-900 text-white relative overflow-hidden">
-        {/* Elementos decorativos de fondo */}
-        <div className="absolute inset-0 opacity-10">
-          <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-emerald-400/30 rounded-full blur-3xl"></div>
-          <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-teal-400/30 rounded-full blur-3xl"></div>
-        </div>
-        
-        <div className="py-20 relative z-10">
-          <ResponsiveContainer>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 lg:gap-12">
-              <div className="lg:col-span-1">
-                <div className="flex items-center gap-4 mb-8">
-                  <Image
-                    src="/images/urodex-logo-white.png"
-                    alt="Urodex Logo"
-                    width={56}
-                    height={56}
-                    className="h-14 w-auto" />
-                  <span className="text-4xl font-serif font-bold">URODEX</span>
-                </div>
-                <p className="text-white/80 leading-relaxed mb-8 text-lg">
-                  Clínica especializada en urología y cirugía de próstata en Ciudad de México,
-                  comprometida con la excelencia médica y el cuidado personalizado.
-                </p>
-                <div className="flex space-x-4">
-                  <Link
-                    href="https://www.facebook.com/drmariomartinezuro/"
-                    target="_blank"
-                    className="text-white/80 hover:text-white transition-all duration-300 p-3 rounded-2xl hover:bg-emerald-600/20 transform hover:scale-110"
-                  >
-                    <Facebook className="h-6 w-6" />
-                  </Link>
-                  <Link
-                    href="https://www.instagram.com/urologo.mariothomas"
-                    target="_blank"
-                    className="text-white/80 hover:text-white transition-all duration-300 p-3 rounded-2xl hover:bg-emerald-600/20 transform hover:scale-110"
-                  >
-                    <Instagram className="h-6 w-6" />
-                  </Link>
-                </div>
-              </div>
-
-              <div>
-                <h3 className="font-bold text-2xl mb-8 text-white">Navegación</h3>
-                <ul className="space-y-4">
-                  {[
-                    { href: "#inicio", label: "Inicio" },
-                    { href: "#sobre-mi", label: "Dr. Mario Martínez" },
-                    { href: "#servicios", label: "Servicios" },
-                    { href: "#clinicas", label: "Clínicas" },
-                    { href: "#contacto", label: "Contacto" },
-                  ].map((link) => (
-                    <li key={link.href}>
-                      <Link
-                        href={link.href}
-                        className="text-white/70 hover:text-white transition-all duration-300 hover:translate-x-2 inline-block text-lg"
-                      >
-                        {link.label}
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-
-              <div>
-                <h3 className="font-bold text-2xl mb-8 text-white">Especialidades</h3>
-                <ul className="space-y-4">
-                  {[
-                    "Cirugía de Próstata",
-                    "Tratamiento de VPH",
-                    "Circuncisión Láser",
-                    "Cálculos Renales",
-                    "Cáncer Urológico",
-                  ].map((service) => (
-                    <li key={service}>
-                      <span className="text-white/70 hover:text-white transition-colors cursor-pointer text-lg">
-                        {service}
-                      </span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-
-              <div>
-                <h3 className="font-bold text-2xl mb-8 text-white">Contacto</h3>
-                <div className="space-y-6">
-                  <div className="flex items-start gap-4">
-                    <Phone className="h-6 w-6 text-emerald-300 mt-1 flex-shrink-0" />
-                    <div>
-                      <p className="text-white font-semibold text-lg">(55) 1694 2925</p>
-                      <p className="text-white/70">WhatsApp 24/7</p>
-                    </div>
-                  </div>
-                  <div className="flex items-start gap-4">
-                    <MapPin className="h-6 w-6 text-emerald-300 mt-1 flex-shrink-0" />
-                    <div>
-                      <p className="text-white font-semibold text-lg">Polanco, Satélite & INTERMED</p>
-                      <p className="text-white/70">Ciudad de México</p>
-                    </div>
-                  </div>
-                  <div className="flex items-start gap-4">
-                    <Clock className="h-6 w-6 text-emerald-300 mt-1 flex-shrink-0" />
-                    <div>
-                      <p className="text-white font-semibold text-lg">Lun - Vie: 9:00 - 19:00</p>
-                      <p className="text-white/70">Sáb: 9:00 - 14:00</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </ResponsiveContainer>
-        </div>
-        
-        <div className="border-t border-white/20 relative z-10">
-          <ResponsiveContainer>
-            <div className="py-8 flex flex-col md:flex-row justify-between items-center gap-6">
-              <p className="text-white/70 text-center md:text-left text-lg">
-                © {new Date().getFullYear()} Urodex - Dr. Mario Martínez Thomas. Todos los derechos reservados.
-              </p>
-              <div className="flex items-center gap-8 text-white/70">
-                <Link href="/privacidad" className="hover:text-white transition-colors text-lg">
-                  Política de Privacidad
-                </Link>
-                <Link href="/terminos" className="hover:text-white transition-colors text-lg">
-                  Términos y Condiciones
-                </Link>
-              </div>
-            </div>
-          </ResponsiveContainer>
-        </div>
-      </footer>
+      <Footer />
     </div>
   )
 }

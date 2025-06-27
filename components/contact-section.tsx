@@ -1,20 +1,21 @@
 "use client";
 
-import { useState } from "react";
+import React, { useState, useCallback, useMemo } from "react";
+import dynamic from "next/dynamic";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import {
   Select,
-  SelectContent,
-  SelectItem,
   SelectTrigger,
   SelectValue,
+  SelectContent,
+  SelectItem,
 } from "@/components/ui/select";
 import { ResponsiveContainer } from "@/components/responsive-container";
+import { Section } from "@/components/section";
 import { ScrollAnimation } from "@/components/scroll-animations";
-import { GoogleMap } from "@/components/google-map";
 import {
   Phone,
   Clock,
@@ -28,6 +29,14 @@ import {
   ArrowRight,
 } from "lucide-react";
 
+const GoogleMap = dynamic(
+  () =>
+    import("@/components/google-map").then((mod) => mod.GoogleMap),
+  { ssr: false }
+);
+
+type LocationKey = "polanco" | "satelite" | "intermed";
+
 interface Location {
   name: string;
   address: string;
@@ -37,23 +46,14 @@ interface Location {
   features: string[];
 }
 
-type LocationKey = "polanco" | "satelite" | "intermed";
-
-interface ContactFormData {
-  nombre: string;
-  correo: string;
-  celular: string;
-  diagnostico: string;
-  comentarios: string;
-}
-
-const locations: Record<LocationKey, Location> = {
+const LOCATIONS: Record<LocationKey, Location> = {
   polanco: {
     name: "Polanco",
     address: "Temístocles 210, Polanco, Ciudad de México",
     schedule: { weekdays: "9:00 AM - 7:00 PM", saturday: "9:00 AM - 2:00 PM" },
     phone: "(55) 1694 2925",
-    mapUrl: "https://maps.app.goo.gl/YFminzdq8uixrNxB9?g_st=com.google.maps.preview.copy",
+    mapUrl:
+      "https://maps.app.goo.gl/YFminzdq8uixrNxB9?g_st=com.google.maps.preview.copy",
     features: ["Estacionamiento disponible", "Acceso fácil", "Zona segura"],
   },
   satelite: {
@@ -63,7 +63,11 @@ const locations: Record<LocationKey, Location> = {
     schedule: { weekdays: "9:00 AM - 7:00 PM", saturday: "9:00 AM - 2:00 PM" },
     phone: "(55) 1694 2925",
     mapUrl: "https://maps.app.goo.gl/Yx5Yx5Yx5Yx5Yx5Y6",
-    features: ["Centro comercial", "Múltiples accesos", "Estacionamiento gratuito"],
+    features: [
+      "Centro comercial",
+      "Múltiples accesos",
+      "Estacionamiento gratuito",
+    ],
   },
   intermed: {
     name: "INTERMED",
@@ -72,105 +76,123 @@ const locations: Record<LocationKey, Location> = {
     schedule: { weekdays: "9:00 AM - 7:00 PM", saturday: "9:00 AM - 2:00 PM" },
     phone: "(55) 5739 3939",
     mapUrl: "https://maps.app.goo.gl/IntermedLocation",
-    features: ["Hospital certificado", "Equipos especializados", "Atención integral"],
+    features: [
+      "Hospital certificado",
+      "Equipos especializados",
+      "Atención integral",
+    ],
   },
 };
 
-export function ContactSection({ className = "" }: { className?: string }) {
-  const [selectedLocation, setSelectedLocation] =
-    useState<LocationKey>("polanco");
-  const [formData, setFormData] = useState<ContactFormData>({
-    nombre: "",
-    correo: "",
-    celular: "",
-    diagnostico: "",
-    comentarios: "",
-  });
+interface ContactFormData {
+  nombre: string;
+  correo: string;
+  celular: string;
+  diagnostico: string;
+  comentarios: string;
+}
 
-  const currentLocation = locations[selectedLocation];
+const INITIAL_FORM: ContactFormData = {
+  nombre: "",
+  correo: "",
+  celular: "",
+  diagnostico: "",
+  comentarios: "",
+};
 
-  const openWhatsApp = () => {
-    const message =
-      "Hola Dr. Mario, vi su página web y me interesa más información sobre sus servicios urológicos";
-    const encodedMessage = encodeURIComponent(message);
-    window.open(
-      `https://api.whatsapp.com/send?phone=5215516942925&text=${encodedMessage}`,
-      "_blank"
+export const ContactSection: React.FC<{ className?: string }> = React.memo(
+  ({ className = "" }) => {
+    const [selectedLocation, setSelectedLocation] =
+      useState<LocationKey>("polanco");
+    const [formData, setFormData] =
+      useState<ContactFormData>(INITIAL_FORM);
+
+    const currentLocation = useMemo(
+      () => LOCATIONS[selectedLocation],
+      [selectedLocation]
     );
-  };
 
-  const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLTextAreaElement>
-  ) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
+    const openWhatsApp = useCallback(() => {
+      const msg =
+        "Hola Dr. Mario, vi su página web y me interesa más información sobre sus servicios urológicos";
+      window.open(
+        `https://api.whatsapp.com/send?phone=5215516942925&text=${encodeURIComponent(
+          msg
+        )}`,
+        "_blank"
+      );
+    }, []);
 
-  const handleSelectChange = (value: string) => {
-    setFormData((prev) => ({ ...prev, diagnostico: value }));
-  };
+    const handleInputChange = useCallback(
+      (
+        e:
+          | React.ChangeEvent<HTMLInputElement>
+          | React.ChangeEvent<HTMLTextAreaElement>
+      ) => {
+        const { name, value } = e.target;
+        setFormData((prev) => ({ ...prev, [name]: value }));
+      },
+      []
+    );
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    try {
-      const response = await fetch("/api/mailchimp", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
-      });
-      if (!response.ok) throw new Error("Error al enviar el formulario");
-      alert("¡Gracias! Nos pondremos en contacto contigo muy pronto.");
-      setFormData({
-        nombre: "",
-        correo: "",
-        celular: "",
-        diagnostico: "",
-        comentarios: "",
-      });
-    } catch (error) {
-      console.error("Error:", error);
-      openWhatsApp();
-    }
-  };
+    const handleSelectChange = useCallback((val: string) => {
+      setFormData((prev) => ({ ...prev, diagnostico: val }));
+    }, []);
 
-  return (
-    <div className={className}>
-      {/* Sección de Contacto */}
-      <section
+    const handleSubmit = useCallback(
+      async (e: React.FormEvent) => {
+        e.preventDefault();
+        try {
+          const res = await fetch("/api/mailchimp", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(formData),
+          });
+          if (!res.ok) throw new Error("Error al enviar formulario");
+          alert(
+            "¡Gracias! Nos pondremos en contacto contigo muy pronto."
+          );
+          setFormData(INITIAL_FORM);
+        } catch {
+          openWhatsApp();
+        }
+      },
+      [formData, openWhatsApp]
+    );
+
+    return (
+      <Section
         id="contacto"
-        className="relative py-12 sm:py-16 lg:py-20 bg-gradient-to-br from-slate-50 via-white to-emerald-50/30 overflow-hidden"
+        background="white"
+        spacing="xl"
+        className={className}
       >
-        <div className="absolute inset-0 opacity-15">
-          <div className="absolute top-1/4 left-1/4 w-72 h-72 bg-emerald-300/30 rounded-full blur-3xl" />
-          <div className="absolute bottom-1/4 right-1/4 w-72 h-72 bg-teal-300/30 rounded-full blur-3xl" />
-        </div>
-
-        <ResponsiveContainer className="relative z-10">
-          {/* Encabezado */}
+        <ResponsiveContainer>
+          {/* Header */}
           <ScrollAnimation animation="fade-in-up">
             <div className="text-center max-w-4xl mx-auto mb-10 px-4">
               <div className="inline-flex items-center gap-2 bg-gradient-to-r from-emerald-100 to-teal-100 text-emerald-700 px-4 py-2 rounded-full text-sm font-semibold shadow-md mb-4">
                 <Phone className="h-4 w-4" /> Agenda tu Cita
               </div>
-              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold bg-gradient-to-r from-emerald-800 via-slate-700 to-emerald-700 bg-clip-text text-transparent mb-4 leading-tight">
+              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-emerald-800 via-slate-700 to-emerald-700 mb-4 leading-tight">
                 Contacto y Ubicaciones
               </h2>
-              <div className="w-20 h-1 bg-gradient-to-r from-emerald-600 via-teal-500 to-emerald-500 mx-auto mb-4 rounded-full" />
+              <div className="w-20 h-1 bg-gradient-to-r from-emerald-600 to-teal-500 mx-auto mb-4 rounded-full" />
               <p className="text-lg text-slate-600 font-light">
-                Agenda tu cita de valoración con el Dr. Mario Martínez en cualquiera de
-                nuestras ubicaciones.
+                Agenda tu cita de valoración con el Dr. Mario Martínez en
+                cualquiera de nuestras ubicaciones.
               </p>
             </div>
           </ScrollAnimation>
 
-          {/* Tarjeta principal */}
+          {/* Main Card */}
           <ScrollAnimation animation="fade-in-up" delay={100}>
-            <div className="bg-gradient-to-br from-white via-emerald-50/30 to-white rounded-2xl shadow-xl overflow-hidden border border-emerald-100/50 max-w-7xl mx-auto">
-              {/* Imagen Hero */}
+            <div className="max-w-7xl mx-auto bg-gradient-to-br from-white via-emerald-50/30 to-white rounded-2xl shadow-xl overflow-hidden border border-emerald-100/50">
+              {/* Hero Image */}
               <div className="relative h-48 md:h-64 lg:h-80">
                 <Image
                   src="/images/clinic-background.png"
-                  alt="Clínica Urodex - Instalaciones modernas"
+                  alt="Instalaciones modernas"
                   fill
                   className="object-cover"
                 />
@@ -185,26 +207,26 @@ export function ContactSection({ className = "" }: { className?: string }) {
                       Tu Salud Urológica es Nuestra Prioridad
                     </h3>
                     <p className="text-lg md:text-xl font-light opacity-90 mb-6">
-                      Contáctanos para agendar tu cita y recibir atención médica
+                      Contáctanos para agendar tu cita y recibir atención
                       especializada.
                     </p>
-                    <div className="flex items-center justify-center gap-6 text-sm">
+                    <div className="flex justify-center gap-6 text-sm">
                       <div className="inline-flex items-center gap-2">
-                        <Star className="h-4 w-4 text-yellow-300" /> 15+ años de
-                        experiencia
+                        <Star className="h-4 w-4 text-yellow-300" /> 15+
+                        años de experiencia
                       </div>
                       <div className="inline-flex items-center gap-2">
-                        <CheckCircle className="h-4 w-4 text-emerald-300" /> Tecnología
-                        de vanguardia
+                        <CheckCircle className="h-4 w-4 text-emerald-300" />{" "}
+                        Tecnología de vanguardia
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
 
-              {/* Contenido */}
+              {/* Content Grid */}
               <div className="p-6 md:p-8 lg:p-10 grid grid-cols-1 xl:grid-cols-3 gap-8">
-                {/* Formulario */}
+                {/* Form */}
                 <div className="xl:col-span-2">
                   <div className="bg-gradient-to-br from-white to-emerald-50/30 rounded-2xl p-6 md:p-8 border border-emerald-100/50 shadow-md">
                     <div className="flex items-center gap-3 mb-6">
@@ -212,7 +234,7 @@ export function ContactSection({ className = "" }: { className?: string }) {
                         <Calendar className="h-6 w-6 text-emerald-700" />
                       </div>
                       <div>
-                        <h4 className="text-2xl font-bold bg-gradient-to-r from-emerald-800 to-slate-700 bg-clip-text text-transparent">
+                        <h4 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-emerald-800 to-slate-700">
                           Solicita tu Cita
                         </h4>
                         <p className="text-slate-600">
@@ -220,7 +242,11 @@ export function ContactSection({ className = "" }: { className?: string }) {
                         </p>
                       </div>
                     </div>
-                    <form onSubmit={handleSubmit} className="space-y-5">
+                    <form
+                      onSubmit={handleSubmit}
+                      className="space-y-5"
+                      noValidate
+                    >
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                           <label
@@ -232,10 +258,10 @@ export function ContactSection({ className = "" }: { className?: string }) {
                           <Input
                             id="nombre"
                             name="nombre"
-                            placeholder="Tu nombre completo"
-                            className="border-emerald-200 focus:border-emerald-500 focus:ring-emerald-500 rounded-lg h-12"
                             value={formData.nombre}
                             onChange={handleInputChange}
+                            placeholder="Tu nombre completo"
+                            className="h-12 rounded-lg border-emerald-200 focus:ring-emerald-500 focus:border-emerald-500"
                             required
                           />
                         </div>
@@ -249,10 +275,10 @@ export function ContactSection({ className = "" }: { className?: string }) {
                           <Input
                             id="celular"
                             name="celular"
-                            placeholder="(55) 1234-5678"
-                            className="border-emerald-200 focus:border-emerald-500 focus:ring-emerald-500 rounded-lg h-12"
                             value={formData.celular}
                             onChange={handleInputChange}
+                            placeholder="(55) 1234-5678"
+                            className="h-12 rounded-lg border-emerald-200 focus:ring-emerald-500 focus:border-emerald-500"
                             required
                           />
                         </div>
@@ -268,10 +294,10 @@ export function ContactSection({ className = "" }: { className?: string }) {
                           id="correo"
                           name="correo"
                           type="email"
-                          placeholder="tu.email@ejemplo.com"
-                          className="border-emerald-200 focus:border-emerald-500 focus:ring-emerald-500 rounded-lg h-12"
                           value={formData.correo}
                           onChange={handleInputChange}
+                          placeholder="tu.email@ejemplo.com"
+                          className="h-12 rounded-lg border-emerald-200 focus:ring-emerald-500 focus:border-emerald-500"
                           required
                         />
                       </div>
@@ -287,12 +313,16 @@ export function ContactSection({ className = "" }: { className?: string }) {
                           value={formData.diagnostico}
                           onValueChange={handleSelectChange}
                         >
-                          <SelectTrigger className="border-emerald-200 focus:border-emerald-500 focus:ring-emerald-500 rounded-lg h-12">
+                          <SelectTrigger className="h-12 rounded-lg border-emerald-200 focus:ring-emerald-500 focus:border-emerald-500">
                             <SelectValue placeholder="Seleccione una opción" />
                           </SelectTrigger>
                           <SelectContent>
-                            <SelectItem value="si">Sí, tengo diagnóstico</SelectItem>
-                            <SelectItem value="no">No, es primera consulta</SelectItem>
+                            <SelectItem value="si">
+                              Sí, tengo diagnóstico
+                            </SelectItem>
+                            <SelectItem value="no">
+                              No, es primera consulta
+                            </SelectItem>
                             <SelectItem value="revision">
                               Busco segunda opinión
                             </SelectItem>
@@ -309,51 +339,57 @@ export function ContactSection({ className = "" }: { className?: string }) {
                         <Textarea
                           id="comentarios"
                           name="comentarios"
-                          placeholder="Describe brevemente tu motivo de consulta..."
-                          className="border-emerald-200 focus:border-emerald-500 focus:ring-emerald-500 min-h-[120px] rounded-lg"
                           value={formData.comentarios}
                           onChange={handleInputChange}
+                          placeholder="Motivo de consulta..."
+                          className="min-h-[120px] rounded-lg border-emerald-200 focus:ring-emerald-500 focus:border-emerald-500"
                         />
                       </div>
                       <div className="flex flex-col sm:flex-row gap-4 pt-4">
                         <Button
                           type="submit"
-                          className="flex-1 bg-gradient-to-r from-emerald-700 via-emerald-600 to-teal-600 hover:from-emerald-600 hover:via-emerald-500 hover:to-teal-500 text-white py-4 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-[1.02]"
+                          className="flex-1 bg-gradient-to-r from-emerald-700 via-emerald-600 to-teal-600 hover:from-emerald-600 hover:via-emerald-500 hover:to-teal-500 text-white py-4 rounded-xl font-semibold shadow-lg transition-transform transform hover:scale-105 duration-300"
                         >
-                          <Calendar className="h-5 w-5 mr-2" /> Enviar Solicitud
+                          <Calendar className="h-5 w-5 mr-2" />
+                          Enviar Solicitud
                         </Button>
                         <Button
                           type="button"
                           variant="outline"
                           onClick={openWhatsApp}
-                          className="flex-1 border-emerald-300 text-emerald-700 hover:bg-emerald-50 py-4 rounded-xl font-semibold transition-all duration-300"
+                          className="flex-1 border-emerald-300 text-emerald-700 hover:bg-emerald-50 py-4 rounded-xl font-semibold transition-transform transform hover:scale-105 duration-300"
                         >
-                          <Phone className="h-5 w-5 mr-2" /> WhatsApp Directo
+                          <Phone className="h-5 w-5 mr-2" />
+                          WhatsApp Directo
                         </Button>
                       </div>
                     </form>
                   </div>
                 </div>
 
-                {/* Información de Ubicaciones */}
+                {/* Locations Info */}
                 <div className="xl:col-span-1 space-y-6">
                   <div className="bg-gradient-to-br from-white to-emerald-50/30 rounded-2xl p-6 border border-emerald-100/50 shadow-md">
                     <div className="flex items-center gap-3 mb-4">
                       <div className="bg-gradient-to-br from-emerald-100 to-teal-100 p-3 rounded-xl">
                         <Building2 className="h-6 w-6 text-emerald-700" />
                       </div>
-                      <h4 className="text-xl font-bold bg-gradient-to-r from-emerald-800 to-slate-700 bg-clip-text text-transparent">
+                      <h4 className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-emerald-800 to-slate-700">
                         Nuestras Ubicaciones
                       </h4>
                     </div>
                     <div className="space-y-3 mb-6">
-                      {Object.entries(locations).map(([key, loc]) => (
+                      {Object.entries(LOCATIONS).map(([key, loc]) => (
                         <Button
                           key={key}
                           type="button"
-                          variant={selectedLocation === key ? "default" : "outline"}
-                          className="w-full py-4 rounded-xl transition-all duration-300 font-medium"
-                          onClick={() => setSelectedLocation(key as LocationKey)}
+                          variant={
+                            selectedLocation === key ? "default" : "outline"
+                          }
+                          className="w-full py-4 rounded-xl transition-all duration-200"
+                          onClick={() =>
+                            setSelectedLocation(key as LocationKey)
+                          }
                         >
                           <MapPinned className="h-4 w-4 mr-2" />
                           {loc.name}
@@ -361,8 +397,8 @@ export function ContactSection({ className = "" }: { className?: string }) {
                       ))}
                     </div>
 
-                    {/* Datos de la ubicación seleccionada */}
                     <div className="space-y-4">
+                      {/* Address & Features */}
                       <div className="bg-white rounded-xl p-5 border border-emerald-100 shadow-sm">
                         <div className="flex items-start gap-4">
                           <div className="bg-gradient-to-br from-emerald-100 to-teal-100 p-3 rounded-xl">
@@ -372,16 +408,16 @@ export function ContactSection({ className = "" }: { className?: string }) {
                             <h5 className="font-bold text-slate-900 mb-2">
                               {currentLocation.name}
                             </h5>
-                            <p className="text-slate-600 mb-3 leading-relaxed">
+                            <p className="text-slate-600 mb-3">
                               {currentLocation.address}
                             </p>
                             <div className="flex flex-wrap gap-2 mb-3">
-                              {currentLocation.features.map((feat, i) => (
+                              {currentLocation.features.map((f, i) => (
                                 <span
                                   key={i}
                                   className="bg-emerald-50 text-emerald-700 px-2 py-1 rounded-lg text-xs font-medium"
                                 >
-                                  {feat}
+                                  {f}
                                 </span>
                               ))}
                             </div>
@@ -389,59 +425,72 @@ export function ContactSection({ className = "" }: { className?: string }) {
                               variant="ghost"
                               size="sm"
                               className="text-emerald-700 hover:text-emerald-800 p-0 h-auto font-medium"
-                              onClick={() => window.open(currentLocation.mapUrl, "_blank")}
+                              onClick={() =>
+                                window.open(
+                                  currentLocation.mapUrl,
+                                  "_blank"
+                                )
+                              }
                             >
-                              Ver en Google Maps <ArrowRight className="h-3 w-3 ml-1" />
+                              Ver en Google Maps{" "}
+                              <ArrowRight className="h-3 w-3 ml-1" />
                             </Button>
                           </div>
                         </div>
                       </div>
 
+                      {/* Schedule */}
                       <div className="grid grid-cols-1 gap-3">
-                        <div className="bg-white rounded-xl p-4 border border-emerald-100 shadow-sm">
-                          <div className="flex items-center gap-3 mb-2">
-                            <Clock className="h-4 w-4 text-emerald-700" />
-                            <span className="font-bold text-slate-900">
-                              Lunes - Viernes
-                            </span>
+                        {[
+                          {
+                            label: "Lunes - Viernes",
+                            icon: Clock,
+                            value: currentLocation.schedule.weekdays,
+                          },
+                          {
+                            label: "Sábados",
+                            icon: Clock,
+                            value: currentLocation.schedule.saturday,
+                          },
+                        ].map((item, idx) => (
+                          <div
+                            key={idx}
+                            className="bg-white rounded-xl p-4 border border-emerald-100 shadow-sm flex items-center gap-3"
+                          >
+                            <item.icon className="h-4 w-4 text-emerald-700" />
+                            <div>
+                              <p className="font-bold text-slate-900">
+                                {item.label}
+                              </p>
+                              <p className="text-slate-600 font-medium">
+                                {item.value}
+                              </p>
+                            </div>
                           </div>
-                          <p className="text-slate-600 font-medium">
-                            {currentLocation.schedule.weekdays}
-                          </p>
-                        </div>
-                        <div className="bg-white rounded-xl p-4 border border-emerald-100 shadow-sm">
-                          <div className="flex items-center gap-3 mb-2">
-                            <Clock className="h-4 w-4 text-emerald-700" />
-                            <span className="font-bold text-slate-900">Sábados</span>
-                          </div>
-                          <p className="text-slate-600 font-medium">
-                            {currentLocation.schedule.saturday}
-                          </p>
-                        </div>
+                        ))}
                       </div>
 
-                      <div className="bg-white rounded-xl p-5 border border-emerald-100 shadow-sm">
-                        <div className="flex items-center gap-4">
-                          <div className="bg-gradient-to-br from-emerald-100 to-teal-100 p-3 rounded-xl">
-                            <Phone className="h-5 w-5 text-emerald-700" />
-                          </div>
-                          <div>
-                            <h5 className="font-bold text-slate-900 mb-1">
-                              Contacto Directo
-                            </h5>
-                            <p className="text-slate-600 font-medium mb-1">
-                              {currentLocation.phone}
-                            </p>
-                            <p className="text-slate-500 text-sm">
-                              WhatsApp disponible 24/7
-                            </p>
-                          </div>
+                      {/* Phone */}
+                      <div className="bg-white rounded-xl p-5 border border-emerald-100 shadow-sm flex items-center gap-4">
+                        <div className="bg-gradient-to-br from-emerald-100 to-teal-100 p-3 rounded-xl">
+                          <Phone className="h-5 w-5 text-emerald-700" />
+                        </div>
+                        <div>
+                          <h5 className="font-bold text-slate-900 mb-1">
+                            Contacto Directo
+                          </h5>
+                          <p className="text-slate-600 font-medium mb-1">
+                            {currentLocation.phone}
+                          </p>
+                          <p className="text-slate-500 text-sm">
+                            WhatsApp disponible 24/7
+                          </p>
                         </div>
                       </div>
                     </div>
                   </div>
 
-                  {/* Urgencias */}
+                  {/* Emergencias */}
                   <div className="bg-gradient-to-r from-emerald-600 to-teal-600 rounded-2xl p-6 text-white shadow-lg">
                     <div className="text-center">
                       <div className="bg-white/20 p-4 rounded-xl w-fit mx-auto mb-4">
@@ -451,14 +500,15 @@ export function ContactSection({ className = "" }: { className?: string }) {
                         ¿Necesitas atención urgente?
                       </h5>
                       <p className="text-white/90 mb-4">
-                        Contáctanos inmediatamente por WhatsApp para consultas urgentes
-                        o emergencias urológicas.
+                        Contáctanos inmediatamente por WhatsApp para consultas
+                        urgentes o emergencias urológicas.
                       </p>
                       <Button
                         onClick={openWhatsApp}
-                        className="bg-white text-emerald-700 hover:bg-emerald-50 px-6 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
+                        className="bg-white text-emerald-700 hover:bg-emerald-50 px-6 py-3 rounded-xl font-semibold shadow-lg transition-transform transform hover:scale-105 duration-300"
                       >
-                        <Phone className="h-5 w-5 mr-2" /> Contactar Ahora
+                        <Phone className="h-5 w-5 mr-2" />
+                        Contactar Ahora
                       </Button>
                     </div>
                   </div>
@@ -467,37 +517,36 @@ export function ContactSection({ className = "" }: { className?: string }) {
             </div>
           </ScrollAnimation>
         </ResponsiveContainer>
-      </section>
 
-      {/* Sección de Mapa */}
-      <section className="relative py-8 sm:py-12 bg-gradient-to-br from-slate-100 via-emerald-50/50 to-slate-100">
+        {/* Map Section */}
         <ResponsiveContainer>
           <ScrollAnimation animation="fade-in-up">
-            <div className="bg-white rounded-2xl p-2 sm:p-3 shadow-lg">
+            <div className="bg-white rounded-2xl p-2 sm:p-3 shadow-lg mt-8">
               <div className="relative h-80 md:h-96 rounded-xl overflow-hidden">
                 <GoogleMap address={currentLocation.address} />
                 <div className="absolute top-4 right-4 bg-white/95 backdrop-blur-sm p-4 rounded-xl shadow-lg border border-emerald-100">
-                  <div className="text-center">
-                    <h5 className="font-bold text-emerald-700 mb-2">
-                      {currentLocation.name}
-                    </h5>
-                    <p className="text-slate-600 text-sm mb-3">
-                      Fácil acceso y estacionamiento.
-                    </p>
-                    <Button
-                      size="sm"
-                      onClick={() => window.open(currentLocation.mapUrl, "_blank")}
-                      className="bg-gradient-to-r from-emerald-700 to-teal-600 text-white px-4 py-2 rounded-lg font-medium text-sm"
-                    >
-                      <MapPin className="h-3 w-3 mr-1" /> Cómo llegar
-                    </Button>
-                  </div>
+                  <h5 className="font-bold text-emerald-700 mb-2">
+                    {currentLocation.name}
+                  </h5>
+                  <p className="text-slate-600 text-sm mb-3">
+                    Fácil acceso y estacionamiento.
+                  </p>
+                  <Button
+                    size="sm"
+                    onClick={() =>
+                      window.open(currentLocation.mapUrl, "_blank")
+                    }
+                    className="bg-gradient-to-r from-emerald-700 to-teal-600 text-white px-4 py-2 rounded-lg font-medium text-sm"
+                  >
+                    <MapPin className="h-3 w-3 mr-1" /> Cómo llegar
+                  </Button>
                 </div>
               </div>
             </div>
           </ScrollAnimation>
         </ResponsiveContainer>
-      </section>
-    </div>
-  );
-}
+      </Section>
+    );
+  }
+);
+ContactSection.displayName = "ContactSection";

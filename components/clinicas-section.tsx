@@ -1,112 +1,189 @@
-"use client"
+"use client";
 
-import Link from "next/link"
-import { ArrowRight, Award, CheckCircle, Shield, Users } from "lucide-react"
-import { ScrollAnimation } from "./scroll-animations"
-import { ResponsiveContainer } from "./responsive-container"
-import { Section } from "./section"
-import { Button } from "./ui/button"
+import React, { memo } from "react";
+import Link from "next/link";
+import { ArrowRight, Award, CheckCircle, Shield, Users } from "lucide-react";
+import { LazyMotion, domAnimation, m, Variants } from "framer-motion";
+import { ResponsiveContainer } from "./responsive-container";
+import { Section } from "./section";
+import { Button } from "./ui/button";
 
-// Clínicas data
-interface Clinica {
-  id: string
-  name: string
-  description: string
-  features: string[]
-  icon: React.ComponentType<React.SVGProps<SVGSVGElement>>
-  link: string
+// === Interfaces ===
+interface Clinic {
+  id: string;
+  name: string;
+  description: string;
+  features: string[];
+  icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
+  link: string;
 }
 
-const clinicas: Clinica[] = [
+// === Datos de Clínicas ===
+const clinics: Clinic[] = [
   {
     id: "prostata",
     name: "Clínica de Cirugía de Próstata",
-    description: "Centro especializado en el diagnóstico y tratamiento integral de enfermedades prostáticas con técnicas láser de última generación y cirugía mínimamente invasiva.",
+    description:
+      "Centro especializado en el diagnóstico y tratamiento integral de enfermedades prostáticas con técnicas láser de última generación y cirugía mínimamente invasiva.",
     features: ["Enucleación con Láser", "Resección Transuretral (RTU)", "Biopsia de Próstata Guiada"],
     icon: Award,
-    link: "/clinica-prostata"
+    link: "/clinica-prostata",
   },
   {
     id: "vph",
     name: "Clínica de VPH",
-    description: "Diagnóstico temprano y tratamiento especializado del Virus del Papiloma Humano con tecnología de última generación en un ambiente confidencial y profesional.",
+    description:
+      "Diagnóstico temprano y tratamiento especializado del Virus del Papiloma Humano con tecnología de última generación en un ambiente confidencial y profesional.",
     features: ["Electrocauterización", "Láser CO2", "Seguimiento especializado"],
     icon: Shield,
-    link: "/clinica-vph"
+    link: "/clinica-vph",
   },
   {
     id: "circuncision",
     name: "Clínica de Circuncisión",
-    description: "Procedimientos de circuncisión con tecnología láser para máxima precisión, mínimo dolor y cicatrización óptima. Solución definitiva para fimosis y balanitis.",
+    description:
+      "Procedimientos de circuncisión con tecnología láser para máxima precisión, mínimo dolor y cicatrización óptima. Solución definitiva para fimosis y balanitis.",
     features: ["Circuncisión Tradicional", "Circuncisión con Láser", "Frenuloplastía"],
     icon: Users,
-    link: "/clinica-circuncision"
-  }
-]
+    link: "/clinica-circuncision",
+  },
+];
 
-export const ClinicasSection = () => {
+// === Variants Tipados ===
+const containerVariants: Variants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: { staggerChildren: 0.2 },
+  },
+};
+
+const itemVariants: Variants = {
+  hidden: { y: 20, opacity: 0 },
+  visible: {
+    y: 0,
+    opacity: 1,
+    transition: { duration: 0.5, ease: "easeOut" },
+  },
+};
+
+// === Opciones de viewport estáticas ===
+const viewportOptions = { once: true, margin: "-100px" };
+
+// === ClinicCard memoizado ===
+interface ClinicCardProps {
+  clinic: Clinic;
+}
+
+const ClinicCard: React.FC<ClinicCardProps> = memo(({ clinic }) => {
+  const IconComponent = clinic.icon;
+
   return (
-    <Section id="clinicas" background="white" spacing="xl" hasDivider={true} dividerType="wave">
+    <m.div
+      variants={itemVariants}
+      className="group relative bg-gradient-to-br from-white to-green-50 rounded-2xl p-6 border border-green-100 hover:border-green-300 shadow-sm hover:shadow-lg transition-all duration-300 h-full flex flex-col transform-gpu will-change-transform"
+    >
+      <div className="absolute top-5 right-5">
+        <div className="bg-green-50 p-3 rounded-xl group-hover:bg-green-100 transition-colors">
+          <IconComponent className="h-7 w-7 text-green-700" />
+        </div>
+      </div>
+
+      <div className="pt-4 flex-grow">
+        <h3 className="text-xl font-bold text-green-800 mb-4">{clinic.name}</h3>
+        <p className="text-gray-600 mb-5 leading-relaxed text-base">
+          {clinic.description}
+        </p>
+
+        <div className="space-y-3 mb-6">
+          {clinic.features.map((feature, idx) => (
+            <div key={idx} className="flex items-start gap-3">
+              <CheckCircle className="h-5 w-5 text-green-600 flex-shrink-0 mt-0.5" />
+              <span className="text-gray-700 font-medium text-base">{feature}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div className="mt-auto">
+        <Link href={clinic.link} aria-label={`Conocer más sobre ${clinic.name}`}>
+          <Button
+            className="w-full bg-green-700 hover:bg-green-600 text-white py-3 rounded-full font-medium transition-all duration-300 group-hover:shadow-md"
+            size="lg"
+          >
+            <span>Conocer Clínica</span>
+            <ArrowRight className="h-4 w-4 ml-2 transition-transform group-hover:translate-x-1" />
+          </Button>
+        </Link>
+      </div>
+    </m.div>
+  );
+});
+ClinicCard.displayName = "ClinicCard";
+
+// === Componente Principal ===
+export const ClinicsSection: React.FC = () => {
+  return (
+    <Section
+      id="clinicas"
+      background="white"
+      spacing="xl"
+      hasDivider
+      dividerType="wave"
+    >
       <ResponsiveContainer>
-        <ScrollAnimation animation="fade-in-up">
-          <div className="text-center max-w-4xl mx-auto mb-16">
-            <div className="inline-flex items-center gap-2 bg-green-100 text-green-700 px-6 py-3 rounded-full text-sm font-medium mb-6">
+        <LazyMotion features={domAnimation}>
+          {/* Header Animado */}
+          <m.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={viewportOptions}
+            variants={containerVariants}
+            className="text-center max-w-4xl mx-auto mb-14 md:mb-16"
+          >
+            <m.div
+              variants={itemVariants}
+              className="inline-flex items-center gap-2 bg-green-50 text-green-700 px-5 py-2.5 rounded-full text-sm font-medium mb-6"
+            >
               <Users className="h-4 w-4" />
               Clínicas Especializadas
-            </div>
-            <h2 className="text-4xl lg:text-5xl xl:text-6xl font-bold text-green-700 mb-6">
+            </m.div>
+
+            <m.h2
+              variants={itemVariants}
+              className="text-3xl md:text-4xl lg:text-5xl font-bold text-green-800 mb-5"
+            >
               Centros de Excelencia Médica
-            </h2>
-            <div className="w-32 h-1 bg-gradient-to-r from-green-600 to-green-400 mx-auto mb-6"></div>
-            <p className="text-xl lg:text-2xl text-gray-600 leading-relaxed">
-              Clínicas especializadas con protocolos específicos y tecnología dedicada 
-              para cada condición urológica.
-            </p>
-          </div>
-        </ScrollAnimation>
+            </m.h2>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {clinicas.map((clinica, index) => {
-            const IconComponent = clinica.icon;
-            return (
-              <ScrollAnimation key={clinica.id} animation="fade-in-up" delay={(index + 1) * 100}>
-                <div className="group relative bg-gradient-to-br from-green-50 to-white rounded-3xl p-8 border-2 border-green-100 hover:border-green-200 hover:shadow-2xl transition-all duration-500 h-full">
-                  <div className="absolute top-6 right-6">
-                    <div className="bg-green-100 p-3 rounded-xl group-hover:scale-110 transition-transform duration-300">
-                      <IconComponent className="h-8 w-8 text-green-700" />
-                    </div>
-                  </div>
-                  
-                  <div className="pt-4">
-                    <h3 className="text-2xl font-bold text-green-700 mb-4">
-                      {clinica.name}
-                    </h3>
-                    <p className="text-gray-600 mb-6 leading-relaxed">
-                      {clinica.description}
-                    </p>
-                    
-                    <div className="space-y-3 mb-8">
-                      {clinica.features.map((feature, idx) => (
-                        <div key={idx} className="flex items-center gap-3">
-                          <CheckCircle className="h-5 w-5 text-green-600" />
-                          <span className="text-gray-700 font-medium">{feature}</span>
-                        </div>
-                      ))}
-                    </div>
+            <m.div
+              variants={itemVariants}
+              className="w-24 h-1 bg-gradient-to-r from-green-600 to-green-400 mx-auto mb-6 rounded-full"
+            />
 
-                    <Link href={clinica.link}>
-                      <Button className="w-full bg-green-700 hover:bg-green-600 text-white py-3 rounded-full font-medium transition-all duration-300">
-                        Conocer Clínica
-                        <ArrowRight className="h-4 w-4 ml-2" />
-                      </Button>
-                    </Link>
-                  </div>
-                </div>
-              </ScrollAnimation>
-            );
-          })}
-        </div>
+            <m.p
+              variants={itemVariants}
+              className="text-lg md:text-xl text-gray-600 leading-relaxed max-w-3xl mx-auto"
+            >
+              Clínicas especializadas con protocolos específicos y tecnología
+              dedicada para cada condición urológica.
+            </m.p>
+          </m.div>
+
+          {/* Grid de Tarjetas */}
+          <m.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={viewportOptions}
+            variants={containerVariants}
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+          >
+            {clinics.map((clinic) => (
+              <ClinicCard key={clinic.id} clinic={clinic} />
+            ))}
+          </m.div>
+        </LazyMotion>
       </ResponsiveContainer>
     </Section>
-  )
-}
+  );
+};

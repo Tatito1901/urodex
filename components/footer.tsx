@@ -52,7 +52,7 @@ export const Footer = () => {
               <div className="flex items-center gap-3 mb-5">
                 <div className="bg-white/10 p-2 rounded-xl backdrop-blur-sm border border-white/10">
                   <Image
-                    src="/images/urodex-logo-white.png"
+                    src="/images/isotipo_Fondo_Blanco.jpg"
                     alt="Urodex Logo"
                     width={48}
                     height={48}
