@@ -65,19 +65,19 @@ const openWhatsApp = () => {
 
 export const TratamientosSection = () => {
   return (
-    <Section id="servicios" background="gradient" spacing="xl" hasDivider={true} dividerType="curve">
+    <Section id="servicios" background="primary-dark" textColor="light" spacing="xl" hasDivider={true} dividerType="curve">
       <ResponsiveContainer>
         <ScrollAnimation animation="fade-in-up">
           <div className="text-center max-w-4xl mx-auto mb-16">
-            <div className="inline-flex items-center gap-2 bg-white/90 text-green-700 px-6 py-3 rounded-full text-sm font-medium mb-6 shadow-lg">
+            <div className="inline-flex items-center gap-2 bg-white/15 backdrop-blur-sm text-white px-4 sm:px-6 py-2 sm:py-3 rounded-full text-xs sm:text-sm font-medium mb-4 sm:mb-6 shadow-lg">
               <Stethoscope className="h-4 w-4" />
               Servicios Especializados
             </div>
-            <h2 className="text-4xl lg:text-5xl xl:text-6xl font-bold text-white mb-6">
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-bold text-white mb-4 sm:mb-6">
               Tratamientos Urológicos de Vanguardia
             </h2>
             <div className="w-32 h-1 bg-white mx-auto mb-6"></div>
-            <p className="text-xl lg:text-2xl text-white/95 leading-relaxed">
+            <p className="text-lg sm:text-xl lg:text-2xl text-white/90 leading-relaxed">
               Diagnóstico preciso y tratamientos innovadores con tecnología de última generación 
               para garantizar los mejores resultados y una recuperación óptima.
             </p>

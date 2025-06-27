@@ -12,7 +12,7 @@
     --foreground: 215 25% 27%;
     --card: 0 0% 100%;
     --card-foreground: 215 25% 27%;
-    --primary: 158 64% 52%;
+    --primary: 158 64% 35%; /* darker elegant green */
     --primary-foreground: 0 0% 100%;
     --secondary: 158 30% 96%;
     --secondary-foreground: 158 64% 27%;

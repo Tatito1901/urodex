@@ -2,7 +2,6 @@
 import type { Metadata } from "next"
 import type React from "react"
 import { Roboto, Roboto_Serif } from "next/font/google"
-import localFont from "next/font/local"
 import "./globals.css"
 
 const roboto = Roboto({

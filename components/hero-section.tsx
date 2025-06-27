@@ -107,14 +107,15 @@ export function HeroSection() {
           }}
         >
           <source 
-            src="/images/hero-video.mp4" 
+            src="/images/Video_Quirúrgico_Urología_Moderna (1).mp4" 
             type="video/mp4" 
           />
           Tu navegador no soporta video HTML5.
         </video>
         
         {/* Overlay de gradiente profesional */}
-        <div className="absolute inset-0 bg-gradient-to-br from-emerald-900/85 via-teal-900/80 to-emerald-950/90 z-10"></div>
+        <div className="absolute inset-0 bg-gradient-to-br from-emerald-900/90 via-emerald-600/85 to-emerald-900/95 z-10"></div>
+        <div className="absolute inset-0 bg-gradient-to-br from-primary-dark/90 via-emerald-900/85 to-primary-dark/95 z-10"></div>
         
         {/* Botón de control de video */}
         <button 

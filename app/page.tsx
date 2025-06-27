@@ -220,10 +220,10 @@ export default function Home() {
 
       <main className="flex-1">
         {/* Hero Section with Consultorio Background */}
-        <section id="inicio" className="relative overflow-hidden min-h-[calc(100dvh-5rem)]">
+        <section id="inicio" className="relative overflow-hidden min-h-[calc(100dvh-5rem)] sm:min-h-screen">
           <div className="absolute inset-0 w-full h-full">
             <video
-              src="/images/Video_Quirúrgico_Urología_Moderna (1).mp4"
+              src="/images/Video_Quirúrgico_Urología_Moderna (1).mp4"
               autoPlay
               loop
               muted
@@ -231,29 +231,29 @@ export default function Home() {
               className="object-cover w-full h-full absolute inset-0"
               poster="/images/doctor-profile.png"
             />
-            <div className="absolute inset-0 bg-gradient-to-r from-green-800/85 via-green-700/80 to-green-600/75"></div>
+            <div className="absolute inset-0 bg-gradient-to-r from-green-900/90 via-green-800/85 to-green-600/80"></div>
           </div>
 
-          <ResponsiveContainer className="py-12 md:py-20 lg:py-28 relative flex flex-col justify-center min-h-[calc(100dvh-5rem)]">
-            <ScrollAnimation animation="fade-in-up" className="max-w-4xl mx-auto text-center space-y-6 md:space-y-8 z-30 relative px-4">
-              <div className="inline-flex items-center gap-2 bg-white/15 backdrop-blur-sm text-white border border-white/20 rounded-full px-6 py-3 text-sm md:text-base font-medium mb-4 shadow-lg">
+          <ResponsiveContainer className="py-8 sm:py-12 md:py-20 lg:py-28 relative flex flex-col justify-center min-h-[calc(100dvh-5rem)] sm:min-h-screen">
+            <ScrollAnimation animation="fade-in-up" className="max-w-4xl mx-auto text-center space-y-4 sm:space-y-6 md:space-y-8 z-30 relative px-4 sm:px-6">
+              <div className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-sm text-white border border-white/30 rounded-full px-4 sm:px-6 py-2 sm:py-3 text-xs sm:text-sm md:text-base font-medium mb-4 shadow-lg">
                 <Shield className="h-5 w-5" /> 
                 Cirujano Urólogo Certificado
               </div>
 
-              <div className="bg-gradient-to-br from-white/10 to-transparent backdrop-blur-sm py-8 px-6 md:px-10 rounded-3xl border border-white/10 shadow-2xl">
-                <h1 className="font-bold text-4xl sm:text-5xl md:text-6xl lg:text-7xl tracking-tight text-white mb-6">
+              <div className="bg-gradient-to-br from-white/15 to-transparent backdrop-blur-sm py-6 sm:py-8 px-4 sm:px-6 md:px-10 rounded-2xl sm:rounded-3xl border border-white/20 shadow-2xl">
+                <h1 className="font-bold text-3xl sm:text-5xl md:text-6xl lg:text-7xl tracking-tight text-white mb-4 sm:mb-6">
                   Dr. Mario Martínez Thomas
                 </h1>
-                <div className="w-32 h-1 bg-gradient-to-r from-transparent via-white/80 to-transparent mx-auto mb-6" />
-                <p className="text-white/95 font-medium text-xl md:text-2xl lg:text-3xl leading-relaxed max-w-4xl mx-auto">
+                <div className="w-24 sm:w-32 h-1 bg-gradient-to-r from-transparent via-white/90 to-transparent mx-auto mb-4 sm:mb-6" />
+                <p className="text-white font-medium text-lg sm:text-xl md:text-2xl lg:text-3xl leading-relaxed max-w-4xl mx-auto">
                   Urólogo en Ciudad de México experto en Cirugía de Próstata, VPH y Circuncisión
                 </p>
               </div>
 
-              <div className="flex flex-col sm:flex-row gap-6 pt-8 justify-center">
+              <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 pt-6 sm:pt-8 justify-center">
                 <Button
-                  className="bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-500 hover:to-emerald-500 rounded-full px-10 py-6 shadow-2xl text-lg md:text-xl font-medium tracking-wide transition-all transform hover:scale-105"
+                  className="bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-500 hover:to-emerald-500 rounded-full px-6 sm:px-10 py-4 sm:py-6 shadow-2xl text-base sm:text-lg md:text-xl font-medium tracking-wide transition-all transform hover:scale-105 w-full sm:w-auto"
                   onClick={openWhatsApp}
                 >
                   <Phone className="h-5 w-5 mr-2" />
@@ -261,7 +261,7 @@ export default function Home() {
                 </Button>
                 <Button
                   variant="outline"
-                  className="border-2 border-white text-white bg-white/10 hover:bg-white/20 rounded-full px-10 py-6 text-lg md:text-xl font-medium backdrop-blur-sm shadow-lg tracking-wide transition-all transform hover:scale-105"
+                  className="border-2 border-white text-white bg-white/10 hover:bg-white/20 rounded-full px-6 sm:px-10 py-4 sm:py-6 text-base sm:text-lg md:text-xl font-medium backdrop-blur-sm shadow-lg tracking-wide transition-all transform hover:scale-105 w-full sm:w-auto"
                   onClick={() => document.getElementById("servicios")?.scrollIntoView({ behavior: "smooth" })}
                 >
                   Conocer Servicios
@@ -282,28 +282,28 @@ export default function Home() {
         <TratamientosSection />
 
         {/* Specialized Clinics Section */}
-        <Section id="clinicas" background="white" spacing="xl" hasDivider={true} dividerType="wave">
+        <Section id="clinicas" background="gradient-subtle" spacing="xl" hasDivider={true} dividerType="wave" contentWidth="wide">
           <ResponsiveContainer>
             <ScrollAnimation animation="fade-in-up">
-              <div className="text-center max-w-4xl mx-auto mb-16">
-                <div className="inline-flex items-center gap-2 bg-green-100 text-green-700 px-6 py-3 rounded-full text-sm font-medium mb-6">
+              <div className="text-center max-w-4xl mx-auto mb-10 sm:mb-16 px-4 sm:px-0">
+                <div className="inline-flex items-center gap-2 bg-green-100 text-green-700 px-4 sm:px-6 py-2 sm:py-3 rounded-full text-xs sm:text-sm font-medium mb-4 sm:mb-6">
                   <Users className="h-4 w-4" />
                   Clínicas Especializadas
                 </div>
-                <h2 className="text-4xl lg:text-5xl xl:text-6xl font-bold text-green-700 mb-6">
+                <h2 className="text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-bold text-green-800 mb-4 sm:mb-6">
                   Centros de Excelencia Médica
                 </h2>
-                <div className="w-32 h-1 bg-gradient-to-r from-green-600 to-green-400 mx-auto mb-6"></div>
-                <p className="text-xl lg:text-2xl text-gray-600 leading-relaxed">
+                <div className="w-24 sm:w-32 h-1 bg-gradient-to-r from-green-700 to-green-500 mx-auto mb-4 sm:mb-6"></div>
+                <p className="text-lg sm:text-xl lg:text-2xl text-gray-700 leading-relaxed">
                   Clínicas especializadas con protocolos específicos y tecnología dedicada 
                   para cada condición urológica.
                 </p>
               </div>
             </ScrollAnimation>
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 px-4 sm:px-0">
               <ScrollAnimation animation="fade-in-up" delay={100}>
-                <div className="group relative bg-gradient-to-br from-green-50 to-white rounded-3xl p-8 border-2 border-green-100 hover:border-green-200 hover:shadow-2xl transition-all duration-500 h-full">
+                <div className="group relative bg-gradient-to-br from-green-50 to-white rounded-2xl sm:rounded-3xl p-6 sm:p-8 border border-green-100 hover:border-green-300 hover:shadow-2xl transition-all duration-500 h-full">
                   <div className="absolute top-6 right-6">
                     <div className="bg-green-100 p-3 rounded-xl group-hover:scale-110 transition-transform duration-300">
                       <Award className="h-8 w-8 text-green-700" />
@@ -311,10 +311,10 @@ export default function Home() {
                   </div>
                   
                   <div className="pt-4">
-                    <h3 className="text-2xl font-bold text-green-700 mb-4">
+                    <h3 className="text-2xl font-bold text-green-800 mb-4">
                       Clínica de Cirugía de Próstata
                     </h3>
-                    <p className="text-gray-600 mb-6 leading-relaxed">
+                    <p className="text-gray-700 mb-6 leading-relaxed">
                       Centro especializado en el diagnóstico y tratamiento integral de enfermedades prostáticas 
                       con técnicas láser de última generación y cirugía mínimamente invasiva.
                     </p>
@@ -353,7 +353,7 @@ export default function Home() {
                   </div>
                   
                   <div className="pt-4">
-                    <h3 className="text-2xl font-bold text-green-700 mb-4">
+                    <h3 className="text-2xl font-bold text-green-800 mb-4">
                       Clínica de VPH
                     </h3>
                     <p className="text-gray-600 mb-6 leading-relaxed">
@@ -364,15 +364,15 @@ export default function Home() {
                     <div className="space-y-3 mb-8">
                       <div className="flex items-center gap-3">
                         <CheckCircle className="h-5 w-5 text-green-600" />
-                        <span className="text-gray-700 font-medium">Electrocauterización</span>
+                        <span className="text-gray-600 font-medium">Electrocauterización</span>
                       </div>
                       <div className="flex items-center gap-3">
                         <CheckCircle className="h-5 w-5 text-green-600" />
-                        <span className="text-gray-700 font-medium">Láser CO2</span>
+                        <span className="text-gray-600 font-medium">Láser CO2</span>
                       </div>
                       <div className="flex items-center gap-3">
                         <CheckCircle className="h-5 w-5 text-green-600" />
-                        <span className="text-gray-700 font-medium">Seguimiento especializado</span>
+                        <span className="text-gray-600 font-medium">Seguimiento especializado</span>
                       </div>
                     </div>
 
@@ -395,7 +395,7 @@ export default function Home() {
                   </div>
                   
                   <div className="pt-4">
-                    <h3 className="text-2xl font-bold text-green-700 mb-4">
+                    <h3 className="text-2xl font-bold text-green-800 mb-4">
                       Clínica de Circuncisión
                     </h3>
                     <p className="text-gray-600 mb-6 leading-relaxed">
@@ -432,44 +432,44 @@ export default function Home() {
         </Section>
 
         {/* Instalaciones Section */}
-        <Section id="instalaciones" background="primary-light" spacing="xl" hasDivider={true} dividerType="angle">
+        <Section id="instalaciones" background="primary" spacing="xl" hasDivider={true} dividerType="angle" textColor="light" contentWidth="wide">
           <ResponsiveContainer>
             <ScrollAnimation animation="fade-in-up">
-              <div className="text-center max-w-4xl mx-auto mb-16">
-                <div className="inline-flex items-center gap-2 bg-white text-green-700 px-6 py-3 rounded-full text-sm font-medium mb-6 shadow-lg">
+              <div className="text-center max-w-4xl mx-auto mb-10 sm:mb-16 px-4 sm:px-0">
+                <div className="inline-flex items-center gap-2 bg-white text-green-700 px-4 sm:px-6 py-2 sm:py-3 rounded-full text-xs sm:text-sm font-medium mb-4 sm:mb-6 shadow-lg">
                   <Building2 className="h-4 w-4" />
                   Nuestras Instalaciones
                 </div>
-                <h2 className="text-4xl lg:text-5xl xl:text-6xl font-bold text-white mb-6">
+                <h2 className="text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-bold text-white mb-4 sm:mb-6">
                   Instalaciones
                 </h2>
-                <div className="w-32 h-1 bg-white mx-auto mb-6"></div>
-                <p className="text-xl lg:text-2xl text-white/95 leading-relaxed">
+                <div className="w-24 sm:w-32 h-1 bg-white/90 mx-auto mb-4 sm:mb-6"></div>
+                <p className="text-lg sm:text-xl lg:text-2xl text-white leading-relaxed">
                   Espacios diseñados para brindar la máxima comodidad y confianza a nuestros pacientes, 
                   equipados con la tecnología más avanzada.
                 </p>
               </div>
             </ScrollAnimation>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8 px-4 sm:px-0">
               {facilityImages.map((image, index) => (
                 <ScrollAnimation key={image.id} animation="fade-in-up" delay={index * 150}>
-                  <div className="group relative bg-white rounded-3xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-500">
-                    <div className="relative h-80 overflow-hidden">
+                  <div className="group relative bg-white rounded-2xl sm:rounded-3xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-500">
+                    <div className="relative h-60 sm:h-80 overflow-hidden">
                       <Image
                         src={image.src}
                         alt={image.alt}
                         fill
                         className="object-cover group-hover:scale-110 transition-transform duration-700"
                       />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                      <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm p-3 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                        <Camera className="h-5 w-5 text-green-700" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                      <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm p-2 sm:p-3 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                        <Camera className="h-4 sm:h-5 w-4 sm:w-5 text-green-700" />
                       </div>
                     </div>
-                    <div className="p-6">
-                      <h3 className="font-bold text-green-700 text-xl mb-2">{image.alt}</h3>
-                      <p className="text-gray-600 leading-relaxed">{image.caption}</p>
+                    <div className="p-5 sm:p-6">
+                      <h3 className="font-bold text-green-800 text-lg sm:text-xl mb-2">{image.alt}</h3>
+                      <p className="text-gray-700 leading-relaxed text-sm sm:text-base">{image.caption}</p>
                     </div>
                   </div>
                 </ScrollAnimation>
