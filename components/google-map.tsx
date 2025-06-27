@@ -17,7 +17,7 @@ export function GoogleMap({
   // La API key es una clave pública de ejemplo para fines de demostración
   return (
     <div
-      className={`w-full h-full min-h-[300px] rounded-xl overflow-hidden shadow-md border border-green-100 ${className}`}
+      className={`w-full h-full min-h-[300px] rounded-xl overflow-hidden shadow-md border border-teal-100 ${className}`}
     >
       <iframe
         src={`https://www.google.com/maps/embed/v1/place?key=AIzaSyBFw0Qbyq9zTFTd-tUY6dZWTgaQzuU17R8&q=${encodedAddress}&zoom=${zoom}`}

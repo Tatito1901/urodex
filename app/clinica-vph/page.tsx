@@ -6,6 +6,7 @@ import { Header } from "@/components/header"
 import { Section } from "@/components/section"
 import { ResponsiveContainer } from "@/components/responsive-container"
 import { Button } from "@/components/ui/button"
+import { Footer } from "@/components/footer" 
 import {
   Phone,
   Facebook,
@@ -418,68 +419,7 @@ export default function ClinicaVPH() {
           </ResponsiveContainer>
         </section>
       </main>
-
-      {/* Footer */}
-      <footer className="bg-gradient-to-br from-slate-800 via-emerald-900 to-slate-900 text-white relative overflow-hidden">
-        <div className="absolute inset-0 opacity-10">
-          <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-emerald-400/30 rounded-full blur-3xl"></div>
-          <div className="absolute bottom-1/4 right-1/4 w-64 h-64 bg-teal-400/30 rounded-full blur-3xl"></div>
-        </div>
-        
-        <div className="py-8 relative z-10">
-          <ResponsiveContainer>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-center md:text-left">
-              <div>
-                <div className="flex items-center justify-center md:justify-start gap-3 mb-4">
-                  <Image
-                    src="/images/urodex-logo-white.png"
-                    alt="Urodex Logo"
-                    width={32}
-                    height={32}
-                    className="h-8 w-auto"
-                  />
-                  <span className="text-xl font-serif font-bold">URODEX</span>
-                </div>
-                <p className="text-white/80">
-                  Tratamiento especializado de VPH
-                </p>
-              </div>
-
-              <div>
-                <h3 className="font-bold mb-4">Contacto</h3>
-                <div className="space-y-2 text-white/70">
-                  <p>(55) 1694 2925</p>
-                  <p>Consulta confidencial</p>
-                </div>
-              </div>
-
-              <div>
-                <h3 className="font-bold mb-4">Síguenos</h3>
-                <div className="flex justify-center md:justify-start space-x-3">
-                  <Link 
-                    href="https://www.facebook.com/drmariomartinezuro/" 
-                    target="_blank"
-                    className="text-white/80 hover:text-white transition-all duration-300 p-2 rounded-xl hover:bg-emerald-600/20 transform hover:scale-110"
-                  >
-                    <Facebook className="h-4 w-4" />
-                  </Link>
-                  <Link 
-                    href="https://www.instagram.com/urologo.mariothomas" 
-                    target="_blank"
-                    className="text-white/80 hover:text-white transition-all duration-300 p-2 rounded-xl hover:bg-emerald-600/20 transform hover:scale-110"
-                  >
-                    <Instagram className="h-4 w-4" />
-                  </Link>
-                </div>
-              </div>
-            </div>
-
-            <div className="border-t border-white/20 mt-6 pt-4 text-center text-white/70">
-              <p>© {new Date().getFullYear()} Urodex - Dr. Mario Martínez Thomas. Todos los derechos reservados.</p>
-            </div>
-          </ResponsiveContainer>
-        </div>
-      </footer>
+      <Footer />
     </div>
   )
 }

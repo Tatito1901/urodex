@@ -81,16 +81,16 @@ const ClinicCard: React.FC<ClinicCardProps> = memo(({ clinic }) => {
   return (
     <m.div
       variants={itemVariants}
-      className="group relative bg-gradient-to-br from-white to-green-50 rounded-2xl p-6 border border-green-100 hover:border-green-300 shadow-sm hover:shadow-lg transition-all duration-300 h-full flex flex-col transform-gpu will-change-transform"
+      className="group relative bg-gradient-to-br from-white to-teal-50 rounded-2xl p-6 border border-teal-100 hover:border-teal-300 shadow-sm hover:shadow-lg transition-all duration-300 h-full flex flex-col transform-gpu will-change-transform"
     >
       <div className="absolute top-5 right-5">
-        <div className="bg-green-50 p-3 rounded-xl group-hover:bg-green-100 transition-colors">
-          <IconComponent className="h-7 w-7 text-green-700" />
+        <div className="bg-teal-50 p-3 rounded-xl group-hover:bg-teal-100 transition-colors">
+          <IconComponent className="h-7 w-7 text-teal-700" />
         </div>
       </div>
 
       <div className="pt-4 flex-grow">
-        <h3 className="text-xl font-bold text-green-800 mb-4">{clinic.name}</h3>
+        <h3 className="text-xl font-bold text-teal-800 mb-4">{clinic.name}</h3>
         <p className="text-gray-600 mb-5 leading-relaxed text-base">
           {clinic.description}
         </p>
@@ -98,7 +98,7 @@ const ClinicCard: React.FC<ClinicCardProps> = memo(({ clinic }) => {
         <div className="space-y-3 mb-6">
           {clinic.features.map((feature, idx) => (
             <div key={idx} className="flex items-start gap-3">
-              <CheckCircle className="h-5 w-5 text-green-600 flex-shrink-0 mt-0.5" />
+              <CheckCircle className="h-5 w-5 text-teal-600 flex-shrink-0 mt-0.5" />
               <span className="text-gray-700 font-medium text-base">{feature}</span>
             </div>
           ))}
@@ -108,7 +108,7 @@ const ClinicCard: React.FC<ClinicCardProps> = memo(({ clinic }) => {
       <div className="mt-auto">
         <Link href={clinic.link} aria-label={`Conocer más sobre ${clinic.name}`}>
           <Button
-            className="w-full bg-green-700 hover:bg-green-600 text-white py-3 rounded-full font-medium transition-all duration-300 group-hover:shadow-md"
+            className="w-full bg-teal-700 hover:bg-teal-600 text-white py-3 rounded-full font-medium transition-all duration-300 group-hover:shadow-md"
             size="lg"
           >
             <span>Conocer Clínica</span>
@@ -122,16 +122,20 @@ const ClinicCard: React.FC<ClinicCardProps> = memo(({ clinic }) => {
 ClinicCard.displayName = "ClinicCard";
 
 // === Componente Principal ===
-export const ClinicsSection: React.FC = () => {
+interface ClinicsSectionProps {
+  background?: "white" | "pearl" | "teal" | "gradient" | "gradient-subtle" | "gradient-strong" | "primary" | "primary-light" | "primary-dark" | "secondary" | "secondary-light" | "dark" | "none";
+}
+
+export const ClinicsSection: React.FC<ClinicsSectionProps> = ({ background = "white" }) => {
   return (
     <Section
       id="clinicas"
-      background="white"
+      background={background}
       spacing="xl"
       hasDivider
       dividerType="wave"
     >
-      <ResponsiveContainer>
+      <ResponsiveContainer breakpointPadding={{ base: "px-4", sm: "px-6" }}>
         <LazyMotion features={domAnimation}>
           {/* Header Animado */}
           <m.div
@@ -143,7 +147,7 @@ export const ClinicsSection: React.FC = () => {
           >
             <m.div
               variants={itemVariants}
-              className="inline-flex items-center gap-2 bg-green-50 text-green-700 px-5 py-2.5 rounded-full text-sm font-medium mb-6"
+              className="inline-flex items-center gap-2 bg-teal-50 text-teal-700 px-5 py-2.5 rounded-full text-sm font-medium mb-6"
             >
               <Users className="h-4 w-4" />
               Clínicas Especializadas
@@ -151,14 +155,14 @@ export const ClinicsSection: React.FC = () => {
 
             <m.h2
               variants={itemVariants}
-              className="text-3xl md:text-4xl lg:text-5xl font-bold text-green-800 mb-5"
+              className="text-3xl md:text-4xl lg:text-5xl font-bold text-teal-800 mb-5"
             >
               Centros de Excelencia Médica
             </m.h2>
 
             <m.div
               variants={itemVariants}
-              className="w-24 h-1 bg-gradient-to-r from-green-600 to-green-400 mx-auto mb-6 rounded-full"
+              className="w-24 h-1 bg-gradient-to-r from-teal-600 to-teal-400 mx-auto mb-6 rounded-full"
             />
 
             <m.p

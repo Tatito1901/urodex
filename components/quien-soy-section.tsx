@@ -11,13 +11,13 @@ const FeatureCard = React.memo(({ Icon, title, description }: {
   title: string;
   description: string;
 }) => (
-  <div className="bg-gradient-to-br from-green-50 to-white p-5 sm:p-6 rounded-2xl border border-green-100 hover:shadow-md transition-all duration-300 group hover:-translate-y-1">
+  <div className="bg-gradient-to-br from-teal-50 to-white p-5 sm:p-6 rounded-2xl border border-teal-100 hover:shadow-md transition-all duration-300 group hover:-translate-y-1">
     <div className="flex items-start gap-3 sm:gap-4">
-      <div className="bg-green-100 p-2 sm:p-3 rounded-xl group-hover:bg-green-200 transition-colors duration-300">
-        <Icon className="h-5 w-5 sm:h-6 sm:w-6 text-green-700" />
+      <div className="bg-teal-100 p-2 sm:p-3 rounded-xl group-hover:bg-teal-200 transition-colors duration-300">
+        <Icon className="h-5 w-5 sm:h-6 sm:w-6 text-teal-700" />
       </div>
       <div>
-        <h4 className="font-bold text-green-700 text-base sm:text-lg mb-1 sm:mb-2">{title}</h4>
+        <h4 className="font-bold text-teal-700 text-base sm:text-lg mb-1 sm:mb-2">{title}</h4>
         <p className="text-gray-600 text-xs sm:text-sm leading-relaxed">{description}</p>
       </div>
     </div>
@@ -26,16 +26,20 @@ const FeatureCard = React.memo(({ Icon, title, description }: {
 
 // Componente para la insignia de experiencia
 const ExperienceBadge = React.memo(() => (
-  <div className="absolute -bottom-4 -right-4 sm:-bottom-6 sm:-right-6 bg-gradient-to-r from-green-700 to-green-600 text-white p-4 sm:p-5 rounded-2xl shadow-lg z-10">
+  <div className="absolute -bottom-4 -right-4 sm:-bottom-6 sm:-right-6 bg-gradient-to-r from-teal-700 to-teal-600 text-white p-4 sm:p-5 rounded-2xl shadow-lg z-10">
     <div className="flex items-center gap-2 mb-1">
       <Star className="h-4 w-4 sm:h-5 sm:w-5 fill-current" />
-      <span className="font-bold text-lg sm:text-xl">15+</span>
+      <span className="font-bold text-lg sm:text-xl">10+</span>
     </div>
     <p className="text-xs sm:text-sm font-medium">Años de experiencia</p>
   </div>
 ));
 
-export const QuienSoySection: React.FC = () => {
+interface QuienSoySectionProps {
+  background?: "white" | "pearl" | "teal" | "gradient" | "gradient-subtle" | "gradient-strong" | "primary" | "primary-light" | "primary-dark" | "secondary" | "secondary-light" | "dark" | "none";
+}
+
+export const QuienSoySection: React.FC<QuienSoySectionProps> = ({ background = "white" }) => {
   const features = useMemo(() => [
     {
       Icon: GraduationCap,
@@ -62,13 +66,13 @@ export const QuienSoySection: React.FC = () => {
   return (
     <Section 
       id="sobre-mi" 
-      background="white" 
+      background={background} 
       spacing="xl" 
       hasDivider 
       dividerType="wave"
       className="overflow-hidden"
     >
-      <ResponsiveContainer className="px-4 sm:px-6">
+      <ResponsiveContainer breakpointPadding={{ base: "px-4", sm: "px-6" }}>
         <div className="flex flex-col lg:flex-row items-center gap-8 md:gap-10 lg:gap-12">
           {/* Imagen optimizada con prioridad de carga */}
           <ScrollAnimation 
@@ -76,7 +80,7 @@ export const QuienSoySection: React.FC = () => {
             className="w-full lg:w-2/5 max-w-xl mx-auto"
           >
             <div className="relative">
-              <div className="absolute -inset-4 sm:-inset-6 bg-gradient-to-tr from-green-100 via-green-50 to-white rounded-3xl blur-xl opacity-60 -z-10"></div>
+              <div className="absolute -inset-4 sm:-inset-6 bg-gradient-to-tr from-teal-100 via-teal-50 to-white rounded-3xl blur-xl opacity-60 -z-10"></div>
               <div className="relative bg-white rounded-3xl p-2 sm:p-3 shadow-lg">
                 <div className="aspect-w-3 aspect-h-4 overflow-hidden rounded-xl">
                   <Image
@@ -100,14 +104,14 @@ export const QuienSoySection: React.FC = () => {
             className="w-full lg:w-3/5 space-y-6 sm:space-y-8"
           >
             <header className="text-center lg:text-left">
-              <div className="inline-flex items-center gap-2 bg-green-100 text-green-700 px-4 py-2 rounded-full text-xs sm:text-sm font-medium mb-3 sm:mb-4">
+              <div className="inline-flex items-center gap-2 bg-teal-100 text-teal-700 px-4 py-2 rounded-full text-xs sm:text-sm font-medium mb-3 sm:mb-4">
                 <Stethoscope className="h-3 w-3 sm:h-4 sm:w-4" />
                 <span>Cirujano Urólogo Certificado</span>
               </div>
-              <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold bg-gradient-to-r from-green-700 to-green-500 bg-clip-text text-transparent mb-3 sm:mb-4">
+              <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold bg-gradient-to-r from-teal-700 to-teal-500 bg-clip-text text-transparent mb-3 sm:mb-4">
                 Dr. Mario Martínez Thomas
               </h2>
-              <div className="w-20 h-1 bg-gradient-to-r from-green-600 to-green-400 mb-4 sm:mb-6 mx-auto lg:mx-0"></div>
+              <div className="w-20 h-1 bg-gradient-to-r from-teal-600 to-teal-400 mb-4 sm:mb-6 mx-auto lg:mx-0"></div>
               <p className="text-sm sm:text-base text-gray-600 leading-relaxed max-w-3xl">
                 Cirujano Urólogo egresado de CMN 20 de Noviembre con mención honorífica de la Universidad Nacional Autónoma de México. Mi compromiso es ofrecer la más alta calidad en atención urológica, 
                 combinando experiencia clínica con técnicas avanzadas.

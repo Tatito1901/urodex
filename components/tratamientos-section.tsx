@@ -1,4 +1,3 @@
-"use client"
 
 import React, { useCallback, useMemo } from "react";
 import { ArrowRight, CheckCircle, Stethoscope, Scissors, Pill, Ribbon, Droplets, UserCheck, Biohazard, HeartPulse } from "lucide-react";
@@ -22,13 +21,13 @@ const ServiceCard = React.memo(({ service }: { service: Service }) => {
   }, []);
 
   return (
-    <div className="group bg-white rounded-2xl md:rounded-3xl p-5 shadow-lg hover:shadow-xl transition-all duration-300 border-2 border-green-50 h-full flex flex-col">
+    <div className="group bg-white rounded-2xl md:rounded-3xl p-5 shadow-lg hover:shadow-xl transition-all duration-300 border-2 border-teal-50 h-full flex flex-col">
       <div className="flex items-center gap-3 mb-4">
-        <div className="bg-gradient-to-br from-green-100 to-green-50 p-3 rounded-xl group-hover:scale-105 transition-transform duration-300">
+        <div className="bg-gradient-to-br from-teal-100 to-teal-50 p-3 rounded-xl group-hover:scale-105 transition-transform duration-300">
           {service.icon}
         </div>
         <div className="flex-1">
-          <h3 className="font-bold text-green-700 text-base md:text-lg leading-tight">
+          <h3 className="font-bold text-teal-700 text-base md:text-lg leading-tight">
             {service.name}
           </h3>
         </div>
@@ -41,7 +40,7 @@ const ServiceCard = React.memo(({ service }: { service: Service }) => {
       <div className="space-y-2 mb-4">
         {service.highlights.map((highlight, idx) => (
           <div key={idx} className="flex items-start gap-2">
-            <CheckCircle className="h-4 w-4 text-green-600 flex-shrink-0 mt-0.5" />
+            <CheckCircle className="h-4 w-4 text-teal-600 flex-shrink-0 mt-0.5" />
             <span className="text-xs md:text-sm text-gray-700 font-medium">{highlight}</span>
           </div>
         ))}
@@ -50,7 +49,7 @@ const ServiceCard = React.memo(({ service }: { service: Service }) => {
       <Button
         onClick={openWhatsApp}
         variant="outline"
-        className="w-full border-green-200 text-green-700 hover:bg-green-50 hover:border-green-300 transition-all duration-300 mt-auto rounded-full py-2 text-xs md:text-sm"
+        className="w-full border-teal-200 text-teal-700 hover:bg-teal-50 hover:border-teal-300 transition-all duration-300 mt-auto rounded-full py-2 text-xs md:text-sm"
         aria-label={`Consultar sobre ${service.name}`}
       >
         Consultar Especialista
@@ -61,70 +60,68 @@ const ServiceCard = React.memo(({ service }: { service: Service }) => {
 });
 ServiceCard.displayName = 'ServiceCard';
 
-export const TratamientosSection = () => {
+interface TratamientosSectionProps {
+  background?: "white" | "pearl" | "teal" | "gradient" | "gradient-subtle" | "gradient-strong" | "primary" | "primary-light" | "primary-dark" | "secondary" | "secondary-light" | "dark" | "none";
+}
+
+export const TratamientosSection: React.FC<TratamientosSectionProps> = ({ background = "primary-dark" }) => {
   // Memoizar los servicios para evitar recreación en cada render
   const services = useMemo<Service[]>(() => [
     {
       name: "Cirugía de Próstata",
       description: "Tratamientos mínimamente invasivos para problemas prostáticos con tecnología láser que minimizan molestias y aceleran la recuperación.",
       highlights: ["Enucleación con Láser", "Biopsia de Próstata", "Prostatectomía Radical"],
-      icon: <UserCheck className="w-5 h-5 md:w-6 md:h-6 text-green-700" />
+      icon: <UserCheck className="w-5 h-5 md:w-6 md:h-6 text-teal-700" />
     },
     {
       name: "Tratamiento de VPH",
       description: "Diagnóstico temprano y tratamiento de lesiones causadas por el Virus del Papiloma Humano con técnicas avanzadas.",
       highlights: ["Diagnóstico Especializado", "Tratamiento con Láser CO2", "Seguimiento Integral"],
-      icon: <Biohazard className="w-5 h-5 md:w-6 md:h-6 text-green-700" />
+      icon: <Biohazard className="w-5 h-5 md:w-6 md:h-6 text-teal-700" />
     },
     {
       name: "Circuncisión",
       description: "Procedimiento con técnica láser que garantiza mayor precisión, menor dolor y recuperación más rápida.",
       highlights: ["Técnica Láser Avanzada", "Recuperación Rápida", "Resultados Estéticos"],
-      icon: <Scissors className="w-5 h-5 md:w-6 md:h-6 text-green-700" />
+      icon: <Scissors className="w-5 h-5 md:w-6 md:h-6 text-teal-700" />
     },
     {
       name: "Disfunción Eréctil",
       description: "Evaluación completa con tratamientos personalizados que incorporan lo último en tecnología médica.",
       highlights: ["Tratamiento Integral", "Terapia con Ondas de Choque", "Medicación Especializada"],
-      icon: <Pill className="w-5 h-5 md:w-6 md:h-6 text-green-700" />
+      icon: <Pill className="w-5 h-5 md:w-6 md:h-6 text-teal-700" />
     },
     {
       name: "Litiasis Renal",
       description: "Diagnóstico y tratamiento de cálculos mediante técnicas mínimamente invasivas para rápida eliminación y recuperación.",
       highlights: ["Litotripsia", "Cirugía Láser", "Tratamiento Preventivo"],
-      icon: <HeartPulse className="w-5 h-5 md:w-6 md:h-6 text-green-700" />
+      icon: <HeartPulse className="w-5 h-5 md:w-6 md:h-6 text-teal-700" />
     },
     {
       name: "Cáncer Urológico",
       description: "Diagnóstico precoz y tratamiento especializado con los más altos estándares internacionales.",
       highlights: ["Detección Temprana", "Cirugía Oncológica", "Seguimiento Especializado"],
-      icon: <Ribbon className="w-5 h-5 md:w-6 md:h-6 text-green-700" />
-    },
-    {
-      name: "Urodinamia",
-      description: "Estudio avanzado para evaluar la función de la vejiga y uretra, fundamental para diagnosticar problemas urinarios.",
-      highlights: ["Evaluación Completa", "Diagnóstico Preciso", "Tratamiento Dirigido"],
-      icon: <Droplets className="w-5 h-5 md:w-6 md:h-6 text-green-700" />
+      icon: <Ribbon className="w-5 h-5 md:w-6 md:h-6 text-teal-700" />
     },
     {
       name: "Uroginecología",
       description: "Atención especializada para padecimientos femeninos con tratamientos modernos y efectivos.",
       highlights: ["Tratamiento de Incontinencia", "Rehabilitación de Piso Pélvico", "Manejo de Cistitis"],
-      icon: <Stethoscope className="w-5 h-5 md:w-6 md:h-6 text-green-700" />
+      icon: <Stethoscope className="w-5 h-5 md:w-6 md:h-6 text-teal-700" />
     },
   ], []);
 
   return (
     <Section 
       id="servicios" 
-      background="primary-dark" 
+      background={background} 
       textColor="light" 
       spacing="lg" 
       hasDivider={true} 
       dividerType="curve"
       className="overflow-hidden"
     >
-      <ResponsiveContainer className="px-4">
+      <ResponsiveContainer breakpointPadding={{ base: "px-4" }}>
         <ScrollAnimation animation="fade-in-up">
           <div className="text-center max-w-3xl mx-auto mb-10 md:mb-16">
             <div className="inline-flex items-center gap-2 bg-white/15 backdrop-blur-sm text-white px-4 py-2 rounded-full text-xs md:text-sm font-medium mb-3 md:mb-4 shadow">

@@ -111,7 +111,7 @@ export function HeroSection() {
         )}
         
         {/* Overlay de gradiente profesional optimizado */}
-        <div className="absolute inset-0 bg-gradient-to-br from-primary-dark/90 via-emerald-900/85 to-primary-dark/95 z-10"></div>
+        <div className="absolute inset-0 bg-gradient-to-br from-primary-dark/90 via-teal-900/85 to-primary-dark/95 z-10"></div>
         <div className="absolute inset-0 bg-gradient-to-t from-primary-dark/90 to-transparent z-10"></div>
         
         {/* Botón de control de video solo cuando hay video */}
@@ -133,7 +133,7 @@ export function HeroSection() {
       {/* Overlay de enfoque optimizado */}
       <div className="absolute inset-0 z-10 bg-radial-gradient opacity-80"></div>
 
-      <ResponsiveContainer className="py-8 md:py-16 lg:py-20 relative flex flex-col justify-center min-h-[calc(100dvh-5rem)] px-4">
+      <ResponsiveContainer breakpointPadding={{ base: "px-4" }} className="py-8 md:py-16 lg:py-20 relative flex flex-col justify-center min-h-[calc(100dvh-5rem)]">
         <ScrollAnimation 
           animation="fade-in-up" 
           className="max-w-4xl mx-auto text-center space-y-4 md:space-y-6 z-30 relative"
@@ -158,7 +158,7 @@ export function HeroSection() {
           {/* Botones con mejor espaciado para móviles */}
           <div className="flex flex-col sm:flex-row flex-wrap gap-3 md:gap-4 pt-4 justify-center">
             <Button
-              className="bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 rounded-full px-6 py-4 md:px-7 md:py-5 text-sm md:text-base font-medium tracking-wide transition-all transform hover:scale-[1.03] focus:scale-[0.98] shadow-lg"
+              className="bg-gradient-to-r from-teal-600 to-teal-600 hover:from-teal-500 hover:to-teal-500 rounded-full px-6 py-4 md:px-7 md:py-5 text-sm md:text-base font-medium tracking-wide transition-all transform hover:scale-[1.03] focus:scale-[0.98] shadow-lg"
               onClick={() => window.open("https://api.whatsapp.com/send?phone=5215516942925&text=Hola%20dr.%20mario%20me%20gustaria%20obtener%20mas%20informacion%20acerca%20de%20sus%20servicios", "_blank")}
             >
               Agenda por WhatsApp
@@ -174,7 +174,7 @@ export function HeroSection() {
         </ScrollAnimation>
 
         {/* Badge decorativo responsivo */}
-        <div className="absolute top-3 right-3 md:top-5 md:right-5 bg-gradient-to-r from-emerald-700/90 to-teal-700/90 backdrop-blur-sm border border-white/20 rounded-full p-2 md:p-3 shadow-md flex items-center gap-2 z-30">
+        <div className="absolute top-3 right-3 md:top-5 md:right-5 bg-gradient-to-r from-teal-700/90 to-teal-700/90 backdrop-blur-sm border border-white/20 rounded-full p-2 md:p-3 shadow-md flex items-center gap-2 z-30">
           <Shield className="h-4 w-4 md:h-5 md:w-5 text-white" />
           <span className="text-xs md:text-sm font-medium text-white tracking-wide hidden sm:inline">
             Excelencia Médica

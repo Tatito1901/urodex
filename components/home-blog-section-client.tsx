@@ -16,13 +16,13 @@ export function HomeBlogSectionClient({ posts }: HomeBlogSectionClientProps) {
       <div className="container">
         <ScrollAnimation animation="fade-in-up">
           <div className="text-center max-w-3xl mx-auto mb-16">
-            <div className="inline-block px-4 py-1 bg-green-100 text-green-700 rounded-full text-sm font-medium mb-2">
+            <div className="inline-block px-4 py-1 bg-teal-100 text-teal-700 rounded-full text-sm font-medium mb-2">
               Nuestro Blog
             </div>
-            <h2 className="text-4xl font-bold text-green-700 mb-4 gradient-text">
+            <h2 className="text-4xl font-bold text-teal-700 mb-4 gradient-text">
               Artículos y consejos de salud urológica
             </h2>
-            <div className="w-20 h-1 bg-green-500 mx-auto mb-6"></div>
+            <div className="w-20 h-1 bg-teal-500 mx-auto mb-6"></div>
             <p className="text-gray-600 text-lg">
               Manténgase informado con los últimos avances en urología y consejos para cuidar su salud.
             </p>
@@ -47,7 +47,7 @@ export function HomeBlogSectionClient({ posts }: HomeBlogSectionClientProps) {
         <ScrollAnimation animation="fade-in-up" delay={300}>
           <div className="flex justify-center">
             <Link href="/blog">
-              <Button className="bg-green-700 hover:bg-green-600 btn-elegant rounded-full px-8 py-6 flex items-center gap-2">
+              <Button className="bg-teal-700 hover:bg-teal-600 btn-elegant rounded-full px-8 py-6 flex items-center gap-2">
                 Ver todos los artículos
                 <ArrowRight className="h-5 w-5 ml-1" />
               </Button>

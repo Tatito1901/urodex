@@ -1,4 +1,3 @@
-"use client";
 
 import React, { useMemo } from "react";
 import { cn } from "@/lib/utils";
@@ -14,12 +13,15 @@ const SPACING_CLASSES = {
 
 const BACKGROUND_CLASSES = {
   white: "bg-white",
-  gradient: "bg-gradient-to-br from-green-50 to-white",
-  "gradient-subtle": "bg-gradient-to-br from-green-50/50 to-white",
-  "gradient-strong": "bg-gradient-to-br from-green-100 to-white",
-  primary: "bg-green-700",
-  "primary-light": "bg-green-50",
-  "primary-dark": "bg-primary-dark",
+  pearl: "bg-slate-50",
+  teal: "bg-teal-50",
+  gradient: "bg-gradient-to-br from-teal-50 to-white",
+  "gradient-subtle": "bg-gradient-to-br from-teal-50/50 to-white",
+  "gradient-strong": "bg-gradient-to-br from-teal-100 to-white",
+  "gradient-teal-dark": "bg-gradient-to-b from-teal-600 to-teal-700",
+  primary: "bg-teal-700",
+  "primary-light": "bg-teal-50",
+  "primary-dark": "bg-teal-900",
   secondary: "bg-secondary",
   "secondary-light": "bg-secondary-light",
   dark: "bg-gray-900",
@@ -60,7 +62,7 @@ interface SectionProps {
   id?: string;
   as?: React.ElementType;
   spacing?: keyof typeof SPACING_CLASSES;
-  background?: keyof typeof BACKGROUND_CLASSES;
+  background?: keyof typeof BACKGROUND_CLASSES | "gradient-teal-dark";
   hasDivider?: boolean;
   dividerType?: keyof typeof DIVIDER_CLASSES;
   textColor?: keyof typeof TEXT_COLOR_CLASSES;
@@ -118,7 +120,7 @@ export const Section: React.FC<SectionProps> = React.memo(({
 
   // Función para renderizar divisor
   const renderDivider = (position: "top" | "bottom") => {
-    if (!hasDivider || dividerType === "none") return null;
+    if (!hasDivider || dividerType === "none" || dividerType === "wave" || dividerType === "curve") return null;
     if (dividerPosition !== position && dividerPosition !== "both") return null;
     return (
       <div

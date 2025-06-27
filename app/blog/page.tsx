@@ -26,11 +26,11 @@ export default function BlogPage() {
     <main className="flex-1">
       {/* Hero Section */}
       <section className="relative bg-white py-20 md:py-28">
-        <div className="absolute inset-0 bg-gradient-to-b from-green-50/80 to-white/90"></div>
+        <div className="absolute inset-0 bg-gradient-to-b from-teal-50/80 to-white/90"></div>
         <div className="container relative z-10">
           <div className="max-w-3xl mx-auto text-center">
-            <h1 className="text-4xl md:text-5xl font-bold text-green-700 mb-6 gradient-text">Blog Médico</h1>
-            <div className="w-20 h-1 bg-green-500 mx-auto mb-6"></div>
+            <h1 className="text-4xl md:text-5xl font-bold text-teal-700 mb-6 gradient-text">Blog Médico</h1>
+            <div className="w-20 h-1 bg-teal-500 mx-auto mb-6"></div>
             <p className="text-xl text-gray-600">
               Artículos y noticias sobre urología, salud masculina y avances médicos
             </p>
@@ -65,7 +65,7 @@ export default function BlogPage() {
             <div className="bg-white rounded-2xl p-8 md:p-12 shadow-xl elegant-shadow">
               <div className="flex flex-col md:flex-row items-center gap-8">
                 <div className="md:w-2/3">
-                  <h2 className="text-3xl font-bold text-green-700 mb-4">Suscríbete a nuestro boletín</h2>
+                  <h2 className="text-3xl font-bold text-teal-700 mb-4">Suscríbete a nuestro boletín</h2>
                   <p className="text-gray-600 mb-6">
                     Recibe los últimos artículos, consejos de salud y noticias directamente en tu correo electrónico.
                   </p>
@@ -73,9 +73,9 @@ export default function BlogPage() {
                     <input
                       type="email"
                       placeholder="Tu correo electrónico"
-                      className="flex-grow px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-green-500"
+                      className="flex-grow px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-teal-500"
                     />
-                    <button className="bg-green-700 hover:bg-green-600 text-white px-6 py-3 rounded-lg transition-colors">
+                    <button className="bg-teal-700 hover:bg-teal-600 text-white px-6 py-3 rounded-lg transition-colors">
                       Suscribirse
                     </button>
                   </div>

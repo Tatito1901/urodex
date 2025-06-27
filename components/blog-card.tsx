@@ -34,7 +34,7 @@ export function BlogCard({ post }: BlogCardProps) {
         />
         {post.categories && post.categories.length > 0 && (
           <div className="absolute top-4 left-4 z-10">
-            <span className="bg-green-700 text-white text-xs px-3 py-1 rounded-full">{post.categories[0]}</span>
+            <span className="bg-teal-700 text-white text-xs px-3 py-1 rounded-full">{post.categories[0]}</span>
           </div>
         )}
       </div>
@@ -43,11 +43,11 @@ export function BlogCard({ post }: BlogCardProps) {
           <Calendar className="h-4 w-4 mr-1" />
           <time dateTime={post.publishedAt}>{formatDate(post.publishedAt || new Date().toISOString())}</time>
         </div>
-        <h3 className="text-xl font-medium text-green-700 mb-2 line-clamp-2">{post.title}</h3>
+        <h3 className="text-xl font-medium text-teal-700 mb-2 line-clamp-2">{post.title}</h3>
         <p className="text-gray-600 mb-4 line-clamp-3 flex-grow">{post.excerpt || "Leer más sobre este artículo..."}</p>
         <Link
           href={`/blog/${post.slug.current}`}
-          className="text-green-700 font-medium hover:text-green-600 inline-flex items-center group"
+          className="text-teal-700 font-medium hover:text-teal-600 inline-flex items-center group"
         >
           Leer más
           <svg

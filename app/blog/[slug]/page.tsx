@@ -34,19 +34,19 @@ export default function BlogPostPage({ params }: BlogPostPageProps) {
     <main className="flex-1">
       {/* Hero Section */}
       <section className="relative bg-white py-16 md:py-24">
-        <div className="absolute inset-0 bg-gradient-to-b from-green-50/80 to-white/90"></div>
+        <div className="absolute inset-0 bg-gradient-to-b from-teal-50/80 to-white/90"></div>
         <div className="container relative z-10">
           <ScrollAnimation animation="fade-in-up">
             <Link
               href="/blog"
-              className="inline-flex items-center text-green-700 hover:text-green-600 mb-8 transition-colors"
+              className="inline-flex items-center text-teal-700 hover:text-teal-600 mb-8 transition-colors"
             >
               <ArrowLeft className="h-4 w-4 mr-2" />
               Volver al blog
             </Link>
 
             <div className="max-w-3xl mx-auto">
-              <h1 className="text-3xl md:text-4xl font-bold text-green-700 mb-6">{post.title}</h1>
+              <h1 className="text-3xl md:text-4xl font-bold text-teal-700 mb-6">{post.title}</h1>
 
               <div className="flex flex-wrap items-center text-gray-600 gap-4 mb-8">
                 <div className="flex items-center">
@@ -65,7 +65,7 @@ export default function BlogPostPage({ params }: BlogPostPageProps) {
                   <div className="flex items-center flex-wrap gap-2">
                     <Tag className="h-4 w-4 mr-1" />
                     {post.categories.map((category: string) => (
-                      <span key={category} className="bg-green-100 text-green-700 text-xs px-2 py-1 rounded-full">
+                      <span key={category} className="bg-teal-100 text-teal-700 text-xs px-2 py-1 rounded-full">
                         {category}
                       </span>
                     ))}
@@ -81,7 +81,7 @@ export default function BlogPostPage({ params }: BlogPostPageProps) {
       <section className="py-12 bg-white">
         <div className="container">
           <ScrollAnimation animation="fade-in-up">
-            <article className="prose prose-green max-w-3xl mx-auto">
+            <article className="prose prose-teal max-w-3xl mx-auto">
               <p className="text-gray-600">El contenido de este artículo no está disponible actualmente.</p>
               <p className="text-gray-600 mt-4">Estamos trabajando en actualizar nuestro sistema de blog. Por favor, vuelva pronto para ver nuestros artículos.</p>
             </article>
@@ -95,10 +95,10 @@ export default function BlogPostPage({ params }: BlogPostPageProps) {
           <ScrollAnimation animation="fade-in-up">
             <div className="max-w-3xl mx-auto">
               <div className="border-t border-gray-200 pt-8">
-                <h3 className="text-xl font-bold text-green-700 mb-4">Sobre el autor</h3>
+                <h3 className="text-xl font-bold text-teal-700 mb-4">Sobre el autor</h3>
                 <div className="flex items-center gap-4">
-                  <div className="w-16 h-16 rounded-full overflow-hidden bg-green-100 flex-shrink-0">
-                    <div className="w-full h-full flex items-center justify-center text-green-700">
+                  <div className="w-16 h-16 rounded-full overflow-hidden bg-teal-100 flex-shrink-0">
+                    <div className="w-full h-full flex items-center justify-center text-teal-700">
                       <User className="h-8 w-8" />
                     </div>
                   </div>

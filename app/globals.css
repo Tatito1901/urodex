@@ -12,7 +12,7 @@
     --foreground: 210 15% 25%;
     --card: 0 0% 100%;
     --card-foreground: 210 15% 25%;
-    --primary: 158 35% 28%; /* Verde médico profesional */
+    --primary: 175.9 60.8% 19%; /* Teal médico profesional */
     --primary-foreground: 0 0% 100%;
     --secondary: 210 15% 97%;
     --secondary-foreground: 210 15% 25%;
@@ -22,7 +22,7 @@
     --accent-foreground: 158 35% 25%;
     --border: 210 12% 90%;
     --input: 210 12% 92%;
-    --ring: 158 35% 28%;
+    --ring: 175.9 60.8% 19%;
 
     /* Sombras discretas y profesionales */
     --shadow-subtle: 0 1px 2px 0 rgba(0, 0, 0, 0.03);
@@ -53,7 +53,7 @@
     --radius-lg: 1rem;
 
     /* Colores médicos específicos */
-    --medical-green: 158 35% 28%;
+    --medical-green: 175.9 60.8% 19%;
     --medical-green-light: 158 25% 85%;
     --medical-blue: 210 25% 35%;
     --medical-gray: 210 12% 45%;
