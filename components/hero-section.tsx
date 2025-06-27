@@ -160,7 +160,7 @@ export function HeroSection() {
           <div className="flex flex-col sm:flex-row flex-wrap gap-3 md:gap-4 pt-4 md:pt-6 justify-center">
             <Button
               className="bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 rounded-full px-6 py-4 md:px-7 md:py-5 text-sm md:text-base font-medium tracking-wide transition-all transform hover:scale-[1.03] focus:scale-[0.98] shadow-lg"
-              onClick={() => window.open("https://api.whatsapp.com/send?phone=5215516942925", "_blank")}
+              onClick={() => window.open("https://api.whatsapp.com/send?phone=5215516942925&text=Hola%20dr.%20mario%20me%20gustaria%20obtener%20mas%20informacion%20acerca%20de%20sus%20servicios", "_blank")}
             >
               Agenda por WhatsApp
             </Button>

@@ -146,27 +146,27 @@ export default function Home() {
   const facilityImages = [
     {
       id: 1,
-      src: "/images/consultorio-1.jpg",
-      alt: "Consultorio médico moderno",
-      caption: "Consultorio equipado con tecnología de vanguardia"
+      src: "/images/consultorio_tecnologia.png",
+      alt: "Sala de Exploración y Ultrasonido",
+      caption: "Equipada para realizar ultrasonidos y exploraciones detalladas, garantizando un diagnóstico preciso y completo."
     },
     {
       id: 2,
-      src: "/images/sala-espera.jpg",
-      alt: "Sala de espera cómoda",
-      caption: "Ambiente relajante para nuestros pacientes"
+      src: "/images/consultorio.png",
+      alt: "Consultorio Moderno",
+      caption: "Un espacio profesional y acogedor donde te brindaremos una atención médica personalizada y de la más alta calidad."
     },
     {
       id: 3,
-      src: "/images/quirofano.jpg",
-      alt: "Quirófano especializado",
-      caption: "Quirófano con tecnología láser avanzada"
+      src: "/images/CONSULTORIO_MARIO.png",
+      alt: "Atención Personalizada",
+      caption: "Nuestros consultorios están diseñados para asegurar tu comodidad y privacidad durante cada una de tus visitas."
     },
     {
       id: 4,
-      src: "/images/recepcion.jpg",
-      alt: "Área de recepción",
-      caption: "Recepción con atención personalizada"
+      src: "/images/sala_de_espera.png",
+      alt: "Sala de Espera Elegante",
+      caption: "Un ambiente confortable y elegante, pensado para que tu espera sea lo más agradable y tranquila posible."
     }
   ]
 
@@ -175,7 +175,7 @@ export default function Home() {
   const openWhatsApp = () => {
     const message = "Hola vi su pagina web y me interesa mas informacion";
     const encodedMessage = encodeURIComponent(message);
-    window.open(`https://api.whatsapp.com/send?phone=5215516942925&text=${encodedMessage}`, "_blank");
+    window.open(`https://api.whatsapp.com/send?phone=5215516942925&text=Hola%20dr.%20mario%20me%20gustaria%20obtener%20mas%20informacion%20acerca%20de%20sus%20servicios&text=${encodedMessage}`, "_blank");
   }
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {

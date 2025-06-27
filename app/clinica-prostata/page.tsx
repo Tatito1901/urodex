@@ -88,7 +88,7 @@ export default function ClinicaProstata() {
   ]
 
   const openWhatsApp = () => {
-    window.open("https://api.whatsapp.com/send?phone=5215516942925", "_blank")
+    window.open("https://api.whatsapp.com/send?phone=5215516942925&text=Hola%20dr.%20mario%20me%20gustaria%20obtener%20mas%20informacion%20acerca%20de%20sus%20servicios", "_blank")
   }
 
   return (

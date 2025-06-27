@@ -58,7 +58,7 @@ export function Header({ activeSection }: HeaderProps) {
   ]
 
   const openWhatsApp = () => {
-    window.open("https://api.whatsapp.com/send?phone=5215516942925", "_blank")
+    window.open("https://api.whatsapp.com/send?phone=5215516942925&text=Hola%20dr.%20mario%20me%20gustaria%20obtener%20mas%20informacion%20acerca%20de%20sus%20servicios", "_blank")
   }
 
   return (
@@ -207,7 +207,7 @@ export function Header({ activeSection }: HeaderProps) {
               {/* Contact Info */}
               <div className="flex items-center gap-3 pr-4 border-r border-gray-200">
                 <Phone className="h-4 w-4 text-green-600" />
-                <span className="text-sm font-medium text-gray-700">(55) 1694 2925</span>
+                <a href="tel:5516942925" className="text-sm font-medium text-gray-700 hover:text-green-700 transition-colors">(55) 1694 2925</a>
               </div>
               
               {/* Social Links */}
