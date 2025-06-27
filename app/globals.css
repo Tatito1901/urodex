@@ -3,68 +3,70 @@
 @tailwind utilities;
 
 /* ====================================
-   VARIABLES MINIMALISTAS
+   VARIABLES PROFESIONALES MÉDICAS
    ==================================== */
 @layer base {
   :root {
-    /* Sistema de colores refinado */
+    /* Paleta médica profesional y confiable */
     --background: 0 0% 100%;
-    --foreground: 215 25% 27%;
+    --foreground: 210 15% 25%;
     --card: 0 0% 100%;
-    --card-foreground: 215 25% 27%;
-    --primary: 158 64% 35%; /* darker elegant green */
+    --card-foreground: 210 15% 25%;
+    --primary: 158 35% 28%; /* Verde médico profesional */
     --primary-foreground: 0 0% 100%;
-    --secondary: 158 30% 96%;
-    --secondary-foreground: 158 64% 27%;
-    --muted: 210 40% 98%;
-    --muted-foreground: 215 16% 47%;
-    --accent: 158 30% 94%;
-    --accent-foreground: 158 64% 27%;
-    --border: 214 32% 91%;
-    --input: 214 32% 91%;
-    --ring: 158 64% 52%;
+    --secondary: 210 15% 97%;
+    --secondary-foreground: 210 15% 25%;
+    --muted: 210 10% 98%;
+    --muted-foreground: 210 12% 45%;
+    --accent: 158 20% 95%;
+    --accent-foreground: 158 35% 25%;
+    --border: 210 12% 90%;
+    --input: 210 12% 92%;
+    --ring: 158 35% 28%;
 
-    /* Sombras elegantes y sutiles */
-    --shadow-minimal: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
-    --shadow-elegant: 0 4px 12px -2px rgba(0, 0, 0, 0.05);
-    --shadow-sophisticated: 0 8px 25px -5px rgba(0, 0, 0, 0.08);
-    --shadow-premium: 0 16px 40px -12px rgba(0, 0, 0, 0.12);
+    /* Sombras discretas y profesionales */
+    --shadow-subtle: 0 1px 2px 0 rgba(0, 0, 0, 0.03);
+    --shadow-soft: 0 2px 8px -2px rgba(0, 0, 0, 0.04);
+    --shadow-refined: 0 4px 16px -4px rgba(0, 0, 0, 0.06);
+    --shadow-professional: 0 8px 24px -8px rgba(0, 0, 0, 0.08);
 
-    /* Espaciado refinado */
+    /* Espaciado médico refinado */
     --space-micro: 0.125rem;   /* 2px */
-    --space-xs: 0.375rem;      /* 6px */
-    --space-sm: 0.625rem;      /* 10px */
-    --space-md: 1.25rem;       /* 20px */
-    --space-lg: 2rem;          /* 32px */
-    --space-xl: 3.5rem;        /* 56px */
+    --space-xs: 0.5rem;        /* 8px */
+    --space-sm: 0.75rem;       /* 12px */
+    --space-md: 1.5rem;        /* 24px */
+    --space-lg: 2.5rem;        /* 40px */
+    --space-xl: 4rem;          /* 64px */
     --space-2xl: 6rem;         /* 96px */
 
-    /* Tipografía sofisticada */
+    /* Tipografía médica profesional */
     --font-weight-light: 300;
     --font-weight-normal: 400;
     --font-weight-medium: 500;
     --font-weight-semibold: 600;
     --font-weight-bold: 700;
 
-    /* Bordes y radios minimalistas */
-    --radius-sm: 0.375rem;
+    /* Bordes y radios conservadores */
+    --radius-xs: 0.25rem;
+    --radius-sm: 0.5rem;
     --radius-md: 0.75rem;
     --radius-lg: 1rem;
-    --radius-xl: 1.5rem;
+
+    /* Colores médicos específicos */
+    --medical-green: 158 35% 28%;
+    --medical-green-light: 158 25% 85%;
+    --medical-blue: 210 25% 35%;
+    --medical-gray: 210 12% 45%;
+    --medical-gray-light: 210 8% 95%;
   }
 }
 
 /* ====================================
-   BASE STYLES REFINADOS
+   BASE STYLES MÉDICOS REFINADOS
    ==================================== */
 @layer base {
   * {
     @apply border-border;
-    box-sizing: border-box;
-  }
-
-  *::before,
-  *::after {
     box-sizing: border-box;
   }
 
@@ -73,239 +75,279 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
-    font-feature-settings: "kern" 1, "liga" 1, "calt" 1;
+    font-feature-settings: "kern" 1, "liga" 1;
   }
 
   body {
     @apply bg-background text-foreground;
-    line-height: 1.6;
+    line-height: 1.65;
     font-weight: var(--font-weight-normal);
-    letter-spacing: -0.011em;
+    letter-spacing: -0.008em;
+    color: hsl(var(--foreground));
   }
 
-  /* Tipografía elegante y refinada */
+  /* Tipografía médica profesional */
   h1, h2, h3, h4, h5, h6 {
-    line-height: 1.2;
-    letter-spacing: -0.025em;
+    line-height: 1.25;
+    letter-spacing: -0.02em;
     font-weight: var(--font-weight-bold);
-    color: hsl(158 64% 27%);
+    color: hsl(var(--medical-green));
+    margin: 0;
   }
 
   h1 { 
-    @apply text-4xl md:text-5xl lg:text-6xl;
+    @apply text-3xl sm:text-4xl md:text-5xl;
     font-weight: var(--font-weight-bold);
-    letter-spacing: -0.04em;
+    letter-spacing: -0.03em;
   }
 
   h2 { 
-    @apply text-3xl md:text-4xl lg:text-5xl;
+    @apply text-2xl sm:text-3xl md:text-4xl;
     font-weight: var(--font-weight-bold);
-    letter-spacing: -0.035em;
-  }
-
-  h3 { 
-    @apply text-2xl md:text-3xl;
-    font-weight: var(--font-weight-semibold);
     letter-spacing: -0.025em;
   }
 
+  h3 { 
+    @apply text-xl sm:text-2xl md:text-3xl;
+    font-weight: var(--font-weight-semibold);
+    letter-spacing: -0.02em;
+  }
+
   h4 { 
-    @apply text-xl md:text-2xl;
+    @apply text-lg sm:text-xl;
     font-weight: var(--font-weight-semibold);
   }
 
   h5 { 
-    @apply text-lg md:text-xl;
+    @apply text-base sm:text-lg;
     font-weight: var(--font-weight-medium);
   }
 
   h6 { 
-    @apply text-base md:text-lg;
+    @apply text-sm sm:text-base;
     font-weight: var(--font-weight-medium);
   }
 
   p {
     line-height: 1.7;
-    letter-spacing: -0.006em;
-    color: hsl(215 16% 47%);
+    letter-spacing: -0.004em;
+    color: hsl(var(--medical-gray));
+    margin: 0;
   }
 
-  /* Estados de foco minimalistas */
+  /* Estados de foco médicos discretos */
   :focus-visible {
     @apply outline-none;
-    box-shadow: 0 0 0 2px hsl(158 64% 52%);
+    box-shadow: 0 0 0 2px hsl(var(--medical-green) / 0.4);
     border-radius: var(--radius-sm);
   }
 
-  /* Selección de texto elegante */
+  /* Selección de texto profesional */
   ::selection {
-    background: hsl(158 30% 94%);
-    color: hsl(158 64% 27%);
+    background: hsl(var(--medical-green-light));
+    color: hsl(var(--medical-green));
   }
 }
 
 /* ====================================
-   COMPONENTES SOFISTICADOS
+   COMPONENTES MÉDICOS PROFESIONALES
    ==================================== */
 @layer components {
-  /* Botones elegantes */
+  /* Botones médicos refinados */
   .btn {
-    @apply inline-flex items-center justify-center rounded-lg font-medium transition-all duration-200;
+    @apply inline-flex items-center justify-center rounded-lg font-medium;
     font-weight: var(--font-weight-medium);
-    letter-spacing: -0.006em;
+    letter-spacing: -0.004em;
+    transition: all 0.2s ease-out;
+    border: 1px solid transparent;
   }
 
   .btn-primary {
-    @apply bg-green-600 hover:bg-green-700 text-white;
-    box-shadow: var(--shadow-minimal);
+    background: hsl(var(--medical-green));
+    color: white;
+    box-shadow: var(--shadow-subtle);
   }
 
   .btn-primary:hover {
-    box-shadow: var(--shadow-elegant);
-    transform: translateY(-1px);
+    background: hsl(var(--medical-green) / 0.9);
+    box-shadow: var(--shadow-soft);
+    transform: translateY(-0.5px);
   }
 
   .btn-secondary {
-    @apply border border-green-200 text-green-700 hover:bg-green-50 bg-white;
-    box-shadow: var(--shadow-minimal);
+    background: white;
+    color: hsl(var(--medical-green));
+    border: 1px solid hsl(var(--medical-green) / 0.2);
+    box-shadow: var(--shadow-subtle);
   }
 
   .btn-secondary:hover {
-    border-color: hsl(158 30% 85%);
+    background: hsl(var(--medical-green-light));
+    border-color: hsl(var(--medical-green) / 0.3);
   }
 
   .btn-ghost {
-    @apply text-green-700 hover:bg-green-50;
+    color: hsl(var(--medical-green));
+    background: transparent;
   }
 
-  /* Tarjetas minimalistas */
+  .btn-ghost:hover {
+    background: hsl(var(--medical-green-light));
+  }
+
+  /* Tarjetas médicas discretas */
   .card {
-    @apply bg-white rounded-xl border border-gray-100;
-    box-shadow: var(--shadow-minimal);
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    @apply bg-white rounded-lg;
+    border: 1px solid hsl(var(--border));
+    box-shadow: var(--shadow-subtle);
+    transition: all 0.25s ease-out;
   }
 
   .card:hover {
-    box-shadow: var(--shadow-sophisticated);
-    transform: translateY(-2px);
-    border-color: hsl(158 30% 85%);
+    box-shadow: var(--shadow-refined);
+    transform: translateY(-1px);
+    border-color: hsl(var(--medical-green) / 0.15);
   }
 
-  /* Formularios refinados */
+  /* Formularios médicos profesionales */
   .input {
-    @apply bg-white border border-gray-200 rounded-lg px-4 py-3;
-    @apply focus:border-green-400 focus:ring-1 focus:ring-green-400;
-    @apply transition-all duration-200;
-    box-shadow: var(--shadow-minimal);
+    @apply bg-white rounded-lg px-4 py-3;
+    border: 1px solid hsl(var(--border));
+    transition: all 0.2s ease-out;
+    box-shadow: var(--shadow-subtle);
+    color: hsl(var(--foreground));
   }
 
   .input:focus {
-    box-shadow: var(--shadow-elegant);
+    border-color: hsl(var(--medical-green) / 0.4);
+    box-shadow: 0 0 0 3px hsl(var(--medical-green) / 0.1);
   }
 
   .textarea {
-    @apply bg-white border border-gray-200 rounded-lg p-4 min-h-[120px];
-    @apply focus:border-green-400 focus:ring-1 focus:ring-green-400;
-    @apply transition-all duration-200 resize-y;
-    box-shadow: var(--shadow-minimal);
+    @apply bg-white rounded-lg p-4 min-h-[120px] resize-y;
+    border: 1px solid hsl(var(--border));
+    transition: all 0.2s ease-out;
+    box-shadow: var(--shadow-subtle);
   }
 
   .textarea:focus {
-    box-shadow: var(--shadow-elegant);
+    border-color: hsl(var(--medical-green) / 0.4);
+    box-shadow: 0 0 0 3px hsl(var(--medical-green) / 0.1);
   }
 }
 
 /* ====================================
-   UTILIDADES ELEGANTES
+   UTILIDADES MÉDICAS REFINADAS
    ==================================== */
 @layer utilities {
-  /* Sombras sofisticadas */
-  .shadow-minimal {
-    box-shadow: var(--shadow-minimal);
+  /* Sombras médicas profesionales */
+  .shadow-subtle {
+    box-shadow: var(--shadow-subtle);
   }
 
-  .shadow-elegant {
-    box-shadow: var(--shadow-elegant);
+  .shadow-soft {
+    box-shadow: var(--shadow-soft);
   }
 
-  .shadow-sophisticated {
-    box-shadow: var(--shadow-sophisticated);
+  .shadow-refined {
+    box-shadow: var(--shadow-refined);
   }
 
-  .shadow-premium {
-    box-shadow: var(--shadow-premium);
+  .shadow-professional {
+    box-shadow: var(--shadow-professional);
   }
 
-  /* Gradientes sutiles */
-  .gradient-elegant {
+  /* Gradientes médicos discretos */
+  .gradient-medical-subtle {
     background: linear-gradient(135deg, 
-      hsl(158 30% 98%) 0%, 
-      hsl(158 20% 95%) 100%);
+      hsl(var(--medical-gray-light)) 0%, 
+      white 100%);
   }
 
-  .gradient-medical {
+  .gradient-medical-primary {
     background: linear-gradient(135deg, 
-      hsl(158 64% 52%) 0%, 
-      hsl(158 64% 45%) 100%);
+      hsl(var(--medical-green)) 0%, 
+      hsl(var(--medical-green) / 0.9) 100%);
   }
 
-  .gradient-text {
+  .gradient-text-medical {
     background: linear-gradient(135deg, 
-      hsl(158 64% 27%) 0%, 
-      hsl(158 64% 52%) 100%);
+      hsl(var(--medical-green)) 0%, 
+      hsl(var(--medical-blue)) 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
   }
 
-  /* Efectos hover sutiles */
-  .hover-minimal {
-    transition: all 0.2s ease;
+  /* Efectos hover médicos discretos */
+  .hover-medical {
+    transition: all 0.2s ease-out;
   }
 
-  .hover-minimal:hover {
-    transform: translateY(-1px);
+  .hover-medical:hover {
+    transform: translateY(-0.5px);
+    box-shadow: var(--shadow-soft);
   }
 
-  .hover-elegant {
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  /* Bordes médicos profesionales */
+  .border-medical {
+    border: 1px solid hsl(var(--medical-green) / 0.2);
   }
 
-  .hover-elegant:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-sophisticated);
+  .border-medical:hover {
+    border-color: hsl(var(--medical-green) / 0.3);
   }
 
-  /* Bordes elegantes */
-  .border-elegant {
-    border: 1px solid hsl(158 30% 85%);
+  /* Colores de texto médicos */
+  .text-medical-primary {
+    color: hsl(var(--medical-green));
   }
 
-  .border-elegant:hover {
-    border-color: hsl(158 30% 75%);
+  .text-medical-secondary {
+    color: hsl(var(--medical-gray));
+  }
+
+  .text-medical-light {
+    color: hsl(var(--medical-gray) / 0.7);
+  }
+
+  /* Fondos médicos */
+  .bg-medical-light {
+    background: hsl(var(--medical-gray-light));
+  }
+
+  .bg-medical-accent {
+    background: hsl(var(--medical-green-light));
   }
 }
 
 /* ====================================
-   NAVEGACIÓN MINIMALISTA
+   NAVEGACIÓN MÉDICA PROFESIONAL
    ==================================== */
 @layer components {
   .header {
-    @apply sticky top-0 z-40 w-full transition-all duration-300;
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    background: rgba(255, 255, 255, 0.85);
+    @apply sticky top-0 z-40 w-full;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    background: rgba(255, 255, 255, 0.95);
+    border-bottom: 1px solid hsl(var(--border));
+    transition: all 0.3s ease-out;
   }
 
   .header.scrolled {
-    box-shadow: var(--shadow-elegant);
-    border-bottom: 1px solid hsl(158 30% 90%);
+    box-shadow: var(--shadow-soft);
+    background: rgba(255, 255, 255, 0.98);
   }
 
   .nav-link {
-    @apply relative px-3 py-2 text-gray-600 hover:text-green-700 font-medium;
-    @apply transition-colors duration-200;
-    letter-spacing: -0.006em;
+    @apply relative px-4 py-2 font-medium;
+    color: hsl(var(--medical-gray));
+    transition: color 0.2s ease-out;
+    letter-spacing: -0.004em;
+  }
+
+  .nav-link:hover {
+    color: hsl(var(--medical-green));
   }
 
   .nav-link::after {
@@ -314,26 +356,26 @@
     bottom: 0;
     left: 50%;
     width: 0;
-    height: 2px;
-    background: hsl(158 64% 52%);
-    transition: all 0.3s ease;
+    height: 1px;
+    background: hsl(var(--medical-green));
+    transition: all 0.25s ease-out;
     transform: translateX(-50%);
   }
 
   .nav-link:hover::after,
   .nav-link.active::after {
-    width: 100%;
+    width: 80%;
   }
 }
 
 /* ====================================
-   ANIMACIONES REFINADAS
+   ANIMACIONES MÉDICAS SUTILES
    ==================================== */
 @layer utilities {
-  @keyframes fade-in-elegant {
+  @keyframes fade-in-medical {
     from {
       opacity: 0;
-      transform: translateY(20px);
+      transform: translateY(12px);
     }
     to {
       opacity: 1;
@@ -341,10 +383,10 @@
     }
   }
 
-  @keyframes slide-in-subtle {
+  @keyframes slide-in-medical {
     from {
       opacity: 0;
-      transform: translateX(-20px);
+      transform: translateX(-12px);
     }
     to {
       opacity: 1;
@@ -352,36 +394,23 @@
     }
   }
 
-  @keyframes float-minimal {
-    0%, 100% {
-      transform: translateY(0);
-    }
-    50% {
-      transform: translateY(-4px);
-    }
+  .animate-fade-in-medical {
+    animation: fade-in-medical 0.5s ease-out;
   }
 
-  .animate-fade-in {
-    animation: fade-in-elegant 0.6s ease-out;
-  }
-
-  .animate-slide-in {
-    animation: slide-in-subtle 0.5s ease-out;
-  }
-
-  .animate-float {
-    animation: float-minimal 4s ease-in-out infinite;
+  .animate-slide-in-medical {
+    animation: slide-in-medical 0.4s ease-out;
   }
 }
 
 /* ====================================
-   SCROLL ANIMATIONS
+   SCROLL ANIMATIONS MÉDICAS
    ==================================== */
 @layer utilities {
   .fade-in-up {
     opacity: 0;
-    transform: translateY(20px);
-    transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+    transform: translateY(16px);
+    transition: opacity 0.5s ease-out, transform 0.5s ease-out;
   }
 
   .fade-in-up.visible {
@@ -391,8 +420,8 @@
 
   .fade-in-right {
     opacity: 0;
-    transform: translateX(-20px);
-    transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+    transform: translateX(-16px);
+    transition: opacity 0.5s ease-out, transform 0.5s ease-out;
   }
 
   .fade-in-right.visible {
@@ -402,8 +431,8 @@
 
   .fade-in-left {
     opacity: 0;
-    transform: translateX(20px);
-    transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+    transform: translateX(16px);
+    transition: opacity 0.5s ease-out, transform 0.5s ease-out;
   }
 
   .fade-in-left.visible {
@@ -413,102 +442,96 @@
 }
 
 /* ====================================
-   PROGRESS BAR ELEGANTE
+   PROGRESS BAR MÉDICO DISCRETO
    ==================================== */
 .scroll-progress {
   position: fixed;
   top: 0;
   left: 0;
   z-index: 50;
-  height: 2px;
-  background: linear-gradient(90deg, 
-    hsl(158 64% 52%) 0%, 
-    hsl(158 64% 45%) 100%);
+  height: 1px;
+  background: hsl(var(--medical-green));
   width: 100%;
   transform-origin: 0%;
   transition: transform 0.1s ease-out;
+  opacity: 0.8;
 }
 
 /* ====================================
-   SCROLLBAR MINIMALISTA
+   SCROLLBAR MÉDICO DISCRETO
    ==================================== */
 @media (min-width: 768px) {
   ::-webkit-scrollbar {
-    width: 6px;
+    width: 4px;
   }
 
   ::-webkit-scrollbar-track {
-    background: hsl(158 30% 96%);
+    background: hsl(var(--medical-gray-light));
   }
 
   ::-webkit-scrollbar-thumb {
-    background: hsl(158 64% 52%);
-    border-radius: 3px;
+    background: hsl(var(--medical-green) / 0.6);
+    border-radius: 2px;
   }
 
   ::-webkit-scrollbar-thumb:hover {
-    background: hsl(158 64% 45%);
+    background: hsl(var(--medical-green) / 0.8);
   }
 }
 
 /* ====================================
-   LAYOUT SPACING
+   LAYOUT MÉDICO PROFESIONAL
    ==================================== */
 @layer utilities {
-  .container-elegant {
-    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+  .container-medical {
+    @apply max-w-6xl mx-auto px-4 sm:px-6 lg:px-8;
   }
 
-  .section-spacing {
+  .section-spacing-medical {
     padding-top: var(--space-2xl);
     padding-bottom: var(--space-2xl);
   }
 
-  .section-spacing-sm {
+  .section-spacing-medical-sm {
     padding-top: var(--space-xl);
     padding-bottom: var(--space-xl);
   }
 
-  .section-spacing-lg {
-    padding-top: calc(var(--space-2xl) * 1.5);
-    padding-bottom: calc(var(--space-2xl) * 1.5);
-  }
-
-  .content-center {
+  .content-medical {
     @apply max-w-4xl mx-auto;
   }
 
-  .content-narrow {
+  .content-medical-narrow {
     @apply max-w-2xl mx-auto;
-  }
-
-  .content-wide {
-    @apply max-w-6xl mx-auto;
   }
 }
 
 /* ====================================
-   RESPONSIVE REFINEMENTS
+   REFINAMIENTOS RESPONSIVOS
    ==================================== */
 @media (max-width: 640px) {
-  .section-spacing {
+  .section-spacing-medical {
     padding-top: var(--space-xl);
     padding-bottom: var(--space-xl);
   }
 
   h1 {
-    font-size: 2.25rem; /* 36px */
-    line-height: 1.1;
+    font-size: 1.875rem; /* 30px */
+    line-height: 1.2;
   }
 
   h2 {
-    font-size: 1.875rem; /* 30px */
-    line-height: 1.15;
+    font-size: 1.5rem; /* 24px */
+    line-height: 1.25;
+  }
+
+  .btn {
+    @apply px-6 py-3 text-sm;
   }
 }
 
 /* ====================================
-   ACCESSIBILITY IMPROVEMENTS
+   ACCESIBILIDAD MÉDICA
    ==================================== */
 @media (prefers-reduced-motion: reduce) {
   *,
@@ -518,73 +541,45 @@
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
-
-  .scroll-progress {
-    transition: none;
-  }
 }
 
 @media (prefers-contrast: high) {
   .btn-primary {
-    @apply bg-green-800 border border-green-900;
+    background: hsl(var(--medical-green));
+    border: 2px solid hsl(var(--medical-green));
   }
 
-  .gradient-text {
-    color: hsl(158 64% 27%);
-    background: none;
-    -webkit-text-fill-color: unset;
-  }
-}
-
-/* ====================================
-   PRINT STYLES
-   ==================================== */
-@media print {
-  .no-print {
-    display: none !important;
-  }
-
-  body {
-    font-size: 12pt;
-    line-height: 1.5;
-    color: #000;
-    background: #fff;
-  }
-
-  .shadow-minimal,
-  .shadow-elegant,
-  .shadow-sophisticated,
-  .shadow-premium {
-    box-shadow: none !important;
+  .card {
+    border: 2px solid hsl(var(--border));
   }
 }
 
 /* ====================================
-   LOADING STATES
+   ESTADOS DE LOADING MÉDICOS
    ==================================== */
-@keyframes pulse-elegant {
+@keyframes pulse-medical {
   0%, 100% {
     opacity: 1;
   }
   50% {
-    opacity: 0.5;
+    opacity: 0.6;
   }
 }
 
-.loading-pulse {
-  animation: pulse-elegant 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+.loading-medical {
+  animation: pulse-medical 1.5s ease-in-out infinite;
 }
 
-.loading-skeleton {
+.skeleton-medical {
   background: linear-gradient(90deg, 
-    hsl(158 30% 96%) 25%, 
-    hsl(158 30% 92%) 50%, 
-    hsl(158 30% 96%) 75%);
+    hsl(var(--medical-gray-light)) 25%, 
+    hsl(var(--medical-gray-light) / 0.8) 50%, 
+    hsl(var(--medical-gray-light)) 75%);
   background-size: 200% 100%;
-  animation: loading-skeleton 1.5s ease-in-out infinite;
+  animation: skeleton-medical 1.2s ease-in-out infinite;
 }
 
-@keyframes loading-skeleton {
+@keyframes skeleton-medical {
   0% {
     background-position: 200% 0;
   }
@@ -594,7 +589,7 @@
 }
 
 /* ====================================
-   UTILITY CLASSES
+   UTILIDADES MÉDICAS PROFESIONALES
    ==================================== */
 .sr-only {
   position: absolute;
@@ -608,27 +603,60 @@
   border: 0;
 }
 
-.focus-ring {
-  @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-500 focus-visible:ring-offset-2;
+.focus-ring-medical {
+  @apply focus-visible:outline-none;
+  box-shadow: 0 0 0 2px hsl(var(--medical-green) / 0.4);
 }
 
 /* ====================================
-   GLASS EFFECT MINIMAL
+   GLASS EFFECT MÉDICO SUTIL
    ==================================== */
-.glass-minimal {
-  background: rgba(255, 255, 255, 0.7);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.3);
+.glass-medical {
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  border: 1px solid rgba(255, 255, 255, 0.8);
 }
 
 /* ====================================
-   TEXT UTILITIES
+   DIVIDERS MÉDICOS ELEGANTES
    ==================================== */
-.text-balance {
-  text-wrap: balance;
+.divider-medical {
+  width: 100%;
+  height: 1px;
+  background: linear-gradient(90deg, 
+    transparent 0%, 
+    hsl(var(--medical-green) / 0.2) 50%, 
+    transparent 100%);
 }
 
-.text-pretty {
-  text-wrap: pretty;
+.divider-medical-dot {
+  position: relative;
+}
+
+.divider-medical-dot::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 4px;
+  height: 4px;
+  background: hsl(var(--medical-green));
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+}
+
+/* ====================================
+   SPACING HELPERS MÉDICOS
+   ==================================== */
+.space-y-medical > * + * {
+  margin-top: var(--space-md);
+}
+
+.space-y-medical-sm > * + * {
+  margin-top: var(--space-sm);
+}
+
+.space-y-medical-lg > * + * {
+  margin-top: var(--space-lg);
 }

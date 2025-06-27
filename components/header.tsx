@@ -50,7 +50,7 @@ export function Header({ activeSection }: HeaderProps) {
   }, [isMenuOpen])
 
   const navigationItems = [
-    { href: "#inicio", label: "Inicio", section: "inicio" },
+    { href: "/", label: "Inicio", section: "inicio" },
     { href: "#sobre-mi", label: "Sobre Mí", section: "sobre-mi" },
     { href: "#servicios", label: "Servicios", section: "servicios" },
     { href: "#clinicas", label: "Clínicas", section: "clinicas" },
@@ -73,17 +73,14 @@ export function Header({ activeSection }: HeaderProps) {
           {/* Mobile Header */}
           <div className="flex justify-between items-center py-6 border-b border-green-100">
             <div className="flex items-center gap-3">
-              <div className="relative">
-                <div className="absolute -inset-1 bg-green-100 rounded-full blur-sm opacity-70"></div>
-                <Image 
-                  src="/images/urodex-logo.png" 
+              <Image 
+                  src="/images/Isotipo_Negativo Fondo Color (4).png" 
                   alt="Urodex Logo" 
                   width={40} 
                   height={40} 
                   className="h-10 w-auto relative z-10" 
                 />
-              </div>
-              <span className="text-2xl font-serif font-bold text-green-700">URODEX</span>
+              <span className="text-2xl font-sans font-bold text-green-700">URODEX</span>
             </div>
             <Button 
               variant="ghost" 
@@ -162,21 +159,16 @@ export function Header({ activeSection }: HeaderProps) {
             {/* Logo and Brand */}
             <div className="flex items-center gap-3 md:gap-4">
               <Link href="#inicio" className="flex items-center gap-3 md:gap-4 group">
-                <div className="relative">
-                  <div className="absolute -inset-2 bg-green-100 rounded-full blur-md opacity-0 group-hover:opacity-70 transition-opacity duration-300"></div>
-                  <div className="relative bg-white rounded-full p-1 shadow-md">
-                    <Image
-                      src="/images/urodex-logo.png"
+                <Image
+                      src="/images/Isotipo_Negativo Fondo Color (4).png"
                       alt="Urodex Logo"
                       width={36}
                       height={36}
                       className="h-8 md:h-10 w-auto relative z-10"
                       priority
                     />
-                  </div>
-                </div>
                 <div className="flex flex-col">
-                  <span className="text-xl md:text-2xl font-serif font-bold text-green-700 leading-tight">
+                  <span className="text-xl md:text-2xl font-sans font-bold text-green-700 leading-tight">
                     URODEX
                   </span>
                   <span className="text-xs text-green-600 font-medium hidden md:block leading-tight">

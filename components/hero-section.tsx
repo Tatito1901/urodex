@@ -94,7 +94,7 @@ export function HeroSection() {
       <div className="absolute inset-0 w-full h-full overflow-hidden">
         <video
           ref={videoRef}
-          className="absolute w-full h-full object-cover max-w-none"
+          className="absolute w-full h-full object-cover max-w-none blur-md"
           autoPlay
           muted
           loop
@@ -107,7 +107,7 @@ export function HeroSection() {
           }}
         >
           <source 
-            src="/images/Video_Quirúrgico_Urología_Moderna (1).mp4" 
+            src="/images/hero-video.mp4" 
             type="video/mp4" 
           />
           Tu navegador no soporta video HTML5.
