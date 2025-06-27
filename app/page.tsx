@@ -4,67 +4,19 @@ import { useEffect, useState } from "react"
 import { ScrollProgressBar, CustomCursor } from "@/components/scroll-animations"
 import { QuienSoySection } from "@/components/quien-soy-section"
 import { TratamientosSection } from "@/components/tratamientos-section"
+import { ContactSection } from "@/components/contact-section"
 import { Header } from "@/components/header"
-import { Section } from "@/components/section"
 import { ResponsiveContainer } from "@/components/responsive-container"
 import { Button } from "@/components/ui/button"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Phone, Shield, Star, MapPinned, Calendar, Play, Pause, Clock, ArrowRight, Award, Building2, Camera, CheckCircle, Facebook, Instagram, MapPin, Users } from "lucide-react"
+import { Phone, Shield, Star, Calendar, ArrowRight, Award, Building2, Camera, CheckCircle, Facebook, Instagram, MapPin, Users, Clock } from "lucide-react"
 import Image from "next/image"
-import { ScrollAnimation, ParallaxEffect } from "@/components/scroll-animations"
+import { ScrollAnimation } from "@/components/scroll-animations"
 import { HomeBlogSection } from "@/components/home-blog-section"
-import { GoogleMap } from "@/components/google-map"
 import Link from "next/dist/client/link"
-import { CancerUrologicoSvg, CalculosViaSvg, EyaculacionPrecozSvg, InfeccionViasSvg, QuisteEpididimoSvg, CircuncisionLaserSvg, HiperplasiaSvg, ItsSvg } from "@/components/service-svgs"
-import { Textarea } from "@/components/ui/textarea"
-import { Input } from "@/components/ui/input"
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@radix-ui/react-accordion"
-import { HeroSection } from "@/components/hero-section"
 
 export default function Home() {
   const [activeSection, setActiveSection] = useState("inicio")
-  const [selectedLocation, setSelectedLocation] = useState("polanco")
-  const [isVideoPlaying, setIsVideoPlaying] = useState(true)
-  const [formData, setFormData] = useState({
-    nombre: "",
-    correo: "",
-    celular: "",
-    diagnostico: "",
-    comentarios: ""
-  })
-
-  const locations = {
-    polanco: {
-      name: "Polanco",
-      address: "Temístocles 210, Polanco, Ciudad de México",
-      schedule: {
-        weekdays: "9:00 AM - 7:00 PM",
-        saturday: "9:00 AM - 2:00 PM",
-      },
-      phone: "(55) 1694 2925",
-      mapUrl: "https://maps.app.goo.gl/YFminzdq8uixrNxB9?g_st=com.google.maps.preview.copy"
-    },
-    satelite: {
-      name: "Ciudad Satélite",
-      address: "Cto Centro Comercial 20, Cd. Satélite, 53100 Naucalpan de Juárez, Méx.",
-      schedule: {
-        weekdays: "9:00 AM - 7:00 PM",
-        saturday: "9:00 AM - 2:00 PM",
-      },
-      phone: "(55) 1694 2925",
-      mapUrl: "https://maps.app.goo.gl/Yx5Yx5Yx5Yx5Yx5Y6"
-    },
-    intermed: {
-      name: "INTERMED",
-      address: "Calz de Guadalupe 442, Industrial, Gustavo A. Madero, 07800 Ciudad de México, CDMX",
-      schedule: {
-        weekdays: "9:00 AM - 7:00 PM",
-        saturday: "9:00 AM - 2:00 PM",
-      },
-      phone: "(55) 5739 3939",
-      mapUrl: "https://maps.app.goo.gl/IntermedLocation"
-    },
-  }
 
   useEffect(() => {
     const handleScroll = () => {
@@ -86,127 +38,37 @@ export default function Home() {
     return () => window.removeEventListener("scroll", handleScroll)
   }, [])
 
-  const getServiceIcon = (serviceName: string, className: string) => {
-    const icons = {
-      "Cáncer urológico": <CancerUrologicoSvg className={className} />,
-      "Cálculos en vía urinaria": <CalculosViaSvg className={className} />,
-      "Eyaculación Precoz": <EyaculacionPrecozSvg className={className} />,
-      "Infección de Vías Urinarias": <InfeccionViasSvg className={className} />,
-      "Quiste de Epidídimo": <QuisteEpididimoSvg className={className} />,
-      "Circuncisión con Láser": <CircuncisionLaserSvg className={className} />,
-      "Hiperplasia Prostática Benigna": <HiperplasiaSvg className={className} />,
-      "Infecciones de Transmisión Sexual": <ItsSvg className={className} />,
-    }
-    return icons[serviceName as keyof typeof icons] || <Award className={className} />
-  }
-
-  const services = [
-    {
-      name: "Cáncer urológico",
-      description: "Diagnóstico temprano y tratamiento integral de cáncer en próstata, vejiga, riñón y testículos con técnicas mínimamente invasivas.",
-      highlights: ["Detección temprana", "Cirugía robótica", "Seguimiento integral"]
-    },
-    {
-      name: "Hiperplasia Prostática Benigna",
-      description: "Tratamiento especializado del agrandamiento prostático con técnicas láser de última generación.",
-      highlights: ["Cirugía láser", "Recuperación rápida", "Resultados duraderos"]
-    },
-    {
-      name: "Cálculos en vía urinaria",
-      description: "Eliminación de piedras renales mediante litotricia láser y técnicas endoscópicas avanzadas.",
-      highlights: ["Sin incisiones", "Tecnología láser", "Alta efectividad"]
-    },
-    {
-      name: "Circuncisión con Láser",
-      description: "Procedimiento preciso con tecnología láser para máximo confort y recuperación rápida.",
-      highlights: ["Tecnología láser", "Mínimo dolor", "Cicatrización óptima"]
-    },
-    {
-      name: "Infección de Vías Urinarias",
-      description: "Diagnóstico preciso y tratamiento efectivo de infecciones urinarias recurrentes.",
-      highlights: ["Diagnóstico certero", "Tratamiento dirigido", "Prevención"]
-    },
-    {
-      name: "Eyaculación Precoz",
-      description: "Enfoque integral con técnicas modernas para mejorar la función sexual masculina.",
-      highlights: ["Tratamiento personalizado", "Enfoque integral", "Resultados probados"]
-    },
-    {
-      name: "Quiste de Epidídimo",
-      description: "Cirugía microscópica especializada preservando la función reproductiva.",
-      highlights: ["Cirugía microscópica", "Preservación función", "Técnica especializada"]
-    },
-    {
-      name: "Infecciones de Transmisión Sexual",
-      description: "Diagnóstico confidencial y tratamiento especializado de ITS con seguimiento completo.",
-      highlights: ["Confidencialidad", "Diagnóstico completo", "Seguimiento"]
-    },
-  ]
-
   const facilityImages = [
     {
       id: 1,
       src: "/images/consultorio_tecnologia.png",
-      alt: "Sala de Exploración y Ultrasonido",
-      caption: "Equipada para realizar ultrasonidos y exploraciones detalladas, garantizando un diagnóstico preciso y completo."
+      alt: "Consultorios con Tecnología Avanzada",
+      caption: "Espacios equipados con los últimos sistemas de diagnóstico y equipos urológicos especializados para una valoración completa y precisa."
     },
     {
       id: 2,
       src: "/images/consultorio.png",
-      alt: "Consultorio Moderno",
-      caption: "Un espacio profesional y acogedor donde te brindaremos una atención médica personalizada y de la más alta calidad."
+      alt: "Quirófanos Innovadores",
+      caption: "Quirófanos con equipamiento láser de última generación y tecnología digital integrada para procedimientos mínimamente invasivos."
     },
     {
       id: 3,
       src: "/images/CONSULTORIO_MARIO.png",
-      alt: "Atención Personalizada",
-      caption: "Nuestros consultorios están diseñados para asegurar tu comodidad y privacidad durante cada una de tus visitas."
+      alt: "Centro de Urodinamia",
+      caption: "Unidad especializada con equipos de vanguardia para realizar estudios urodinámicos completos que evalúan el funcionamiento del sistema urinario."
     },
     {
       id: 4,
       src: "/images/sala_de_espera.png",
-      alt: "Sala de Espera Elegante",
-      caption: "Un ambiente confortable y elegante, pensado para que tu espera sea lo más agradable y tranquila posible."
+      alt: "Sala de Recuperación Confortable",
+      caption: "Un espacio privado, tranquilo y con atención personalizada para garantizar una recuperación postoperatoria óptima y en condiciones de máximo confort."
     }
   ]
-
-  const currentLocation = locations[selectedLocation as keyof typeof locations]
 
   const openWhatsApp = () => {
     const message = "Hola vi su pagina web y me interesa mas informacion";
     const encodedMessage = encodeURIComponent(message);
     window.open(`https://api.whatsapp.com/send?phone=5215516942925&text=Hola%20dr.%20mario%20me%20gustaria%20obtener%20mas%20informacion%20acerca%20de%20sus%20servicios&text=${encodedMessage}`, "_blank");
-  }
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }))
-  }
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    
-    try {
-      const response = await fetch('/api/mailchimp', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData)
-      })
-      
-      if (response.ok) {
-        alert('¡Gracias! Nos pondremos en contacto contigo muy pronto.')
-        setFormData({
-          nombre: "",
-          correo: "",
-          celular: "",
-          diagnostico: "",
-          comentarios: ""
-        })
-      }
-    } catch (error) {
-      console.error('Error:', error)
-      openWhatsApp()
-    }
   }
 
   return (
@@ -634,277 +496,8 @@ export default function Home() {
           </ResponsiveContainer>
         </section>
 
-        {/* Contact Section - Fondo limpio y profesional */}
-        <section id="contacto" className="relative py-12 sm:py-16 lg:py-20 bg-gradient-to-br from-slate-50 via-white to-emerald-50/30 overflow-hidden">
-          {/* Elementos decorativos de fondo */}
-          <div className="absolute inset-0 opacity-15">
-            <div className="absolute top-1/4 left-1/4 w-72 h-72 bg-emerald-300/30 rounded-full blur-3xl"></div>
-            <div className="absolute bottom-1/4 right-1/4 w-72 h-72 bg-teal-300/30 rounded-full blur-3xl"></div>
-          </div>
-          
-          <ResponsiveContainer className="relative z-10">
-            <ScrollAnimation animation="fade-in-up">
-              <div className="bg-gradient-to-br from-white via-emerald-50/30 to-white rounded-2xl sm:rounded-3xl shadow-xl overflow-hidden border border-emerald-100/50">
-                <div className="relative h-48 md:h-64 lg:h-80">
-                  <Image
-                    src="/images/clinic-background.png"
-                    alt="Clínica Urodex - Instalaciones modernas"
-                    width={1200}
-                    height={400}
-                    className="w-full h-full object-cover"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-r from-emerald-800/90 via-slate-700/80 to-emerald-700/90"></div>
-                  <div className="absolute inset-0 flex items-center justify-center p-6">
-                    <div className="text-center text-white max-w-3xl">
-                      <h3 className="text-2xl md:text-3xl lg:text-4xl font-bold mb-4 leading-tight">
-                        Agenda tu cita de valoración, estaremos en contacto muy pronto
-                      </h3>
-                      <p className="text-lg md:text-xl font-light opacity-90">
-                        Atención profesional en instalaciones de primera clase
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="p-6 md:p-8 lg:p-10">
-                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-10">
-                    {/* Formulario con Mailchimp */}
-                    <div>
-                      <h4 className="text-2xl font-bold bg-gradient-to-r from-emerald-800 to-slate-700 bg-clip-text text-transparent mb-6">
-                        Solicita tu Cita
-                      </h4>
-                      <form onSubmit={handleSubmit} className="space-y-5">
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                          <div>
-                            <label htmlFor="nombre" className="block text-sm font-semibold text-slate-700 mb-2">
-                              Nombre completo *
-                            </label>
-                            <Input 
-                              id="nombre"
-                              name="nombre"
-                              placeholder="Tu nombre completo" 
-                              className="border-emerald-200 focus:border-emerald-500 focus:ring-emerald-500 rounded-lg h-10" 
-                              value={formData.nombre}
-                              onChange={handleInputChange}
-                              required 
-                            />
-                          </div>
-                          <div>
-                            <label htmlFor="celular" className="block text-sm font-semibold text-slate-700 mb-2">
-                              Teléfono *
-                            </label>
-                            <Input 
-                              id="celular"
-                              name="celular"
-                              placeholder="(55) 1234-5678" 
-                              className="border-emerald-200 focus:border-emerald-500 focus:ring-emerald-500 rounded-lg h-10" 
-                              value={formData.celular}
-                              onChange={handleInputChange}
-                              required 
-                            />
-                          </div>
-                        </div>
-
-                        <div>
-                          <label htmlFor="correo" className="block text-sm font-semibold text-slate-700 mb-2">
-                            Correo electrónico *
-                          </label>
-                          <Input
-                            id="correo"
-                            name="correo"
-                            type="email"
-                            placeholder="tu.email@ejemplo.com"
-                            className="border-emerald-200 focus:border-emerald-500 focus:ring-emerald-500 rounded-lg h-10"
-                            value={formData.correo}
-                            onChange={handleInputChange}
-                            required
-                          />
-                        </div>
-
-                        <div>
-                          <label htmlFor="diagnostico" className="block text-sm font-semibold text-slate-700 mb-2">
-                            ¿Cuenta con diagnóstico previo?
-                          </label>
-                          <Select name="diagnostico" value={formData.diagnostico} onValueChange={(value) => setFormData(prev => ({ ...prev, diagnostico: value }))}>
-                            <SelectTrigger className="border-emerald-200 focus:border-emerald-500 focus:ring-emerald-500 rounded-lg h-10">
-                              <SelectValue placeholder="Seleccione una opción" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="si">Sí, tengo diagnóstico</SelectItem>
-                              <SelectItem value="no">No, es primera consulta</SelectItem>
-                              <SelectItem value="revision">Busco segunda opinión</SelectItem>
-                            </SelectContent>
-                          </Select>
-                        </div>
-
-                        <div>
-                          <label htmlFor="comentarios" className="block text-sm font-semibold text-slate-700 mb-2">
-                            Comentarios
-                          </label>
-                          <Textarea 
-                            id="comentarios"
-                            name="comentarios"
-                            placeholder="Describe brevemente tu motivo de consulta o síntomas..." 
-                            className="border-emerald-200 focus:border-emerald-500 focus:ring-emerald-500 min-h-[100px] rounded-lg" 
-                            value={formData.comentarios}
-                            onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setFormData(prev => ({ ...prev, comentarios: e.target.value }))}
-                          />
-                        </div>
-
-                        <Button 
-                          type="submit"
-                          className="w-full bg-gradient-to-r from-emerald-700 via-emerald-600 to-teal-600 hover:from-emerald-600 hover:via-emerald-500 hover:to-teal-500 text-white py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-[1.02]"
-                        >
-                          <Calendar className="h-5 w-5 mr-2" />
-                          Enviar Solicitud
-                        </Button>
-                      </form>
-                    </div>
-
-                    {/* Información de contacto */}
-                    <div>
-                      <h4 className="text-2xl font-bold bg-gradient-to-r from-emerald-800 to-slate-700 bg-clip-text text-transparent mb-6">
-                        Ubicaciones y Horarios
-                      </h4>
-
-                      <div className="mb-6">
-                        <div className="flex flex-col gap-3 mb-4">
-                          <Button
-                            type="button"
-                            variant={selectedLocation === "polanco" ? "default" : "outline"}
-                            className={`py-3 rounded-xl transition-all duration-300 font-medium ${
-                              selectedLocation === "polanco"
-                                ? "bg-gradient-to-r from-emerald-700 to-teal-600 hover:from-emerald-600 hover:to-teal-500 text-white shadow-md"
-                                : "border-emerald-300 text-emerald-700 hover:bg-emerald-50"
-                            }`}
-                            onClick={() => setSelectedLocation("polanco")}
-                          >
-                            <MapPinned className="h-4 w-4 mr-2" />
-                            Polanco
-                          </Button>
-                          <Button
-                            type="button"
-                            variant={selectedLocation === "satelite" ? "default" : "outline"}
-                            className={`py-3 rounded-xl transition-all duration-300 font-medium ${
-                              selectedLocation === "satelite"
-                                ? "bg-gradient-to-r from-emerald-700 to-teal-600 hover:from-emerald-600 hover:to-teal-500 text-white shadow-md"
-                                : "border-emerald-300 text-emerald-700 hover:bg-emerald-50"
-                            }`}
-                            onClick={() => setSelectedLocation("satelite")}
-                          >
-                            <MapPinned className="h-4 w-4 mr-2" />
-                            Satélite
-                          </Button>
-                          <Button
-                            type="button"
-                            variant={selectedLocation === "intermed" ? "default" : "outline"}
-                            className={`py-3 rounded-xl transition-all duration-300 font-medium ${
-                              selectedLocation === "intermed"
-                                ? "bg-gradient-to-r from-emerald-700 to-teal-600 hover:from-emerald-600 hover:to-teal-500 text-white shadow-md"
-                                : "border-emerald-300 text-emerald-700 hover:bg-emerald-50"
-                            }`}
-                            onClick={() => setSelectedLocation("intermed")}
-                          >
-                            <MapPinned className="h-4 w-4 mr-2" />
-                            INTERMED
-                          </Button>
-                        </div>
-                      </div>
-
-                      <div className="space-y-4">
-                        <div className="bg-white rounded-xl p-5 border border-emerald-100 shadow-md hover:shadow-lg transition-all duration-300">
-                          <div className="flex items-start gap-4">
-                            <div className="bg-gradient-to-br from-emerald-100 to-teal-100 p-3 rounded-xl">
-                              <MapPin className="h-5 w-5 text-emerald-700" />
-                            </div>
-                            <div>
-                              <h5 className="font-bold text-slate-900 mb-2">{currentLocation.name}</h5>
-                              <p className="text-slate-600 mb-3 leading-relaxed">{currentLocation.address}</p>
-                              <Button
-                                variant="ghost"
-                                size="sm"
-                                className="text-emerald-700 hover:text-emerald-800 p-0 h-auto font-medium"
-                                onClick={() => window.open(currentLocation.mapUrl, "_blank")}
-                              >
-                                Ver en Google Maps →
-                              </Button>
-                            </div>
-                          </div>
-                        </div>
-
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                          <div className="bg-white rounded-xl p-4 border border-emerald-100 shadow-md hover:shadow-lg transition-all duration-300">
-                            <div className="flex items-center gap-3 mb-2">
-                              <Clock className="h-4 w-4 text-emerald-700" />
-                              <span className="font-bold text-slate-900">Lun - Vie</span>
-                            </div>
-                            <p className="text-slate-600 font-medium">{currentLocation.schedule.weekdays}</p>
-                          </div>
-
-                          <div className="bg-white rounded-xl p-4 border border-emerald-100 shadow-md hover:shadow-lg transition-all duration-300">
-                            <div className="flex items-center gap-3 mb-2">
-                              <Clock className="h-4 w-4 text-emerald-700" />
-                              <span className="font-bold text-slate-900">Sábados</span>
-                            </div>
-                            <p className="text-slate-600 font-medium">{currentLocation.schedule.saturday}</p>
-                          </div>
-                        </div>
-
-                        <div className="bg-white rounded-xl p-5 border border-emerald-100 shadow-md hover:shadow-lg transition-all duration-300">
-                          <div className="flex items-center gap-4">
-                            <div className="bg-gradient-to-br from-emerald-100 to-teal-100 p-3 rounded-xl">
-                              <Phone className="h-5 w-5 text-emerald-700" />
-                            </div>
-                            <div>
-                              <h5 className="font-bold text-slate-900 mb-1">Contacto Directo</h5>
-                              <p className="text-slate-600 font-medium mb-1">{currentLocation.phone}</p>
-                              <p className="text-slate-500 text-sm">WhatsApp disponible 24/7</p>
-                            </div>
-                          </div>
-                        </div>
-
-                        <Button
-                          onClick={openWhatsApp}
-                          className="w-full bg-gradient-to-r from-emerald-600 via-emerald-500 to-teal-600 hover:from-emerald-500 hover:via-emerald-400 hover:to-teal-500 text-white py-3 rounded-xl font-medium shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-[1.02]"
-                        >
-                          <Phone className="h-5 w-5 mr-2" />
-                          Contactar por WhatsApp
-                        </Button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </ScrollAnimation>
-          </ResponsiveContainer>
-        </section>
-
-        {/* Map Section - Fondo neutro elegante */}
-        <section className="relative py-8 sm:py-12 bg-gradient-to-br from-slate-100 via-emerald-50/50 to-slate-100">
-          <ResponsiveContainer>
-            <ScrollAnimation animation="fade-in-up">
-              <div className="bg-white rounded-2xl p-2 sm:p-3 shadow-lg">
-                <div className="h-80 md:h-96 relative rounded-xl overflow-hidden">
-                  <GoogleMap address={currentLocation.address} />
-                  <div className="absolute top-4 right-4 z-10 bg-white/95 backdrop-blur-sm p-4 rounded-xl shadow-lg border border-emerald-100">
-                    <div className="text-center">
-                      <h5 className="font-bold text-emerald-700 mb-2">{currentLocation.name}</h5>
-                      <p className="text-slate-600 mb-3 text-sm">Fácil acceso y estacionamiento</p>
-                      <Button
-                        size="sm"
-                        className="bg-gradient-to-r from-emerald-700 to-teal-600 hover:from-emerald-600 hover:to-teal-500 text-white px-4 py-2 rounded-lg font-medium text-sm"
-                        onClick={() => window.open(currentLocation.mapUrl, "_blank")}
-                      >
-                        <MapPin className="h-3 w-3 mr-1" />
-                        Cómo llegar
-                      </Button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </ScrollAnimation>
-          </ResponsiveContainer>
-        </section>
+        {/* Componente de Contacto Separado */}
+        <ContactSection />
 
         <HomeBlogSection />
       </main>

@@ -1,17 +1,17 @@
 "use client"
 
-import { ArrowRight, CheckCircle, Stethoscope } from "lucide-react"
+import { ArrowRight, CheckCircle, Stethoscope, Scissors, Pill, Ribbon, Droplets, UserCheck, Biohazard, HeartPulse } from "lucide-react"
 import { ScrollAnimation } from "./scroll-animations"
 import { ResponsiveContainer } from "./responsive-container"
 import { Section } from "./section"
 import { Button } from "./ui/button"
-import { getServiceIcon } from "./service-icons"
 
 // Tipos de datos para los servicios
 interface Service {
   name: string
   description: string
   highlights: string[]
+  icon: JSX.Element
 }
 
 // Datos de los servicios/tratamientos
@@ -19,42 +19,50 @@ const services: Service[] = [
   {
     name: "Cirugía de Próstata",
     description: "Tratamientos mínimamente invasivos para problemas prostáticos con tecnología láser de última generación que minimizan molestias y aceleran la recuperación.",
-    highlights: ["Enucleación con Láser", "Biopsia de Próstata", "Prostatectomía Radical"]
+    highlights: ["Enucleación con Láser", "Biopsia de Próstata", "Prostatectomía Radical"],
+    icon: <UserCheck className="w-8 h-8 mb-4 text-white" />
   },
   {
     name: "Tratamiento de VPH",
     description: "Diagnóstico temprano y tratamiento de lesiones causadas por el Virus del Papiloma Humano con técnicas avanzadas y seguimiento personalizado.",
-    highlights: ["Diagnóstico Especializado", "Tratamiento con Láser CO2", "Seguimiento Integral"]
+    highlights: ["Diagnóstico Especializado", "Tratamiento con Láser CO2", "Seguimiento Integral"],
+    icon: <Biohazard className="w-8 h-8 mb-4 text-white" />
   },
   {
     name: "Circuncisión",
     description: "Procedimiento con técnica láser que garantiza mayor precisión, menor dolor y recuperación más rápida. Solución definitiva para fimosis y problemas del prepucio.",
-    highlights: ["Técnica Láser Avanzada", "Recuperación Rápida", "Resultados Estéticos"]
+    highlights: ["Técnica Láser Avanzada", "Recuperación Rápida", "Resultados Estéticos"],
+    icon: <Scissors className="w-8 h-8 mb-4 text-white" />
   },
   {
     name: "Disfunción Eréctil",
     description: "Evaluación completa con tratamientos personalizados que incorporan lo último en tecnología médica para restaurar la función sexual masculina con excelentes resultados.",
-    highlights: ["Tratamiento Integral", "Terapia con Ondas de Choque", "Medicación Especializada"]
+    highlights: ["Tratamiento Integral", "Terapia con Ondas de Choque", "Medicación Especializada"],
+    icon: <Pill className="w-8 h-8 mb-4 text-white" />
   },
   {
     name: "Litiasis Renal",
     description: "Diagnóstico y tratamiento de cálculos en riñones, uréteres o vejiga mediante técnicas mínimamente invasivas que garantizan una rápida eliminación y recuperación.",
-    highlights: ["Litotripsia", "Cirugía Láser", "Tratamiento Preventivo"]
+    highlights: ["Litotripsia", "Cirugía Láser", "Tratamiento Preventivo"],
+    icon: <HeartPulse className="w-8 h-8 mb-4 text-white" />
   },
   {
     name: "Cáncer Urológico",
     description: "Diagnóstico precoz y tratamiento especializado para cánceres de próstata, riñón, vejiga y testículo con los más altos estándares internacionales.",
-    highlights: ["Detección Temprana", "Cirugía Oncológica", "Seguimiento Especializado"]
+    highlights: ["Detección Temprana", "Cirugía Oncológica", "Seguimiento Especializado"],
+    icon: <Ribbon className="w-8 h-8 mb-4 text-white" />
   },
   {
     name: "Urodinamia",
     description: "Estudio avanzado para evaluar la función de la vejiga y uretra, fundamental para diagnosticar problemas de incontinencia y flujo urinario anormal.",
-    highlights: ["Evaluación Completa", "Diagnóstico Preciso", "Tratamiento Dirigido"]
+    highlights: ["Evaluación Completa", "Diagnóstico Preciso", "Tratamiento Dirigido"],
+    icon: <Droplets className="w-8 h-8 mb-4 text-white" />
   },
   {
     name: "Uroginecología",
     description: "Atención especializada para padecimientos femeninos como incontinencia urinaria, cistitis recurrente y prolapso, con tratamientos modernos y efectivos.",
-    highlights: ["Tratamiento de Incontinencia", "Rehabilitación de Piso Pélvico", "Manejo de Cistitis"]
+    highlights: ["Tratamiento de Incontinencia", "Rehabilitación de Piso Pélvico", "Manejo de Cistitis"],
+    icon: <Stethoscope className="w-8 h-8 mb-4 text-white" />
   },
 ]
 
@@ -90,7 +98,6 @@ export const TratamientosSection = () => {
               <div className="group bg-white rounded-3xl p-6 shadow-xl hover:shadow-2xl transition-all duration-500 border-2 border-green-100 h-full flex flex-col">
                 <div className="flex items-center gap-4 mb-6">
                   <div className="bg-gradient-to-br from-green-100 to-green-50 p-4 rounded-2xl group-hover:scale-110 transition-transform duration-300 shadow-inner">
-                    {getServiceIcon(service.name, "h-8 w-8 text-green-700")}
                   </div>
                   <div className="flex-1">
                     <h3 className="font-bold text-green-700 text-lg leading-tight">
