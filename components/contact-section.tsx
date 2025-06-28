@@ -78,7 +78,7 @@ const LOCATIONS: Record<LocationKey, Location> = {
     address: "Calz de Guadalupe 442, Industrial, Gustavo A. Madero, 07800 Ciudad de México, CDMX",
     schedule: { weekdays: "9:00 AM - 7:00 PM", saturday: "9:00 AM - 2:00 PM" },
     phone: "(55) 5739 3939",
-    mapUrl: "https://maps.app.goo.gl/IntermedLocation",
+    mapUrl: "https://maps.app.goo.gl/3EQDWEjud6Gg4TWj9",
     features: ["Hospital certificado", "Equipos especializados", "Atención integral"],
   },
 };
@@ -194,17 +194,17 @@ export const ContactSection: React.FC<ContactSectionProps> = React.memo(
                   priority
                 />
                 <div className="absolute inset-0 bg-teal-900/75 bg-gradient-to-br from-teal-500 to-teal-600" />
-                <div className="absolute inset-0 flex items-center justify-center p-4 sm:p-6">
-                  <div className="text-center text-white max-w-md mx-auto">
+                <div className="absolute inset-0 flex items-center justify-center p-3 sm:p-4 lg:p-3 xl:p-4">
+                  <div className="text-center text-white max-w-md mx-auto flex flex-col justify-center items-center">
                     <Badge variant="secondary" size="md" icon={<Shield className="h-4 w-4" />}>
                       Atención Profesional Garantizada
                     </Badge>
                     
-                    <SubTitle color="white" level={3} size="default" className="my-2 lg:my-1 text-xl lg:text-lg xl:text-xl">
+                    <SubTitle color="white" level={3} size="default" className="mt-1.5 mb-1.5 lg:mt-1 lg:mb-1 text-xl lg:text-lg xl:text-xl">
                       Tu Salud Urológica es Nuestra Prioridad
                     </SubTitle>
                     
-                    <Paragraph color="white" size="default" leading="tight" className="opacity-90 mb-4 lg:mb-2 text-sm lg:text-xs xl:text-sm">
+                    <Paragraph color="white" size="default" leading="tight" className="opacity-90 mb-3 lg:mb-1.5 text-sm lg:text-xs xl:text-sm">
                       Contáctanos para agendar tu cita y recibir atención especializada.
                     </Paragraph>
                     <div className="flex flex-col xs:flex-row justify-center gap-4 gap-x-6 text-xs sm:text-sm lg:text-xs xl:text-sm">
