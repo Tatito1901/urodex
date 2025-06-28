@@ -25,6 +25,30 @@ const config = {
         serif: ["var(--font-roboto-serif)"],
         biosans: ["var(--font-biosans)"],
       },
+      // Sistema de tipografía estandarizado
+      fontSize: {
+        // Tamaños base (mobile-first)
+        'xs': ['0.75rem', { lineHeight: '1rem' }],
+        'sm': ['0.875rem', { lineHeight: '1.25rem' }],
+        'base': ['1rem', { lineHeight: '1.5rem' }],
+        'lg': ['1.125rem', { lineHeight: '1.75rem' }],
+        'xl': ['1.25rem', { lineHeight: '1.75rem' }],
+        '2xl': ['1.5rem', { lineHeight: '2rem' }],
+        '3xl': ['1.875rem', { lineHeight: '2.25rem' }],
+        '4xl': ['2.25rem', { lineHeight: '2.5rem' }],
+        '5xl': ['3rem', { lineHeight: '1.2' }],
+        '6xl': ['3.75rem', { lineHeight: '1.1' }],
+        
+        // Tipografía para elementos de UI específicos con lineHeight y tracking optimizados
+        'display-1': ['2rem', { lineHeight: '1.2', letterSpacing: '-0.02em', fontWeight: '700' }], // Mobile h1
+        'display-2': ['1.5rem', { lineHeight: '1.3', letterSpacing: '-0.01em', fontWeight: '700' }], // Mobile h2
+        'display-3': ['1.25rem', { lineHeight: '1.3', fontWeight: '600' }], // Mobile h3
+        'display-4': ['1.125rem', { lineHeight: '1.4', fontWeight: '600' }], // Mobile h4
+        'body': ['1rem', { lineHeight: '1.5' }], // Párrafo estándar
+        'body-sm': ['0.875rem', { lineHeight: '1.5' }], // Párrafo pequeño
+        'caption': ['0.75rem', { lineHeight: '1.4' }], // Texto pequeño, capciones
+        'badge': ['0.75rem', { lineHeight: '1', fontWeight: '600' }], // Badges/etiquetas
+      },
       colors: {
         // Accessible gray palette – ensure text meets WCAG contrast on white backgrounds
         gray: {

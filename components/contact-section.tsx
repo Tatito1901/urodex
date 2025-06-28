@@ -13,6 +13,10 @@ import {
   SelectContent,
   SelectItem,
 } from "@/components/ui/select";
+import { Badge } from "@/components/ui/typography/badge";
+import { SectionTitle } from "@/components/ui/typography/section-title";
+import { SubTitle } from "@/components/ui/typography/sub-title";
+import { Paragraph } from "@/components/ui/typography/paragraph";
 import { ResponsiveContainer } from "@/components/responsive-container";
 import { Section } from "@/components/section";
 import { ScrollAnimation } from "@/components/scroll-animations";
@@ -101,7 +105,7 @@ interface ContactSectionProps {
 }
 
 export const ContactSection: React.FC<ContactSectionProps> = React.memo(
-  ({ className = "", background = "white" }) => {
+  ({ className = "", background = "primary-dark" }) => {
     const [selectedLocation, setSelectedLocation] = useState<LocationKey>("polanco");
     const [formData, setFormData] = useState<ContactFormData>(INITIAL_FORM);
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -162,16 +166,16 @@ export const ContactSection: React.FC<ContactSectionProps> = React.memo(
         <ResponsiveContainer breakpointPadding={{ base: "px-3" }}>
           {/* SECCIÓN 1: HEADER */}
           <ScrollAnimation animation="fade-in-up">
-            <div className="text-center max-w-3xl mx-auto mb-8 sm:mb-12">
-              <div className="inline-flex items-center gap-2 bg-teal-600 text-white px-4 py-2 rounded-full text-sm font-semibold shadow-md mb-4">
-                <Phone className="h-4 w-4" /> 
+            <div className="text-center max-w-5xl mx-auto mb-12 lg:mb-16">
+              <div className="inline-flex items-center gap-2 bg-emerald-600 text-white px-6 py-3 rounded-full text-sm lg:text-base font-semibold mb-6 shadow-md">
+                <Phone className="h-4 w-4 lg:h-5 lg:w-5 text-white" />
                 Agenda tu Cita
               </div>
-              <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-slate-900 mb-4 leading-tight">
+              <h2 className="text-3xl lg:text-4xl xl:text-5xl 2xl:text-6xl font-bold text-white mb-6 lg:mb-8 leading-tight">
                 Contacto y Ubicaciones
               </h2>
-              <div className="w-16 h-1 bg-teal-600 mx-auto mb-4 rounded-full" />
-              <p className="text-sm sm:text-base text-slate-700 font-medium leading-relaxed">
+              <div className="w-24 lg:w-32 h-1.5 bg-emerald-600 mx-auto mb-6 lg:mb-8 rounded-full"></div>
+              <p className="text-lg lg:text-xl xl:text-2xl text-white leading-relaxed font-medium">
                 Agenda tu cita de valoración con el Dr. Mario Martínez en cualquiera de nuestras ubicaciones.
               </p>
             </div>
@@ -179,29 +183,30 @@ export const ContactSection: React.FC<ContactSectionProps> = React.memo(
 
           {/* SECCIÓN 2: IMAGEN HERO */}
           <ScrollAnimation animation="fade-in-up" delay={100}>
-            <div className="mb-8 sm:mb-12">
+            <div className="mb-8 sm:mb-12 text-white">
               <div className="relative h-48 sm:h-56 md:h-64 lg:h-72 rounded-2xl overflow-hidden shadow-lg">
                 <Image
-                  src="/images/consultorio.png"
+                  src="/images/fondo.png"
                   alt="Instalaciones modernas"
                   fill
                   sizes="(max-width: 768px) 100vw, (max-width: 1200px) 90vw, 80vw"
                   className="object-cover"
                   priority
                 />
-                <div className="absolute inset-0 bg-slate-900/70" />
+                <div className="absolute inset-0 bg-teal-900/75 bg-gradient-to-br from-teal-900 to-teal-800" />
                 <div className="absolute inset-0 flex items-center justify-center p-4 sm:p-6">
-                  <div className="text-center text-white max-w-3xl">
-                    <div className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-sm border border-white/30 rounded-full px-4 py-2 text-sm font-medium mb-4">
-                      <Shield className="h-4 w-4" /> 
+                  <div className="text-center text-white max-w-xl mx-auto">
+                    <Badge variant="secondary" size="md" icon={<Shield className="h-4 w-4" />}>
                       Atención Profesional Garantizada
-                    </div>
-                    <h3 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold mb-4 leading-tight">
+                    </Badge>
+                    
+                    <SubTitle color="white" level={3} size="default" className="my-3">
                       Tu Salud Urológica es Nuestra Prioridad
-                    </h3>
-                    <p className="text-sm sm:text-base md:text-lg font-light opacity-90 mb-6 leading-relaxed">
+                    </SubTitle>
+                    
+                    <Paragraph color="white" size="default" leading="relaxed" className="opacity-90 mb-6">
                       Contáctanos para agendar tu cita y recibir atención especializada.
-                    </p>
+                    </Paragraph>
                     <div className="flex flex-col xs:flex-row justify-center gap-4 text-xs sm:text-sm">
                       <div className="inline-flex items-center gap-2">
                         <Star className="h-4 w-4 text-yellow-400" /> 
@@ -229,12 +234,12 @@ export const ContactSection: React.FC<ContactSectionProps> = React.memo(
                         <Calendar className="h-6 w-6 text-teal-700" />
                       </div>
                       <div className="text-left">
-                        <h4 className="text-lg sm:text-xl md:text-2xl font-bold text-slate-900">
+                        <SubTitle level={4} color="default" size="default">
                           Solicita tu Cita
-                        </h4>
-                        <p className="text-sm sm:text-base text-slate-600 mt-1">
+                        </SubTitle>
+                        <Paragraph color="muted" size="small" className="mt-1">
                           Completa el formulario y nos contactaremos contigo.
-                        </p>
+                        </Paragraph>
                       </div>
                     </div>
                   </div>
@@ -352,48 +357,43 @@ export const ContactSection: React.FC<ContactSectionProps> = React.memo(
           {/* SECCIÓN 4: SELECTOR DE UBICACIONES */}
           <ScrollAnimation animation="fade-in-up" delay={300}>
             <div className="mb-8 sm:mb-12">
-              <div className="max-w-4xl mx-auto">
-                <div className="text-center mb-6">
-                  <h4 className="text-lg sm:text-xl md:text-2xl font-bold text-slate-900 mb-3">
-                    Nuestras Ubicaciones
-                  </h4>
-                  <p className="text-sm sm:text-base text-slate-600">
-                    Selecciona la ubicación más conveniente para ti
-                  </p>
-                </div>
-
-                {/* Selector de ubicaciones */}
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-6">
-                  {Object.entries(LOCATIONS).map(([key, location]) => (
-                    <button
-                      key={key}
-                      onClick={() => handleLocationChange(key as LocationKey)}
-                      className={`p-4 sm:p-5 rounded-xl border-2 transition-all duration-200 text-left ${
-                        selectedLocation === key
-                          ? "border-teal-600 bg-teal-50 shadow-md"
-                          : "border-slate-200 bg-white hover:border-teal-300 hover:shadow-sm"
-                      }`}
-                    >
-                      <div className="flex items-center gap-2 mb-2">
-                        <Building2
-                          className={`h-5 w-5 ${
-                            selectedLocation === key ? "text-teal-700" : "text-slate-500"
-                          }`}
-                        />
-                        <h5
-                          className={`font-bold text-base ${
-                            selectedLocation === key ? "text-teal-700" : "text-slate-700"
-                          }`}
-                        >
-                          {location.name}
-                        </h5>
+              <div className="text-center mb-6">
+                <Badge variant="secondary" size="md" icon={<MapPin className="h-4 w-4" />}>
+                  Red de atención
+                </Badge>
+                <SubTitle level={3} color="white" size="default">
+                  Nuestras Ubicaciones
+                </SubTitle>
+                <Paragraph color="white" size="default" className="max-w-2xl mx-auto">
+                  Estamos presentes en varias ubicaciones para tu comodidad. Selecciona la más cercana para agendar tu cita.
+                </Paragraph>
+              </div>
+              
+              {/* Selector de ubicaciones */}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-6">
+                {Object.entries(LOCATIONS).map(([key, location]) => (
+                  <button
+                    key={key}
+                    onClick={() => handleLocationChange(key as LocationKey)}
+                    className={`p-4 sm:p-5 rounded-xl border-2 transition-all duration-200 text-left ${
+                      selectedLocation === key
+                        ? "border-teal-600 bg-teal-50 shadow-md"
+                        : "border-slate-200 bg-white hover:border-teal-300 hover:shadow-sm"
+                    }`}
+                  >
+                    <div className="flex items-center gap-2 mb-2">
+                      <div className="bg-teal-100 p-1.5 rounded-lg">
+                        <Building2 className={`h-5 w-5 ${selectedLocation === key ? "text-teal-700" : "text-slate-500"}`} />
                       </div>
-                      <p className="text-slate-600 text-sm leading-relaxed">
-                        {location.address.split(",")[0]}...
-                      </p>
-                    </button>
-                  ))}
-                </div>
+                      <SubTitle level={4} size="small" color={selectedLocation === key ? "primary" : "default"} className="mb-0">
+                        {location.name}
+                      </SubTitle>
+                    </div>
+                    <Paragraph color="muted" size="small" className="mb-0">
+                      {location.address.split(",")[0]}...
+                    </Paragraph>
+                  </button>
+                ))}
               </div>
             </div>
           </ScrollAnimation>
@@ -495,15 +495,18 @@ export const ContactSection: React.FC<ContactSectionProps> = React.memo(
             <div className="mb-8 sm:mb-12">
               <div className="max-w-5xl mx-auto">
                 <div className="text-center mb-6">
-                  <h4 className="text-xl sm:text-2xl md:text-3xl font-bold text-slate-900 mb-3">
+                  <Badge variant="secondary" size="md" icon={<MapPin className="h-4 w-4" />}>
+                    Cómo llegar
+                  </Badge>
+                  <SubTitle level={4} color="white" size="default">
                     Ubicación en el Mapa
-                  </h4>
-                  <p className="text-sm sm:text-base text-slate-600">
+                  </SubTitle>
+                  <Paragraph color="white" size="default">
                     Encuentra fácilmente nuestra ubicación
-                  </p>
+                  </Paragraph>
                 </div>
 
-                <div className="bg-white rounded-2xl p-3 sm:p-4 shadow-lg border-2 border-slate-200">
+                <div className="bg-white rounded-xl p-3 sm:p-4 shadow-md border border-slate-200">
                   <div className="relative h-64 sm:h-80 md:h-96 rounded-xl overflow-hidden">
                     <GoogleMap address={currentLocation.address} />
                     <div className="absolute top-3 right-3 sm:top-4 sm:right-4 bg-white/95 backdrop-blur-sm p-3 sm:p-4 rounded-xl shadow-md border border-slate-200 max-w-xs">
@@ -532,22 +535,22 @@ export const ContactSection: React.FC<ContactSectionProps> = React.memo(
           <ScrollAnimation animation="fade-in-up" delay={600}>
             <div>
               <div className="max-w-3xl mx-auto">
-                <div className="bg-slate-900 rounded-2xl p-6 sm:p-8 text-white shadow-lg">
+                <div className="bg-teal-700 rounded-2xl p-6 sm:p-8 text-white shadow-lg">
                   <div className="text-center">
                     <div className="bg-white/20 p-4 rounded-xl w-fit mx-auto mb-4">
-                      <Phone className="h-8 w-8" />
+                      <Phone className="h-7 w-7 text-white" />
                     </div>
-                    <h5 className="font-bold text-xl sm:text-2xl md:text-3xl mb-3">
+                    <SubTitle level={4} color="white" size="default" className="mb-3">
                       ¿Necesitas atención urgente?
-                    </h5>
-                    <p className="text-base sm:text-lg text-white/90 mb-6 leading-relaxed max-w-xl mx-auto">
+                    </SubTitle>
+                    <Paragraph color="white" size="default" leading="relaxed" className="max-w-xl mx-auto mb-6">
                       Contáctanos inmediatamente por WhatsApp para consultas urgentes o emergencias urológicas.
-                    </p>
+                    </Paragraph>
                     <Button
                       onClick={openWhatsApp}
-                      className="bg-white text-slate-900 hover:bg-slate-100 px-6 py-3 rounded-xl font-bold shadow-md transition-colors duration-200"
+                      className="bg-white text-teal-700 hover:bg-slate-100 px-5 py-2 rounded-lg font-bold shadow-sm transition-colors duration-200"
                     >
-                      <Phone className="h-5 w-5 mr-2" />
+                      <Phone className="h-4 w-4 mr-2" />
                       Contactar Ahora
                     </Button>
                   </div>

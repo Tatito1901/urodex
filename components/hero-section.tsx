@@ -3,6 +3,9 @@ import { Button } from "@/components/ui/button"
 import { Shield, Play, Pause } from "lucide-react"
 import { ScrollAnimation } from "@/components/scroll-animations"
 import { ResponsiveContainer } from "./responsive-container"
+import { Badge } from "@/components/ui/typography/badge"
+import { Paragraph } from "@/components/ui/typography/paragraph"
+import { SubTitle } from "@/components/ui/typography/sub-title"
 
 export function HeroSection() {
   const videoRef = useRef<HTMLVideoElement>(null)
@@ -139,20 +142,35 @@ export function HeroSection() {
           className="max-w-4xl mx-auto text-center space-y-4 md:space-y-6 z-30 relative"
         >
           {/* Badge profesional elegante */}
-          <div className="inline-flex items-center justify-center gap-2 px-4 py-2 bg-white/15 backdrop-blur-sm text-white border border-white/20 rounded-full text-sm md:text-base font-medium mb-2 shadow-lg transition-all hover:bg-white/20">
-            <Shield className="h-3 w-3 md:h-4 md:w-4" /> 
-            <span>Cirujano Urólogo Certificado</span>
-          </div>
+          <Badge 
+            variant="secondary" 
+            size="md" 
+            icon={<Shield className="h-3 w-3 md:h-4 md:w-4" />}
+            className="mb-2"
+          >
+            Cirujano Urólogo Certificado
+          </Badge>
 
           {/* Título principal optimizado para responsividad */}
           <div className="bg-gradient-to-br from-white/10 to-transparent backdrop-blur-sm py-4 px-4 md:py-6 md:px-6 rounded-2xl border border-white/10 shadow-xl">
-            <h1 className="font-bold text-2xl sm:text-3xl md:text-4xl lg:text-5xl tracking-tight m-0 text-white leading-tight">
+            <SubTitle 
+              level={3} 
+              color="white" 
+              size="large" 
+              className="font-bold text-2xl sm:text-3xl md:text-4xl lg:text-5xl tracking-tight m-0 leading-tight"
+            >
               Dr. Mario Martínez Thomas
-            </h1>
+            </SubTitle>
             <div className="w-16 h-px bg-gradient-to-r from-transparent via-white/60 to-transparent mx-auto my-3 md:my-4" />
-            <p className="text-gray-100 font-medium text-base md:text-lg lg:text-xl leading-relaxed max-w-2xl mx-auto">
+            <Paragraph 
+              color="white" 
+              size="large" 
+              leading="relaxed" 
+              weight="medium" 
+              className="max-w-2xl mx-auto"
+            >
               Urólogo en Ciudad de México experto en Cirugía de Próstata, VPH y Circuncisión
-            </p>
+            </Paragraph>
           </div>
 
           {/* Botones con mejor espaciado para móviles */}
@@ -174,12 +192,16 @@ export function HeroSection() {
         </ScrollAnimation>
 
         {/* Badge decorativo responsivo */}
-        <div className="absolute top-3 right-3 md:top-5 md:right-5 bg-gradient-to-r from-teal-700/90 to-teal-700/90 backdrop-blur-sm border border-white/20 rounded-full p-2 md:p-3 shadow-md flex items-center gap-2 z-30">
-          <Shield className="h-4 w-4 md:h-5 md:w-5 text-white" />
-          <span className="text-xs md:text-sm font-medium text-white tracking-wide hidden sm:inline">
+        <Badge 
+          variant="primary" 
+          size="md" 
+          icon={<Shield className="h-5 w-5 md:h-6 md:w-6 text-white" />}
+          className="absolute top-3 right-3 md:top-5 md:right-5 backdrop-blur-sm shadow-md z-30"
+        >
+          <span className="hidden sm:inline text-sm md:text-base font-medium">
             Excelencia Médica
           </span>
-        </div>
+        </Badge>
       </ResponsiveContainer>
       
       {/* Indicador de scroll mejorado para móviles */}

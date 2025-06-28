@@ -1,5 +1,5 @@
 
-import React, { useCallback, useMemo } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import { ArrowRight, CheckCircle, Stethoscope, Scissors, Pill, Ribbon, Droplets, UserCheck, Biohazard, HeartPulse } from "lucide-react";
 import { ScrollAnimation } from "./scroll-animations";
 import { ResponsiveContainer } from "./responsive-container";
@@ -65,6 +65,9 @@ interface TratamientosSectionProps {
 }
 
 export const TratamientosSection: React.FC<TratamientosSectionProps> = ({ background = "primary-dark" }) => {
+  // Estado para controlar si mostrar todos los tratamientos o solo los primeros 4
+  const [showAllServices, setShowAllServices] = useState(false);
+  
   // Memoizar los servicios para evitar recreación en cada render
   const services = useMemo<Service[]>(() => [
     {
@@ -140,7 +143,8 @@ export const TratamientosSection: React.FC<TratamientosSectionProps> = ({ backgr
         </ScrollAnimation>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-5">
-          {services.map((service, index) => (
+          {/* Mostrar solo los primeros 4 tratamientos o todos según el estado */}
+          {(showAllServices ? services : services.slice(0, 4)).map((service, index) => (
             <ScrollAnimation 
               key={service.name} 
               animation="fade-in-up" 
@@ -150,6 +154,20 @@ export const TratamientosSection: React.FC<TratamientosSectionProps> = ({ backgr
             </ScrollAnimation>
           ))}
         </div>
+        
+        {/* Botón "Mostrar más" que solo aparece si hay más de 4 tratamientos y no se están mostrando todos */}
+        {services.length > 4 && (
+          <div className="mt-8 md:mt-10 text-center">
+            <Button
+              onClick={() => setShowAllServices(prev => !prev)}
+              variant="outline"
+              className="bg-white/10 hover:bg-white/20 text-white border-white/30 hover:border-white/50 px-6 py-2 rounded-full transition-all duration-300"
+            >
+              {showAllServices ? "Mostrar menos" : "Mostrar más"}
+              <ArrowRight className={`ml-2 h-4 w-4 transition-transform duration-300 ${showAllServices ? "rotate-90" : ""}`} />
+            </Button>
+          </div>
+        )}
       </ResponsiveContainer>
     </Section>
   );

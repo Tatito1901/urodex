@@ -64,7 +64,7 @@ export default function ClinicaCircuncision() {
         "Anestesia local"
       ],
       icon: <Shield className="h-6 w-6 text-white" />,
-      bgColor: "from-emerald-600 to-teal-700"
+      bgColor: "from-teal-500 to-teal-700"
     },
     {
       name: "Circuncisión con Láser",
@@ -78,7 +78,7 @@ export default function ClinicaCircuncision() {
         "Menor tiempo de recuperación"
       ],
       icon: <Zap className="h-6 w-6 text-white" />,
-      bgColor: "from-slate-600 to-emerald-700"
+      bgColor: "from-teal-500 to-teal-700"
     },
     {
       name: "Frenuloplastía",
@@ -92,7 +92,7 @@ export default function ClinicaCircuncision() {
         "Resultados naturales"
       ],
       icon: <Target className="h-6 w-6 text-white" />,
-      bgColor: "from-teal-600 to-slate-700"
+      bgColor: "from-teal-500 to-teal-700"
     }
   ]
 
@@ -119,55 +119,57 @@ export default function ClinicaCircuncision() {
   }
 
   return (
-    <div className="flex flex-col min-h-screen bg-gradient-to-br from-slate-50/80 via-white to-emerald-50/20">
+    <div className="flex flex-col min-h-screen bg-gradient-to-br from-slate-50/80 via-white to-teal-50/20">
       <ScrollProgressBar />
       <Header activeSection={activeSection} />
 
       <main className="flex-1">
         {/* Hero Section */}
-        <section id="inicio" className="relative overflow-hidden min-h-[70vh] flex items-center">
+        <section id="inicio" className="relative overflow-hidden min-h-[75vh] flex items-center">
           <div className="absolute inset-0 w-full h-full">
             <Image
               src="/images/circuncision-clinic-hero.jpg"
               alt="Clínica de Circuncisión"
               fill
-              className="object-cover"
+              className="object-cover object-center"
               priority
+              quality={90}
             />
-            <div className="absolute inset-0 bg-gradient-to-br from-emerald-900/95 via-slate-800/90 to-emerald-800/85 backdrop-blur-[1px]"></div>
-            <div className="absolute inset-0 bg-gradient-to-t from-emerald-950/40 via-transparent to-transparent"></div>
+            <div className="absolute inset-0 bg-gradient-to-br from-emerald-950/90 via-slate-900/85 to-emerald-900/80 backdrop-blur-[2px]"></div>
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_transparent_35%,_rgba(0,0,0,0.4)_100%)]"></div>
           </div>
 
           <ResponsiveContainer className="relative z-10">
             <div className="max-w-4xl">
               <ScrollAnimation animation="fade-in-up">
-                <div className="inline-flex items-center gap-2 bg-white/15 backdrop-blur-md text-white border border-white/20 rounded-full px-4 sm:px-6 py-2 sm:py-3 text-xs sm:text-sm font-medium mb-4 shadow-lg">
-                  <Users className="h-4 w-4 text-emerald-300" />
-                  Especialistas en Circuncisión
+                <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md text-white border border-white/15 rounded-full px-4 sm:px-5 py-2 text-xs sm:text-sm font-medium mb-6 shadow-md">
+                  <Users className="h-4 w-4 text-emerald-400" />
+                  <span className="relative">Especialistas en Circuncisión Moderna</span>
                 </div>
                 
-                <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4 sm:mb-6 leading-tight">
-                  Clínica de Circuncisión
+                <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-5 sm:mb-6 leading-tight tracking-tight">
+                  Clínica Especializada en<br />
+                  <span className="text-emerald-400">Circuncisión</span>
                 </h1>
                 
-                <div className="w-20 sm:w-24 h-1 bg-gradient-to-r from-transparent via-emerald-300/90 to-transparent mx-0 mb-6 rounded-full"></div>
+                <div className="w-24 sm:w-32 h-1 bg-gradient-to-r from-emerald-400 to-teal-500 mx-0 mb-6 rounded-full"></div>
                 
-                <p className="text-lg sm:text-xl md:text-2xl text-white/95 leading-relaxed mb-6 sm:mb-8 max-w-3xl">
-                  Procedimientos de circuncisión con tecnología láser para máxima precisión, 
-                  mínimo dolor y cicatrización óptima. Solución definitiva para fimosis y balanitis.
+                <p className="text-lg sm:text-xl text-white/90 leading-relaxed mb-8 max-w-2xl font-light">
+                  Procedimientos avanzados de circuncisión con tecnología láser para máxima precisión, 
+                  mínimo dolor y cicatrización óptima. La solución definitiva para fimosis y balanitis.
                 </p>
 
-                <div className="flex flex-col sm:flex-row gap-4">
+                <div className="flex flex-col sm:flex-row gap-4 items-center">
                   <Button
                     onClick={openWhatsApp}
-                    className="bg-gradient-to-r from-emerald-600 via-emerald-500 to-teal-600 hover:from-emerald-500 hover:via-emerald-400 hover:to-teal-500 text-white rounded-full px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg font-medium shadow-xl transition-all duration-500 transform hover:scale-105"
+                    className="bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-3 rounded-lg text-base font-medium shadow-lg hover:shadow-emerald-700/20 transition-all duration-300 flex items-center w-full sm:w-auto justify-center"
                   >
-                    <Calendar className="h-5 w-5 mr-2" />
+                    <Calendar className="h-4 w-4 mr-2" />
                     Agendar Consulta
                   </Button>
                   <Button
                     variant="outline"
-                    className="border-2 border-white/70 text-white bg-white/10 hover:bg-white/20 hover:border-white rounded-full px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg backdrop-blur-md shadow-lg transition-all duration-500"
+                    className="border border-white/50 text-white hover:bg-white/10 rounded-lg px-6 py-3 text-base backdrop-blur-sm shadow-md w-full sm:w-auto justify-center"
                     onClick={() => document.getElementById("tratamientos")?.scrollIntoView({ behavior: "smooth" })}
                   >
                     Ver Procedimientos
@@ -176,6 +178,13 @@ export default function ClinicaCircuncision() {
               </ScrollAnimation>
             </div>
           </ResponsiveContainer>
+          
+          {/* Indicador de desplazamiento */}
+          <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce hidden md:flex">
+            <div className="h-12 w-8 rounded-full border-2 border-white/30 flex items-start justify-center p-2">
+              <div className="h-2 w-2 bg-white rounded-full animate-pulse"></div>
+            </div>
+          </div>
         </section>
 
         {/* Conditions Section */}
@@ -423,35 +432,44 @@ export default function ClinicaCircuncision() {
         </section>
 
         {/* Contact Section */}
-        <section id="contacto" className="relative py-12 sm:py-16 lg:py-20 bg-gradient-to-br from-slate-50 via-white to-emerald-50/30 overflow-hidden">
-          <div className="absolute inset-0 opacity-20">
-            <div className="absolute top-1/4 left-1/4 w-72 h-72 bg-emerald-300/30 rounded-full blur-3xl"></div>
-            <div className="absolute bottom-1/4 right-1/4 w-72 h-72 bg-teal-300/30 rounded-full blur-3xl"></div>
+        <section id="contacto" className="relative py-12 sm:py-16 lg:py-24 bg-gradient-to-br from-white via-slate-50 to-emerald-50/20 overflow-hidden">
+          <div className="absolute inset-0 opacity-15">
+            <div className="absolute top-1/4 left-1/4 w-80 h-80 bg-emerald-300/20 rounded-full blur-3xl"></div>
+            <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-teal-300/20 rounded-full blur-3xl"></div>
           </div>
           
           <ResponsiveContainer className="relative z-10">
             <ScrollAnimation animation="fade-in-up">
-              <div className="bg-gradient-to-br from-white via-emerald-50/30 to-white rounded-2xl sm:rounded-3xl shadow-xl overflow-hidden border border-emerald-100/50">
-                <div className="text-center p-8 sm:p-12">
-                  <h3 className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-emerald-800 to-slate-700 bg-clip-text text-transparent mb-6">
+              <div className="bg-gradient-to-b from-white to-emerald-50/40 rounded-2xl overflow-hidden border border-emerald-200 shadow-[0_8px_30px_rgb(0,0,0,0.06)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] transition-all duration-500">
+                <div className="flex flex-col items-center text-center p-8 sm:p-10 lg:p-12">
+                  <div className="inline-flex items-center gap-2 bg-emerald-50 text-emerald-700 px-4 py-2 rounded-full text-xs font-medium mb-6">
+                    <Calendar className="h-4 w-4" />
+                    Consulta especializada
+                  </div>
+                  
+                  <h3 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-emerald-800 mb-4">
                     ¿Necesitas una circuncisión?
                   </h3>
-                  <p className="text-lg sm:text-xl text-slate-600 mb-8 max-w-2xl mx-auto">
+                  
+                  <div className="w-20 h-1 bg-gradient-to-r from-emerald-400 to-teal-500 mx-auto mb-6 rounded-full"></div>
+                  
+                  <p className="text-base sm:text-lg text-slate-700 mb-8 max-w-xl mx-auto leading-relaxed">
                     Termina con tus problemas de balanitis y fimosis con la ayuda de nuestros especialistas. 
                     Agenda tu consulta y conoce la mejor opción para tu caso.
                   </p>
-                  <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                  
+                  <div className="flex flex-col sm:flex-row gap-4 justify-center w-full max-w-md mx-auto">
                     <Button
                       onClick={openWhatsApp}
-                      className="bg-gradient-to-r from-emerald-700 via-emerald-600 to-teal-600 hover:from-emerald-600 hover:via-emerald-500 hover:to-teal-500 text-white px-6 py-3 rounded-xl font-medium shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-[1.02]"
+                      className="bg-emerald-700 hover:bg-emerald-800 text-white px-6 py-3 rounded-lg font-medium shadow-md hover:shadow-lg transition-all duration-300"
                     >
-                      <Phone className="h-5 w-5 mr-2" />
+                      <Phone className="h-4 w-4 mr-2" />
                       Contactar por WhatsApp
                     </Button>
                     <Link href="/#contacto">
                       <Button
                         variant="outline"
-                        className="border-emerald-300 text-emerald-700 hover:bg-emerald-50 px-6 py-3 rounded-xl font-medium"
+                        className="border-2 border-emerald-600 text-emerald-700 hover:bg-emerald-50 px-6 py-3 rounded-lg font-medium"
                       >
                         Ver Ubicaciones
                       </Button>
