@@ -30,6 +30,7 @@ import {
   CheckCircle,
   Building2,
   ArrowRight,
+  MessageCircle,
 } from "lucide-react";
 
 // Lazy loading optimizado
@@ -99,6 +100,12 @@ const INITIAL_FORM: ContactFormData = {
   comentarios: "",
 };
 
+const DIAGNOSTICO_OPTIONS = [
+  { value: "si", label: "Sí, tengo diagnóstico" },
+  { value: "no", label: "No, es primera consulta" },
+  { value: "revision", label: "Busco segunda opinión" },
+];
+
 interface ContactSectionProps {
   className?: string;
   background?: "white" | "pearl" | "teal" | "gradient" | "gradient-subtle" | "gradient-strong" | "gradient-teal-dark" | "primary" | "primary-light" | "primary-dark" | "secondary" | "secondary-light" | "dark" | "none";
@@ -109,11 +116,79 @@ export const ContactSection: React.FC<ContactSectionProps> = React.memo(
     const [selectedLocation, setSelectedLocation] = useState<LocationKey>("polanco");
     const [formData, setFormData] = useState<ContactFormData>(INITIAL_FORM);
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [showSuccess, setShowSuccess] = useState(false);
 
     const currentLocation = useMemo(() => LOCATIONS[selectedLocation], [selectedLocation]);
 
-    const openWhatsApp = useCallback(() => {
-      const msg = "Hola Dr. Mario, vi su página web y me interesa más información sobre sus servicios urológicos";
+    // Función para crear mensaje estructurado de WhatsApp
+    const createWhatsAppMessage = useCallback((data: ContactFormData, includeLocation = true) => {
+      let message = "¡Hola Dr. Mario! 👋\n\n";
+      message += "Vi su página web y me interesa agendar una cita con usted. A continuación le comparto mis datos para que me pueda ayudar a encontrar el mejor horario disponible:\n\n";
+      message += "━━━━━━━━━━━━━━━━━━━━━━━━━\n";
+      message += "📋 *MIS DATOS DE CONTACTO*\n";
+      message += "━━━━━━━━━━━━━━━━━━━━━━━━━\n";
+      
+      // Información del paciente
+      if (data.nombre) message += `👤 *Nombre:* ${data.nombre}\n`;
+      if (data.celular) message += `📱 *Teléfono:* ${data.celular}\n`;
+      if (data.correo) message += `📧 *Email:* ${data.correo}\n`;
+      
+      // Estado del diagnóstico
+      if (data.diagnostico) {
+        message += "\n━━━━━━━━━━━━━━━━━━━━━━━━━\n";
+        message += "🩺 *SITUACIÓN MÉDICA*\n";
+        message += "━━━━━━━━━━━━━━━━━━━━━━━━━\n";
+        const diagnosticoLabel = DIAGNOSTICO_OPTIONS.find(opt => opt.value === data.diagnostico)?.label;
+        message += `${diagnosticoLabel}\n`;
+      }
+      
+      // Descripción de la consulta
+      if (data.comentarios) {
+        message += "\n━━━━━━━━━━━━━━━━━━━━━━━━━\n";
+        message += "💬 *DESCRIPCIÓN DE MI CONSULTA*\n";
+        message += "━━━━━━━━━━━━━━━━━━━━━━━━━\n";
+        message += `${data.comentarios}\n`;
+      }
+      
+      // Ubicación preferida
+      if (includeLocation) {
+        message += "\n━━━━━━━━━━━━━━━━━━━━━━━━━\n";
+        message += "📍 *UBICACIÓN DE MI PREFERENCIA*\n";
+        message += "━━━━━━━━━━━━━━━━━━━━━━━━━\n";
+        message += `🏥 ${currentLocation.name}\n`;
+        message += `📍 ${currentLocation.address}\n`;
+        message += `☎️ ${currentLocation.phone}\n`;
+      }
+      
+      message += "\n━━━━━━━━━━━━━━━━━━━━━━━━━\n\n";
+      message += "Agradezco mucho su tiempo y estaré atento a su respuesta para coordinar la cita. ";
+      message += "Tengo disponibilidad flexible y me puedo ajustar a sus horarios disponibles.\n\n";
+      message += "¡Muchas gracias Dr. Mario! 🙏";
+      
+      return message;
+    }, [currentLocation]);
+
+    // WhatsApp con datos del formulario
+    const openWhatsAppWithFormData = useCallback((data?: ContactFormData) => {
+      const messageData = data || formData;
+      const hasFormData = messageData.nombre || messageData.celular || messageData.correo;
+      
+      let message;
+      if (hasFormData) {
+        message = createWhatsAppMessage(messageData);
+      } else {
+        message = "¡Hola Dr. Mario! 👋\n\nVi su página web y me interesa conocer más sobre sus servicios urológicos. Me gustaría agendar una cita para una consulta. ¿Podría ayudarme con información sobre disponibilidad de horarios?\n\n¡Muchas gracias! 🙏";
+      }
+      
+      window.open(
+        `https://api.whatsapp.com/send?phone=5215516942925&text=${encodeURIComponent(message)}`,
+        "_blank"
+      );
+    }, [formData, createWhatsAppMessage]);
+
+    // WhatsApp simple (sin datos del formulario)
+    const openWhatsAppSimple = useCallback(() => {
+      const msg = "¡Hola Dr. Mario! 👋\n\nVi su página web y me interesa conocer más sobre sus servicios urológicos. Me gustaría agendar una cita para una consulta. ¿Podría ayudarme con información sobre disponibilidad de horarios?\n\n¡Muchas gracias! 🙏";
       window.open(
         `https://api.whatsapp.com/send?phone=5215516942925&text=${encodeURIComponent(msg)}`,
         "_blank"
@@ -140,6 +215,7 @@ export const ContactSection: React.FC<ContactSectionProps> = React.memo(
       async (e: React.FormEvent) => {
         e.preventDefault();
         setIsSubmitting(true);
+        setShowSuccess(false);
         
         try {
           const res = await fetch("/api/mailchimp", {
@@ -150,16 +226,29 @@ export const ContactSection: React.FC<ContactSectionProps> = React.memo(
           
           if (!res.ok) throw new Error("Error al enviar formulario");
           
-          alert("¡Gracias! Nos pondremos en contacto contigo muy pronto.");
-          setFormData(INITIAL_FORM);
+          setShowSuccess(true);
+          
+          // Mostrar mensaje de éxito y abrir WhatsApp con los datos
+          setTimeout(() => {
+            openWhatsAppWithFormData(formData);
+            setFormData(INITIAL_FORM);
+            setShowSuccess(false);
+          }, 2000);
+          
         } catch {
-          openWhatsApp();
+          // Si falla el envío del formulario, abrir WhatsApp directamente
+          openWhatsAppWithFormData(formData);
         } finally {
           setIsSubmitting(false);
         }
       },
-      [formData, openWhatsApp]
+      [formData, openWhatsAppWithFormData]
     );
+
+    // Validar si el formulario tiene datos mínimos
+    const hasMinimumFormData = useMemo(() => {
+      return formData.nombre.trim() || formData.celular.trim() || formData.correo.trim();
+    }, [formData]);
 
     return (
       <Section id="contacto" background={background} spacing="lg" className={className}>
@@ -244,6 +333,17 @@ export const ContactSection: React.FC<ContactSectionProps> = React.memo(
                     </div>
                   </div>
 
+                  {showSuccess && (
+                    <div className="mb-6 p-4 rounded-lg bg-green-50 border-2 border-green-200 flex items-center gap-3 text-green-800 animate-fade-in">
+                      <div className="bg-green-100 p-2 rounded-full">
+                        <CheckCircle className="h-5 w-5 text-green-600" />
+                      </div>
+                      <div>
+                        <p className="font-semibold text-green-800">¡Formulario enviado!</p>
+                        <p className="text-sm text-green-700">Te redirigiremos a WhatsApp con tu información...</p>
+                      </div>
+                    </div>
+                  )}
                   <form onSubmit={handleSubmit} className="space-y-5" noValidate>
                     {/* Nombre y Teléfono */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -296,19 +396,27 @@ export const ContactSection: React.FC<ContactSectionProps> = React.memo(
 
                     {/* Diagnóstico */}
                     <div className="space-y-2">
-                      <label htmlFor="diagnostico" className="block text-sm font-semibold text-slate-800">
+                      <label className="block text-sm font-semibold text-slate-800">
                         ¿Cuenta con diagnóstico previo?
                       </label>
-                      <Select name="diagnostico" value={formData.diagnostico} onValueChange={handleSelectChange}>
-                        <SelectTrigger className="h-11 rounded-lg border-slate-300 focus:ring-teal-500 focus:border-teal-500">
-                          <SelectValue placeholder="Seleccione una opción" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="si">Sí, tengo diagnóstico</SelectItem>
-                          <SelectItem value="no">No, es primera consulta</SelectItem>
-                          <SelectItem value="revision">Busco segunda opinión</SelectItem>
-                        </SelectContent>
-                      </Select>
+                      <div className="space-y-2">
+                        {DIAGNOSTICO_OPTIONS.map((option) => (
+                          <div
+                            key={option.value}
+                            onClick={() => handleSelectChange(option.value)}
+                            className={`flex items-center gap-3 p-3 rounded-lg border cursor-pointer transition-colors duration-200 ${formData.diagnostico === option.value ? 'border-teal-600 bg-teal-50' : 'border-slate-300 bg-white hover:bg-slate-50'}`}
+                          >
+                            <div className="w-5 h-5 rounded-full border-2 border-slate-400 flex-shrink-0 flex items-center justify-center">
+                              {formData.diagnostico === option.value && (
+                                <div className="w-2.5 h-2.5 rounded-full bg-teal-600"></div>
+                              )}
+                            </div>
+                            <span className={`font-medium ${formData.diagnostico === option.value ? 'text-teal-800' : 'text-slate-800'}`}>
+                              {option.label}
+                            </span>
+                          </div>
+                        ))}
+                      </div>
                     </div>
 
                     {/* Comentarios */}
@@ -337,15 +445,39 @@ export const ContactSection: React.FC<ContactSectionProps> = React.memo(
                           <Calendar className="h-5 w-5 mr-2" />
                           {isSubmitting ? "Enviando..." : "Enviar Solicitud de Cita"}
                         </Button>
-                        <Button
-                          type="button"
-                          variant="outline"
-                          onClick={openWhatsApp}
-                          className="w-full border-2 border-teal-600 text-teal-700 hover:bg-teal-50 py-2.5 sm:py-3 rounded-lg font-semibold transition-colors duration-200"
-                        >
-                          <Phone className="h-5 w-5 mr-2" />
-                          Contactar por WhatsApp
-                        </Button>
+                        
+                        {/* Botón de WhatsApp mejorado */}
+                        <div className="relative">
+                          <Button
+                            type="button"
+                            variant="outline"
+                            onClick={() => openWhatsAppWithFormData()}
+                            className="w-full border-2 border-green-600 text-green-700 hover:bg-green-50 py-2.5 sm:py-3 rounded-lg font-semibold transition-colors duration-200"
+                          >
+                            <MessageCircle className="h-5 w-5 mr-2" />
+                            {hasMinimumFormData ? "Enviar por WhatsApp" : "Contactar por WhatsApp"}
+                          </Button>
+                          
+                          {hasMinimumFormData && (
+                            <div className="absolute -top-1 -right-1">
+                              <div className="bg-green-500 text-white text-xs px-2 py-1 rounded-full font-medium shadow-sm">
+                                Con datos
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                        
+                        {hasMinimumFormData && (
+                          <div className="text-center">
+                            <button
+                              type="button"
+                              onClick={openWhatsAppSimple}
+                              className="text-sm text-slate-500 hover:text-slate-700 underline"
+                            >
+                              ¿Prefieres contactar sin enviar los datos?
+                            </button>
+                          </div>
+                        )}
                       </div>
                     </div>
                   </form>
@@ -547,7 +679,7 @@ export const ContactSection: React.FC<ContactSectionProps> = React.memo(
                       Contáctanos inmediatamente por WhatsApp para consultas urgentes o emergencias urológicas.
                     </Paragraph>
                     <Button
-                      onClick={openWhatsApp}
+                      onClick={openWhatsAppSimple}
                       className="bg-white text-teal-700 hover:bg-slate-100 px-5 py-2 rounded-lg font-bold shadow-sm transition-colors duration-200"
                     >
                       <Phone className="h-4 w-4 mr-2" />
