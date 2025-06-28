@@ -1,5 +1,3 @@
-// 9. MAIN PAGE.TSX - Integración Completa y Refactorizada
-// =========================================================
 
 "use client"
 
@@ -14,7 +12,6 @@ import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { HomeBlogSection } from "@/components/home-blog-section"
 import { FaqSection } from "@/components/faq-section"
-// Nueva importación del componente de instalaciones
 import { InstalacionesSection } from "@/components/instalaciones-section"
 
 
@@ -42,9 +39,6 @@ export default function Home() {
     return () => window.removeEventListener("scroll", handleScroll)
   }, [])
 
-  // El array `facilityImages` ha sido movido a `instalaciones-section.tsx`
-  // ya que solo pertenece a esa sección.
-
   return (
     <div className="flex flex-col min-h-screen bg-white">
       <ScrollProgressBar />
@@ -56,13 +50,9 @@ export default function Home() {
         <QuienSoySection background="pearl" />
         <TratamientosSection background="primary-dark" />
         <ClinicsSection background="pearl" />
-
-        {/* La sección de Instalaciones ahora es un componente limpio y reutilizable. */}
-        {/* Los props como `background` se pasan directamente si es necesario. */}
         <InstalacionesSection />
-
         <FaqSection background="pearl" />
-        <ContactSection background="gradient-teal-dark" />
+        <ContactSection background="primary-dark" />
         <HomeBlogSection />
       </main>
 

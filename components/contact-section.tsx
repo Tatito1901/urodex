@@ -184,7 +184,7 @@ export const ContactSection: React.FC<ContactSectionProps> = React.memo(
           {/* SECCIÓN 2: IMAGEN HERO */}
           <ScrollAnimation animation="fade-in-up" delay={100}>
             <div className="mb-8 sm:mb-12 text-white">
-              <div className="relative h-48 sm:h-56 md:h-64 lg:h-72 rounded-2xl overflow-hidden shadow-lg">
+              <div className="relative h-48 sm:h-56 md:h-64 lg:h-40 rounded-2xl overflow-hidden shadow-lg max-w-4xl mx-auto">
                 <Image
                   src="/images/fondo.png"
                   alt="Instalaciones modernas"
@@ -193,21 +193,21 @@ export const ContactSection: React.FC<ContactSectionProps> = React.memo(
                   className="object-cover"
                   priority
                 />
-                <div className="absolute inset-0 bg-teal-900/75 bg-gradient-to-br from-teal-900 to-teal-800" />
+                <div className="absolute inset-0 bg-teal-900/75 bg-gradient-to-br from-teal-500 to-teal-600" />
                 <div className="absolute inset-0 flex items-center justify-center p-4 sm:p-6">
-                  <div className="text-center text-white max-w-xl mx-auto">
+                  <div className="text-center text-white max-w-md mx-auto">
                     <Badge variant="secondary" size="md" icon={<Shield className="h-4 w-4" />}>
                       Atención Profesional Garantizada
                     </Badge>
                     
-                    <SubTitle color="white" level={3} size="default" className="my-3">
+                    <SubTitle color="white" level={3} size="default" className="my-2 lg:my-1 text-xl lg:text-lg xl:text-xl">
                       Tu Salud Urológica es Nuestra Prioridad
                     </SubTitle>
                     
-                    <Paragraph color="white" size="default" leading="relaxed" className="opacity-90 mb-6">
+                    <Paragraph color="white" size="default" leading="tight" className="opacity-90 mb-4 lg:mb-2 text-sm lg:text-xs xl:text-sm">
                       Contáctanos para agendar tu cita y recibir atención especializada.
                     </Paragraph>
-                    <div className="flex flex-col xs:flex-row justify-center gap-4 text-xs sm:text-sm">
+                    <div className="flex flex-col xs:flex-row justify-center gap-4 gap-x-6 text-xs sm:text-sm lg:text-xs xl:text-sm">
                       <div className="inline-flex items-center gap-2">
                         <Star className="h-4 w-4 text-yellow-400" /> 
                         15+ años de experiencia
