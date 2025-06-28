@@ -4,6 +4,7 @@ import type React from "react"
 import { Roboto, Roboto_Serif } from "next/font/google"
 import "./globals.css"
 import Script from "next/script"
+import { Analytics } from "@vercel/analytics/react"
 
 const roboto = Roboto({
   subsets: ["latin"],
@@ -88,7 +89,8 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
           />
         </noscript>
         {children}
+        <Analytics />
       </body>
     </html>
-  );
+  );  
 }
