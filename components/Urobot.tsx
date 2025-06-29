@@ -7,7 +7,7 @@ import React, {
   memo,
   useMemo,
 } from "react";
-import ReactMarkdown from "react-markdown";
+import ReactMarkdown from 'react-markdown';
 import rehypeSanitize from 'rehype-sanitize';
 
 // URL de la API
@@ -201,7 +201,7 @@ const MessageItem = memo(({
                     ol: ({ node, ...props }) => (
                       <ol {...props} className="list-decimal ml-4 my-3 space-y-1" />
                     ),
-                    code: ({ node, inline, ...props }) => {
+                    code: ({ node, inline, ...props }: { node?: any; inline?: boolean; className?: string; children?: React.ReactNode }) => {
                       return inline ? (
                         <code {...props} className="bg-gray-100 px-1.5 py-0.5 rounded text-sm font-mono text-teal-700" />
                       ) : (
