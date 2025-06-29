@@ -1,4 +1,3 @@
-"use client";
 
 import React, { useState, useCallback, useMemo } from "react";
 import dynamic from "next/dynamic";
@@ -6,13 +5,6 @@ import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import {
-  Select,
-  SelectTrigger,
-  SelectValue,
-  SelectContent,
-  SelectItem,
-} from "@/components/ui/select";
 import { Badge } from "@/components/ui/typography/badge";
 import { SubTitle } from "@/components/ui/typography/sub-title";
 import { Paragraph } from "@/components/ui/typography/paragraph";
