@@ -150,7 +150,7 @@ const MessageItem = memo(({
     >
       {!message.isUser && <Avatar isUser={false} isTyping={message.isTyping} />}
       
-      <div className={`mx-3 relative group max-w-[85%] sm:max-w-md lg:max-w-lg`}>
+      <div className={`mx-3 relative group max-w-[85%] sm:max-w-lg lg:max-w-2xl`}>
         <div
           className={`
             p-4 rounded-2xl shadow-lg transition-all duration-300
@@ -498,7 +498,7 @@ export default function Urobot({
       <div className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-40">
         <button
           onClick={() => setIsOpen(true)}
-          className="group relative bg-gradient-to-r from-teal-600 to-teal-700 text-white p-4 rounded-full shadow-xl hover:shadow-2xl hover:from-teal-700 hover:to-teal-800 flex items-center space-x-3 transition-all duration-300 transform hover:scale-105 active:scale-95"
+          className="group relative bg-gradient-to-r from-teal-500 to-teal-600 text-white p-4 rounded-full shadow-lg hover:shadow-glow hover:from-teal-600 hover:to-teal-700 flex items-center space-x-3 transition-all duration-300 transform hover:scale-110 active:scale-100"
           aria-label="Abrir chat de UROBOT"
         >
           <svg xmlns="http://www.w3.org/2000/svg" className="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -714,6 +714,13 @@ export default function Urobot({
           50% { opacity: .5; }
         }
         
+        /* Sombra brillante para el botón principal */
+        .hover\\:shadow-glow:hover {
+          box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 
+                      0 10px 10px -5px rgba(0, 0, 0, 0.04),
+                      0 0 20px 5px rgba(13, 148, 136, 0.5);
+        }
+
         /* Efecto de respiración para el avatar escribiendo */
         @keyframes breathing {
           0%, 100% { transform: scale(1); opacity: 1; }
