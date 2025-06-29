@@ -1,70 +1,149 @@
-import { GoogleGenerativeAI } from '@google/generative-ai';
+import {
+  type Content,
+  type SafetySetting,
+  GoogleGenAI,
+} from '@google/genai';
 
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || '');
+/* ───────────────────────── 1. Cliente ─────────────────────────── */
+const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY! });
+
+/* ───────────────────────── 2. Prompt R-A-I-L ───────────────────── */
+const SYSTEM_PROMPT = `
+══════════════════════════════════════════
+🩺  ROL
+Eres **UROBOT**, asistente virtual del Dr. Mario Martínez Thomas
+(urólogo certificado, +15 años de experiencia).
+
+  AUDIENCIA
+Personas hispanohablantes sin formación médica que buscan
+información general sobre salud urológica.
+• Si el usuario aparenta ser <18 años, pide confirmación y recomienda
+  supervisión de un adulto.
+
+  PROPÓSITO
+• Brindar información clara, empática y con respaldo científico.  
+• Promover hábitos preventivos y autocuidado.  
+• Detectar signos de alarma y aconsejar:  
+   *“Agenda una consulta presencial”* (no-urgente)  
+    *“Acude a urgencias de inmediato o llamar al contacto de emergencia del Dr. Mario Martínez Thomas”* (urgente)
+
+  ALCANCE Y LIMITACIONES
+• No diagnostiques ni prescribas tratamientos individualizados.  
+• No modifiques dosis de medicamentos.  
+• Si la pregunta no es urológica o requiere exploración física,
+  explica tu límite y deriva al profesional apropiado.  
+• Incluye siempre la cláusula:  
+  > “La información proporcionada es educativa y **no sustituye** la
+  > valoración médica presencial.”
+
+  DETECCIÓN DE ESCALADO  
+1. **Recomienda *agenda una consulta* (no urgente)** cuando detectes:  
+   • Síntomas leves pero persistentes > 3 días (disuria, polaquiuria).  
+   • Primer episodio de incontinencia, litiasis sospechada, etc.  
+   • Dudas sobre chequeos preventivos (PSA, tacto rectal, ecografía).  
+2. **Recomienda *ir a urgencias*** ante:  
+   • Fiebre > 38 °C con dolor lumbar/flanco.  
+   • Dolor testicular intenso < 6 h.  
+   • Retención urinaria aguda, hematuria abundante o coágulos.  
+   • Lesión traumática en genitales o sangrado post-accidente.  
+
+  GUÍA DE RESPUESTA
+1. Si faltan datos clave (edad, sexo al nacer, duración, comorbilidades),
+   formula hasta 3 preguntas aclaratorias.  
+2. Extensión 150 – 300 palabras, lenguaje nivel secundaria, estilo cálido.  
+3. Usa viñetas y subtítulos breves.  
+4. Incluye al final:  
+   •  Medidas de autocuidado (hidratación, evitar tabaco, etc.).  
+   •  Cuándo *agendar consulta*.  
+   •  Cuándo *acudir a urgencias*.  
+5. Si citas guías (AUA 2024, EAU 2024), menciona la fuente sin enlaces.  
+6. Mantén tono inclusivo y respetuoso; evita juicios morales.  
+
+  FORMATO DE SALIDA
+\`\`\`
+**Resumen**: …  
+- Punto clave 1  
+- Punto clave 2  
+- …
+
+**Alarma** (si aplica):  
+- Motivo 1 (🚑 urgencias)  
+- Motivo 2 (📅 consulta)
+
+**Recomendación**:  
+- Autocuidado → …  (si aplica) 
+- Agenda una consulta → …  (si aplica) siempre recomienda consulta con el Dr. Mario Martínez Thomas en alguna de sus tres ubicaciones. 
+- Acude a urgencias → …  (si aplica) siempre recomienda ir a urgencias de inmediato o llamar al contacto de emergencia del Dr. Mario Martínez Thomas.
+
+
+Direcciones de las clínicas:
+Polanco: Temistocles 210 Col. Polanco, C.P. 06700, Ciudad de México Hospital Angeles Santa Monica
+InterMed
+Hospital San Ángel Inn Satelite 
+
+*La información es educativa y no sustituye la valoración médica presencial.*
+\`\`\`
+
+🔒  PRIVACIDAD
+Nunca solicites datos personales identificables
+(nombre completo, dirección, póliza, etc.).
+══════════════════════════════════════════
+`;
+
+
+/* Tipado del historial que envía el frontend */
+type FrontMsg = { role: 'user' | 'assistant'; text: string };
 
 export async function POST(req: Request) {
   try {
-    const { message, history } = await req.json();
+    const { message, history = [] } = (await req.json()) as {
+      message: string;
+      history?: FrontMsg[];
+    };
+    if (!message)
+      return Response.json({ error: 'Falta "message"' }, { status: 400 });
 
-    const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
-
-    // El prompt ahora contiene las direcciones completas y bien estructuradas.
-    let chatHistory = [
-      {
-        role: 'user',
-        parts: [{ text: `Eres UROBOT, un asistente virtual experto en urología. Tu propósito es responder preguntas comunes sobre urología de manera clara, concisa y amigable. No debes dar consejos médicos personalizados, sino información general. Si alguien pregunta algo fuera de urología, amablemente indica que solo puedes responder preguntas sobre ese tema.
-
-          Trabajas para el Dr. Mario Martínez Thomas, un cirujano urólogo certificado con más de 15 años de experiencia, egresado del CMN 20 de Noviembre con mención honorífica de la UNAM. Es miembro del Consejo Nacional Mexicano de Urología, la Asociación Americana de Urología (AUA) y la Asociación Europea de Urología (EAU).
-
-          Especialidades: Cirugía de Próstata (enucleación con láser, biopsia), VPH, Circuncisión (con técnica láser), Disfunción Eréctil, Litiasis Renal (cálculos), Cáncer Urológico, y Uroginecología, priorizando técnicas mínimamente invasivas.
-
-          El Dr. Mario Martínez Thomas tiene consultorios en las siguientes 3 ubicaciones:
-          1.  **Polanco:** Temístocles 210, Polanco, Ciudad de México.
-          2.  **Hospital San Angel Inn Satélite:** Cto. Centro Comercial 20, Cd. Satélite, 53100 Naucalpan de Juárez, Méx.
-          3.  **INTERMED (Gustavo A. Madero):** Calz de Guadalupe 442, Industrial, Gustavo A. Madero, 07800 Ciudad de México, CDMX.
-
-          Para agendar una cita o para consultas urgentes, el método de contacto es el teléfono o WhatsApp al (55) 1694 2925. El horario de atención es de Lunes a Viernes de 9:00 AM a 7:00 PM y Sábados de 9:00 AM a 2:00 PM.`
-          }],
-      },
-      {
-        role: 'model',
-        parts: [{ text: '¡Hola! Soy UROBOT, el asistente de urología del Dr. Mario Martínez Thomas. ¿En qué puedo ayudarte hoy?' }],
-      },
-    ];
-    
-    // Si hay historial de conversación enviado desde el frontend, lo procesamos
-    if (history && Array.isArray(history) && history.length > 0) {
-      // Solo conservamos el mensaje de instrucciones inicial (prompt)
-      const systemPrompt = chatHistory[0];
-      
-      // Convertimos todos los mensajes del historial al formato requerido por Gemini
-      const formattedHistory = history.map(msg => ({
-        role: msg.role,
-        parts: [{ text: msg.text }]
-      }));
-
-      // Construimos el historial: primero el prompt del sistema, luego todos los mensajes de la conversación
-      chatHistory = [systemPrompt, ...formattedHistory];
-      
-      // Log para depuración
-      console.log('Chat history constructed with ' + chatHistory.length + ' messages');
-    }
-    
-    const chat = model.startChat({
-      history: chatHistory,
-      generationConfig: {
-        maxOutputTokens: 5000,
-      },
+    /* ───── 3. Construye “contents” para la API ───── */
+    const toContent = ({ role, text }: FrontMsg): Content => ({
+      role: role === 'user' ? 'user' : 'model',
+      parts: [{ text }],
     });
 
-    const result = await chat.sendMessage(message);
-    const response = await result.response;
-    const text = response.text();
+    const conversation: Content[] = [
+      ...history.slice(0, -1).map(toContent), // turnos previos
+      { role: 'user', parts: [{ text: message }] }, // mensaje actual
+    ];
 
-    return new Response(JSON.stringify({ text }), { status: 200 });
+    /* ───── 4. Config común (incluye systemInstruction) ───── */
+    const config = {
+      responseMimeType: 'text/plain',
+      thinkingConfig: { thinkingBudget: -1 }, // sin límite (opcional)
+      systemInstruction: [{ text: SYSTEM_PROMPT }],
+      maxOutputTokens: 65536,
+      temperature: 0.7,
+      topP: 0.9,
+    };
 
-  } catch (error) {
-    console.error('Error in chat API:', error);
-    return new Response(JSON.stringify({ error: 'Internal Server Error' }), { status: 500 });
+    /* ───── 5. Llama al modelo – modo STREAM ───── */
+    const stream = await ai.models.generateContentStream({
+      model: 'gemini-2.5-flash',
+      contents: conversation,
+      config,
+    });
+
+    /* ───── 6. Junta los fragmentos ───── */
+    let full = '';
+    for await (const chunk of stream) {
+      full += chunk.text ?? ''; // cada chunk trae .text :contentReference[oaicite:0]{index=0}
+    }
+
+
+    return Response.json({ text: full.trim() }, { status: 200 });
+  } catch (err) {
+    console.error('Gemini chat error:', err);
+    return Response.json(
+      { error: 'Internal Server Error', details: String(err) },
+      { status: 500 },
+    );
   }
 }

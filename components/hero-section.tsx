@@ -60,7 +60,7 @@ export function HeroSection() {
         {/* Solo video, sin loaders ni imágenes */}
         <video
           ref={videoRef}
-          className="absolute inset-0 w-full h-full object-cover"
+          className="absolute inset-0 w-full h-full object-cover min-w-full min-h-full"
           style={{ 
             filter: 'blur(6px)', 
             opacity: isReady ? 1 : 0,

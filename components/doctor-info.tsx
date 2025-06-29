@@ -44,30 +44,36 @@ interface MediaContainerProps {
 
 // --- DATOS ---
 const galleryImages: GalleryImage[] = [
-  { 
+  {
     id: "gallery-1",
-    src: "/images/dr-mario-martinez-1.jpeg", 
-    alt: "Dr. Mario Martínez en congreso", 
-    description: "Participación en el Congreso Internacional de Urología.", 
-    priority: true 
+    src: "/images/mario_cirugia_2.jpg",
+    alt: "Dr. Mario Martínez realizando cirugía",
+    description: "El Dr. Mario Martínez en acción, realizando una cirugía urológica.",
+    priority: true
   },
-  { 
+  {
     id: "gallery-2",
-    src: "/images/dr-mario-martinez-2.jpeg", 
-    alt: "Dr. Mario Martínez con equipo médico", 
-    description: "Colaborando con colegas en un taller de cirugía robótica." 
+    src: "/images/mario_cistoscopio.jpg",
+    alt: "Dr. Mario Martínez usando cistoscopio",
+    description: "Utilizando tecnología avanzada como el cistoscopio para diagnósticos precisos."
   },
-  { 
+  {
     id: "gallery-3",
-    src: "/images/dr-mario-martinez-3.jpeg", 
-    alt: "Dr. Mario Martínez en consulta", 
-    description: "Atención personalizada y de vanguardia para cada paciente." 
+    src: "/images/mario_davinci.jpg",
+    alt: "Dr. Mario Martínez con robot Da Vinci",
+    description: "Experiencia en cirugía robótica asistida por el sistema Da Vinci."
   },
-  { 
+  {
     id: "gallery-4",
-    src: "/images/dr-mario-martinez-4.jpeg", 
-    alt: "Dr. Mario Martínez en quirófano", 
-    description: "Realizando procedimientos de alta especialidad con tecnología de punta." 
+    src: "/images/mario_operando.jpg",
+    alt: "Dr. Mario Martínez operando",
+    description: "Concentración y precisión en cada procedimiento quirúrgico."
+  },
+  {
+    id: "gallery-5",
+    src: "/images/mario_robot.jpg",
+    alt: "Dr. Mario Martínez junto a robot quirúrgico",
+    description: "Liderando la vanguardia en procedimientos mínimamente invasivos con asistencia robótica."
   },
 ];
 
