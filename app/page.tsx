@@ -1,6 +1,5 @@
 
 "use client"
-
 import { useEffect, useState } from "react"
 import { ScrollProgressBar, CustomCursor } from "@/components/scroll-animations"
 import { QuienSoySection } from "@/components/quien-soy-section"
@@ -13,16 +12,18 @@ import { Footer } from "@/components/footer"
 import { HomeBlogSection } from "@/components/home-blog-section"
 import { FaqSection } from "@/components/faq-section"
 import { InstalacionesSection } from "@/components/instalaciones-section"
-
-
+import Urobot from '@/components/Urobot';
+import DoctorInfo from '@/components/doctor-info';
 
 export default function Home() {
   const [activeSection, setActiveSection] = useState("inicio")
+  const [showDoctorInfo, setShowDoctorInfo] = useState(false)
+  const [isUrobotOpen, setIsUrobotOpen] = useState(false)
 
   useEffect(() => {
     const handleScroll = () => {
       const sections = ["inicio", "sobre-mi", "servicios", "clinicas", "instalaciones", "contacto"]
-      
+
       for (const section of sections) {
         const element = document.getElementById(section)
         if (!element) continue
@@ -47,7 +48,12 @@ export default function Home() {
 
       <main className="flex-1">
         <HeroSection />
-        <QuienSoySection background="pearl" />
+        <QuienSoySection 
+          background="pearl" 
+          onShowMore={() => setShowDoctorInfo(!showDoctorInfo)} 
+          showingMore={showDoctorInfo} 
+        />
+        {showDoctorInfo && <DoctorInfo background="pearl" />}
         <TratamientosSection background="primary-dark" />
         <ClinicsSection background="pearl" />
         <InstalacionesSection />
@@ -57,6 +63,9 @@ export default function Home() {
       </main>
 
       <Footer />
+      
+      {/* Urobot Chat Component - El componente ya tiene posicionamiento fijo incorporado */}
+      <Urobot isOpen={isUrobotOpen} setIsOpen={setIsUrobotOpen} />
     </div>
   )
 }

@@ -14,7 +14,6 @@ import {
   SelectItem,
 } from "@/components/ui/select";
 import { Badge } from "@/components/ui/typography/badge";
-import { SectionTitle } from "@/components/ui/typography/section-title";
 import { SubTitle } from "@/components/ui/typography/sub-title";
 import { Paragraph } from "@/components/ui/typography/paragraph";
 import { ResponsiveContainer } from "@/components/responsive-container";

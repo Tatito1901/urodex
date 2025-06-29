@@ -1,6 +1,6 @@
 import Image from "next/image";
 import React, { useMemo } from "react";
-import { Stethoscope, GraduationCap, CheckCircle, Award, Shield, Star } from "lucide-react";
+import { Stethoscope, GraduationCap, CheckCircle, Award, Shield, Star, ChevronDown, ChevronUp } from "lucide-react";
 import { ResponsiveContainer } from "./responsive-container";
 import { Section } from "./section";
 import { ScrollAnimation } from "./scroll-animations";
@@ -37,9 +37,11 @@ const ExperienceBadge = React.memo(() => (
 
 interface QuienSoySectionProps {
   background?: "white" | "pearl" | "teal" | "gradient" | "gradient-subtle" | "gradient-strong" | "primary" | "primary-light" | "primary-dark" | "secondary" | "secondary-light" | "dark" | "none";
+  onShowMore?: () => void;
+  showingMore?: boolean;
 }
 
-export const QuienSoySection: React.FC<QuienSoySectionProps> = ({ background = "white" }) => {
+export const QuienSoySection: React.FC<QuienSoySectionProps> = ({ background = "white", onShowMore, showingMore = false }) => {
   const features = useMemo(() => [
     {
       Icon: GraduationCap,
@@ -129,6 +131,26 @@ export const QuienSoySection: React.FC<QuienSoySectionProps> = ({ background = "
                 />
               ))}
             </div>
+
+            {/* Botón Ver más */}
+            {onShowMore && (
+              <div className="flex justify-center mt-10">
+                <ScrollAnimation animation="fade-in-up" className="ml-8">
+                  <button
+                    onClick={onShowMore}
+                    className="inline-flex items-center px-6 py-3 rounded-full bg-gradient-to-r from-teal-600 to-teal-500 hover:from-teal-500 hover:to-teal-400 text-white font-medium transition-all duration-300 transform hover:scale-105 shadow-md hover:shadow-lg"
+                    aria-expanded={showingMore}
+                  >
+                    <span className="mr-2">{showingMore ? "Ver menos" : "Ver más información"}</span>
+                    {showingMore ? (
+                      <ChevronUp className="h-5 w-5" />
+                    ) : (
+                      <ChevronDown className="h-5 w-5" />
+                    )}
+                  </button>
+                </ScrollAnimation>
+              </div>
+            )}
           </ScrollAnimation>
         </div>
       </ResponsiveContainer>

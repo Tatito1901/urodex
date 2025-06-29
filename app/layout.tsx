@@ -4,7 +4,9 @@ import type React from "react"
 import { Roboto, Roboto_Serif } from "next/font/google"
 import "./globals.css"
 import Script from "next/script"
-import { Analytics } from "@vercel/analytics/react"
+import { Analytics } from "@vercel/analytics/react";
+import dynamic from 'next/dynamic';
+
 
 const roboto = Roboto({
   subsets: ["latin"],
@@ -67,6 +69,7 @@ export default function RootLayout({
   return (
     <html lang="es" dir="ltr" suppressHydrationWarning>
       <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
         <Script id="google-tag-manager" strategy="afterInteractive">
           {`
 (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
