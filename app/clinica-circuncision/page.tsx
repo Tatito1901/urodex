@@ -1,7 +1,6 @@
 "use client"
 
-import { useEffect, useState, useCallback, useMemo } from "react"
-import { Header } from "@/components/header"
+import { useEffect, useState, useCallback, useMemo, useRef } from "react"
 import {
   Phone,
   ArrowRight,
@@ -32,9 +31,11 @@ import {
   PhoneCall,
   CheckSquare
 } from "lucide-react"
+import Image from "next/image"
+import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 
-// Componente optimizado para FAQ con mejor UX
+// Interfaces optimizadas
 interface FAQItemProps {
   question: string;
   answer: string;
@@ -62,13 +63,11 @@ interface TreatmentItem {
   description: string;
   duration: string;
   recovery: string;
-
   benefits: string[];
   ideal: string;
   icon: JSX.Element;
   bgColor: string;
   featured?: boolean;
-  price?: string; // Agregado para mostrar el precio si está disponible
 }
 
 interface ConditionItem {
@@ -85,18 +84,19 @@ interface FAQDataEntry {
   answer: string;
 }
 
+// Componente FAQ optimizado
 const FAQItem = ({ question, answer, isOpen, onToggle, index }: FAQItemProps) => (
-  <div className="border border-emerald-100 rounded-xl overflow-hidden bg-white shadow-sm hover:shadow-md transition-all duration-300 group">
+  <div className="border border-emerald-100 rounded-xl overflow-hidden bg-white shadow-sm hover:shadow-md transition-all duration-300">
     <button
       onClick={onToggle}
-      className="w-full px-4 sm:px-6 py-4 sm:py-5 text-left flex items-center justify-between hover:bg-emerald-50/50 transition-colors duration-200 group-hover:bg-emerald-50/30"
+      className="w-full px-4 sm:px-6 py-4 sm:py-5 text-left flex items-center justify-between hover:bg-emerald-50/50 transition-colors duration-200"
       aria-expanded={isOpen}
       aria-controls={`faq-answer-${index}`}
     >
-      <span className="font-semibold text-slate-800 text-sm sm:text-base pr-4 group-hover:text-emerald-700 transition-colors duration-200">
+      <span className="font-semibold text-slate-800 text-sm sm:text-base pr-4">
         {question}
       </span>
-      <div className="flex-shrink-0 bg-emerald-50 p-1.5 rounded-lg group-hover:bg-emerald-100 transition-colors duration-200">
+      <div className="flex-shrink-0 bg-emerald-50 p-1.5 rounded-lg">
         {isOpen ? (
           <Minus className="h-4 w-4 text-emerald-600" />
         ) : (
@@ -107,7 +107,10 @@ const FAQItem = ({ question, answer, isOpen, onToggle, index }: FAQItemProps) =>
     {isOpen && (
       <div 
         id={`faq-answer-${index}`}
-        className="px-4 sm:px-6 pb-4 sm:pb-5 pt-0 animate-in slide-in-from-top-1 duration-300"
+        className="px-4 sm:px-6 pb-4 sm:pb-5 pt-0"
+        style={{
+          animation: 'slideDown 300ms ease-out'
+        }}
       >
         <div className="border-t border-emerald-100 pt-4">
           <p className="text-slate-600 leading-relaxed text-sm sm:text-base">{answer}</p>
@@ -115,23 +118,33 @@ const FAQItem = ({ question, answer, isOpen, onToggle, index }: FAQItemProps) =>
       </div>
     )}
   </div>
-)
+);
 
-// Componente optimizado para scroll progress
+// Scroll Progress Bar optimizada
 const ScrollProgressBar = () => {
-  const [scrollProgress, setScrollProgress] = useState(0)
+  const [scrollProgress, setScrollProgress] = useState(0);
 
   useEffect(() => {
-    const updateScrollProgress = () => {
-      const scrollPx = document.documentElement.scrollTop
-      const winHeightPx = document.documentElement.scrollHeight - document.documentElement.clientHeight
-      const scrolled = scrollPx / winHeightPx
-      setScrollProgress(scrolled)
-    }
+    let ticking = false;
 
-    window.addEventListener('scroll', updateScrollProgress, { passive: true })
-    return () => window.removeEventListener('scroll', updateScrollProgress)
-  }, [])
+    const updateScrollProgress = () => {
+      const scrollPx = document.documentElement.scrollTop;
+      const winHeightPx = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+      const scrolled = scrollPx / winHeightPx;
+      setScrollProgress(scrolled);
+      ticking = false;
+    };
+
+    const requestTick = () => {
+      if (!ticking) {
+        requestAnimationFrame(updateScrollProgress);
+        ticking = true;
+      }
+    };
+
+    window.addEventListener('scroll', requestTick, { passive: true });
+    return () => window.removeEventListener('scroll', requestTick);
+  }, []);
 
   return (
     <div className="fixed top-0 left-0 w-full h-1 bg-emerald-100 z-50">
@@ -140,29 +153,31 @@ const ScrollProgressBar = () => {
         style={{ width: `${scrollProgress * 100}%` }}
       />
     </div>
-  )
-}
+  );
+};
 
-// Componente para animaciones de scroll optimizado
+// Componente de animación optimizado
 const ScrollAnimation = ({ children, animation = "fade-in-up", delay = 0, className = "" }: ScrollAnimationProps) => {
-  const [isVisible, setIsVisible] = useState(false)
-  const [elementRef, setElementRef] = useState(null)
+  const [isVisible, setIsVisible] = useState(false);
+  const elementRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (!elementRef) return
+    const element = elementRef.current;
+    if (!element) return;
 
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
-          setTimeout(() => setIsVisible(true), delay)
+          setTimeout(() => setIsVisible(true), delay);
+          observer.disconnect(); // Disconnect after first trigger
         }
       },
       { threshold: 0.1, rootMargin: '50px' }
-    )
+    );
 
-    observer.observe(elementRef)
-    return () => observer.disconnect()
-  }, [elementRef, delay])
+    observer.observe(element);
+    return () => observer.disconnect();
+  }, [delay]);
 
   const animationClasses = {
     "fade-in-up": isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8",
@@ -170,106 +185,113 @@ const ScrollAnimation = ({ children, animation = "fade-in-up", delay = 0, classN
     "fade-in-right": isVisible ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-8",
     "fade-in": isVisible ? "opacity-100" : "opacity-0",
     "scale-in": isVisible ? "opacity-100 scale-100" : "opacity-0 scale-95"
-  }
+  };
 
   return (
     <div 
-      ref={(el) => {
-        if (el && !isVisible) {
-          const observer = new IntersectionObserver(([entry]) => {
-            if (entry.isIntersecting) {
-              setIsVisible(true)
-            }
-          })
-          observer.observe(el)
-        }
-      }}
+      ref={elementRef}
       className={`transition-all duration-700 ease-out ${animationClasses[animation]} ${className}`}
     >
       {children}
     </div>
-  )
-}
+  );
+};
 
-// Componente para estadísticas con contador animado
+// Contador de estadísticas optimizado
 const StatCounter = ({ value, label, suffix = "", delay = 0 }: StatCounterProps) => {
-  const [count, setCount] = useState(0)
-  const [isVisible, setIsVisible] = useState(false)
+  const [count, setCount] = useState(0);
+  const [isVisible, setIsVisible] = useState(false);
+  const elementRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (!isVisible) return
+    const element = elementRef.current;
+    if (!element) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true);
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.1 }
+    );
+
+    observer.observe(element);
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    if (!isVisible) return;
 
     const timer = setTimeout(() => {
-      const increment = value / 30
+      const duration = 2000;
+      const steps = 60;
+      const increment = value / steps;
+      let currentStep = 0;
+
       const interval = setInterval(() => {
-        setCount(prev => {
-          const next = prev + increment
-          if (next >= value) {
-            clearInterval(interval)
-            return value
-          }
-          return next
-        })
-      }, 50)
+        currentStep++;
+        const nextValue = Math.min(currentStep * increment, value);
+        setCount(Math.floor(nextValue));
 
-      return () => clearInterval(interval)
-    }, delay)
+        if (currentStep >= steps) {
+          clearInterval(interval);
+          setCount(value);
+        }
+      }, duration / steps);
 
-    return () => clearTimeout(timer)
-  }, [isVisible, value, delay])
+      return () => clearInterval(interval);
+    }, delay);
+
+    return () => clearTimeout(timer);
+  }, [isVisible, value, delay]);
 
   return (
-    <div 
-      ref={(el) => {
-        if (el && !isVisible) {
-          const observer = new IntersectionObserver(([entry]) => {
-            if (entry.isIntersecting) {
-              setIsVisible(true)
-            }
-          })
-          observer.observe(el)
-        }
-      }}
-      className="text-center"
-    >
+    <div ref={elementRef} className="text-center">
       <div className="text-xl sm:text-2xl font-bold text-emerald-300 mb-1 sm:mb-2">
-        {Math.floor(count)}{suffix}
+        {count}{suffix}
       </div>
       <p className="text-white/80 text-xs sm:text-sm">{label}</p>
     </div>
-  )
-}
+  );
+};
 
 export default function ClinicaCircuncision() {
-  const [activeSection, setActiveSection] = useState("inicio")
-  const [openFAQ, setOpenFAQ] = useState<number | null>(null)
+  const [activeSection, setActiveSection] = useState("inicio");
+  const [openFAQ, setOpenFAQ] = useState<number | null>(null);
 
-  // Optimized scroll handler with throttling
+  // Scroll handler optimizado con throttling
   const handleScroll = useCallback(() => {
-    const sections = ["inicio", "tratamientos", "sobre-mi", "faq", "contacto"]
+    const sections = ["inicio", "tratamientos", "sobre-mi", "faq", "contacto"];
     
     for (const section of sections) {
-      const element = document.getElementById(section)
-      if (!element) continue
+      const element = document.getElementById(section);
+      if (!element) continue;
 
-      const rect = element.getBoundingClientRect()
+      const rect = element.getBoundingClientRect();
       if (rect.top <= 100 && rect.bottom >= 100) {
-        setActiveSection(section)
-        break
+        setActiveSection(section);
+        break;
       }
     }
-  }, [])
+  }, []);
 
   useEffect(() => {
+    let ticking = false;
+
     const throttledScroll = () => {
-      requestAnimationFrame(handleScroll)
-    }
+      if (!ticking) {
+        requestAnimationFrame(handleScroll);
+        ticking = true;
+      }
+    };
 
-    window.addEventListener("scroll", throttledScroll, { passive: true })
-    return () => window.removeEventListener("scroll", throttledScroll)
-  }, [handleScroll])
+    window.addEventListener("scroll", throttledScroll, { passive: true });
+    return () => window.removeEventListener("scroll", throttledScroll);
+  }, [handleScroll]);
 
-  // Memoized data con mejores iconos y utilidad
+  // Datos memoizados
   const treatments: TreatmentItem[] = useMemo(() => [
     {
       name: "Circuncisión Tradicional",
@@ -285,7 +307,6 @@ export default function ClinicaCircuncision() {
       ideal: "Casos complejos y revisiones",
       icon: <Shield className="h-5 w-5 sm:h-6 sm:w-6 text-white" />,
       bgColor: "from-emerald-600 to-emerald-700",
-      price: "$7,500 MXN"
     },
     {
       name: "Circuncisión con Láser",
@@ -302,7 +323,6 @@ export default function ClinicaCircuncision() {
       icon: <Zap className="h-5 w-5 sm:h-6 sm:w-6 text-white" />,
       bgColor: "from-teal-600 to-teal-700",
       featured: true,
-      price: "$9,500 MXN"
     },
     {
       name: "Frenuloplastía",
@@ -318,9 +338,8 @@ export default function ClinicaCircuncision() {
       ideal: "Problemas de frenillo únicamente",
       icon: <Target className="h-5 w-5 sm:h-6 sm:w-6 text-white" />,
       bgColor: "from-emerald-600 to-teal-600",
-      price: "$6,500 MXN"
     }
-  ], [])
+  ], []);
 
   const conditions: ConditionItem[] = useMemo(() => [
     {
@@ -347,7 +366,7 @@ export default function ClinicaCircuncision() {
       urgency: "Urgente",
       urgencyColor: "text-red-700"
     }
-  ], [])
+  ], []);
 
   const faqData: FAQDataEntry[] = useMemo(() => [
     {
@@ -373,35 +392,39 @@ export default function ClinicaCircuncision() {
     {
       question: "¿La circuncisión afecta la sensibilidad o función sexual?",
       answer: "Estudios científicos demuestran que la circuncisión correcta no afecta significativamente la sensibilidad. Muchos pacientes reportan mejoras en su vida sexual al resolver problemas como fimosis o infecciones recurrentes."
-    },
-    {
-      question: "¿Qué incluye el costo y hay opciones de financiamiento?",
-      answer: "El costo incluye: consulta inicial, procedimiento, materiales, medicamentos básicos y seguimiento post-operatorio. Ofrecemos planes de financiamiento sin intereses, pagos diferidos y opciones de seguro médico."
-    },
-    {
-      question: "¿Qué garantías ofrecen y cuál es el protocolo de seguimiento?",
-      answer: "Garantizamos el procedimiento con seguimiento completo: revisión a 7 días, 1 mes y 3 meses. Disponibilidad 24/7 para consultas post-operatorias. Reintervención gratuita en casos excepcionales según criterio médico."
     }
-  ], [])
+  ], []);
 
   const openWhatsApp = useCallback(() => {
-    window.open("https://api.whatsapp.com/send?phone=5215516942925&text=Hola%20Dr.%20Mario,%20me%20gustaría%20obtener%20más%20información%20sobre%20la%20circuncisión%20y%20agendar%20una%20consulta", "_blank")
-  }, [])
+    window.open("https://api.whatsapp.com/send?phone=5215516942925&text=Hola%20Dr.%20Mario,%20me%20gustaría%20obtener%20más%20información%20sobre%20la%20circuncisión%20y%20agendar%20una%20consulta", "_blank");
+  }, []);
 
   const scrollToSection = useCallback((sectionId: string) => {
-    document.getElementById(sectionId)?.scrollIntoView({ behavior: "smooth" })
-  }, [])
+    document.getElementById(sectionId)?.scrollIntoView({ behavior: "smooth" });
+  }, []);
 
   return (
     <div className="flex flex-col min-h-screen bg-gradient-to-br from-slate-50/80 via-white to-emerald-50/20">
+      <style jsx>{`
+        @keyframes slideDown {
+          from {
+            opacity: 0;
+            transform: translateY(-10px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+      `}</style>
+      
       <ScrollProgressBar />
       <Header activeSection={activeSection} />
 
       <main className="flex-1">
-        {/* Hero Section Mejorado */}
+        {/* Hero Section */}
         <section id="inicio" className="relative overflow-hidden min-h-[85vh] sm:min-h-[75vh] flex items-center">
           <div className="absolute inset-0 w-full h-full">
-            {/* Gradient overlay más sofisticado */}
             <div className="absolute inset-0 bg-gradient-to-br from-emerald-950/95 via-slate-900/90 to-emerald-900/85"></div>
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_40%,_rgba(16,185,129,0.2)_0%,_transparent_50%)]"></div>
           </div>
@@ -443,7 +466,6 @@ export default function ClinicaCircuncision() {
                   </button>
                 </div>
 
-                {/* Beneficios clave */}
                 <div className="mt-8 sm:mt-10 grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6">
                   <div className="bg-white/10 backdrop-blur-sm rounded-lg p-3 sm:p-4 border border-white/10">
                     <div className="flex items-center gap-2 text-emerald-300 font-medium text-sm">
@@ -468,7 +490,6 @@ export default function ClinicaCircuncision() {
             </div>
           </div>
           
-          {/* Scroll indicator */}
           <div className="absolute bottom-6 sm:bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce hidden md:flex">
             <div className="h-10 sm:h-12 w-6 sm:w-8 rounded-full border-2 border-white/30 flex items-start justify-center p-2">
               <div className="h-2 w-2 bg-white rounded-full animate-pulse"></div>
@@ -476,7 +497,7 @@ export default function ClinicaCircuncision() {
           </div>
         </section>
 
-        {/* Conditions Section Mejorado */}
+        {/* Conditions Section */}
         <section className="relative py-8 sm:py-12 lg:py-16 bg-gradient-to-br from-white via-slate-50/50 to-emerald-50/30 overflow-hidden">
           <div className="absolute inset-0 opacity-20">
             <div className="absolute top-1/4 right-1/4 w-48 sm:w-72 h-48 sm:h-72 bg-emerald-200/20 rounded-full blur-3xl"></div>
@@ -537,7 +558,7 @@ export default function ClinicaCircuncision() {
           </div>
         </section>
 
-        {/* Treatments Section Mejorado */}
+        {/* Treatments Section */}
         <section id="tratamientos" className="relative py-8 sm:py-12 lg:py-16 bg-gradient-to-br from-slate-50 via-white to-emerald-50/30 overflow-hidden">
           <div className="absolute inset-0 opacity-15">
             <div className="absolute top-1/4 left-1/4 w-48 sm:w-72 h-48 sm:h-72 bg-emerald-300/30 rounded-full blur-3xl"></div>
@@ -570,14 +591,12 @@ export default function ClinicaCircuncision() {
                       ? 'border-emerald-300 ring-2 ring-emerald-100 hover:shadow-2xl' 
                       : 'border-slate-200 hover:shadow-xl'
                   }`}>
-                    {/* Featured badge */}
                     {treatment.featured && (
                       <div className="bg-gradient-to-r from-emerald-600 to-teal-600 text-white text-center py-2 text-xs font-bold">
                         🌟 TÉCNICA RECOMENDADA
                       </div>
                     )}
 
-                    {/* Header with gradient background */}
                     <div className={`bg-gradient-to-r ${treatment.bgColor} p-4 sm:p-6 text-white text-center relative`}>
                       <div className="w-12 h-12 sm:w-14 sm:h-14 bg-white/20 backdrop-blur-sm rounded-lg sm:rounded-xl flex items-center justify-center mx-auto mb-3 sm:mb-4">
                         {treatment.icon}
@@ -593,43 +612,38 @@ export default function ClinicaCircuncision() {
                       </div>
                     </div>
 
-                    {/* Content */}
                     <div className="p-4 sm:p-6">
-                      <div className="grid grid-cols-3 gap-2 sm:gap-3 mb-4 sm:mb-6">
+                      <div className="grid grid-cols-2 gap-2 sm:gap-3 mb-4 sm:mb-6">
                         <div className="bg-slate-50 p-2 sm:p-3 rounded-lg text-center">
                           <Clock className="h-4 w-4 text-emerald-600 mx-auto mb-1" />
                           <span className="font-bold text-emerald-700 text-xs sm:text-sm block">{treatment.duration}</span>
                           <span className="text-xs text-slate-600">Duración</span>
                         </div>
                         <div className="bg-slate-50 p-2 sm:p-3 rounded-lg text-center">
-                          <Timer className="h-4 w-4 text-emerald-600 mx-auto mb-1" />
+                          <Heart className="h-4 w-4 text-emerald-600 mx-auto mb-1" />
                           <span className="font-bold text-emerald-700 text-xs sm:text-sm block">{treatment.recovery}</span>
                           <span className="text-xs text-slate-600">Recuperación</span>
                         </div>
-                        <div className="bg-slate-50 p-2 sm:p-3 rounded-lg text-center">
-                          <DollarSign className="h-4 w-4 text-emerald-600 mx-auto mb-1" />
-                          <span className="font-bold text-emerald-700 text-xs sm:text-sm block">{treatment.price}</span>
-                          <span className="text-xs text-slate-600">Costo</span>
-                        </div>
                       </div>
 
-                      <div className="space-y-2 sm:space-y-3 mb-4 sm:mb-6">
-                        <h4 className="font-bold text-slate-800 mb-3 sm:mb-4 text-sm sm:text-base">Beneficios:</h4>
-                        {treatment.benefits.map((benefit, idx) => (
-                          <div key={idx} className="flex items-start gap-2 sm:gap-3">
-                            <CheckCircle className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-emerald-600 flex-shrink-0 mt-0.5" />
-                            <span className="text-slate-700 text-xs sm:text-sm">{benefit}</span>
-                          </div>
-                        ))}
+                      <div className="mb-4 sm:mb-6">
+                        <h4 className="font-bold text-slate-800 mb-3 text-sm sm:text-base">Beneficios principales:</h4>
+                        <ul className="space-y-2">
+                          {treatment.benefits.map((benefit, idx) => (
+                            <li key={idx} className="flex items-start gap-2">
+                              <CheckCircle className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-emerald-600 flex-shrink-0 mt-0.5 sm:mt-1" />
+                              <span className="text-slate-700 text-xs sm:text-sm">{benefit}</span>
+                            </li>
+                          ))}
+                        </ul>
                       </div>
 
                       <button
                         onClick={openWhatsApp}
-                        className={`w-full bg-gradient-to-r ${treatment.bgColor} hover:opacity-90 text-white py-2.5 sm:py-3 rounded-lg sm:rounded-xl font-medium transition-all duration-300 shadow-md hover:shadow-lg text-sm sm:text-base flex items-center justify-center group`}
+                        className="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-2 sm:py-3 rounded-lg font-medium transition-all duration-300 text-sm sm:text-base flex items-center justify-center group"
                       >
-                        <PhoneCall className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-2 group-hover:rotate-12 transition-transform duration-300" />
-                        Consultar Procedimiento
-                        <ArrowRight className="h-3.5 w-3.5 sm:h-4 sm:w-4 ml-2 group-hover:translate-x-1 transition-transform duration-300" />
+                        <Calendar className="h-4 w-4 mr-2 group-hover:rotate-12 transition-transform duration-300" />
+                        Consultar este Procedimiento
                       </button>
                     </div>
                   </div>
@@ -639,35 +653,42 @@ export default function ClinicaCircuncision() {
           </div>
         </section>
 
-        {/* Doctor Section con estadísticas animadas */}
-        <section id="sobre-mi" className="relative py-8 sm:py-12 lg:py-16 bg-gradient-to-br from-slate-800 via-emerald-900 to-slate-900 overflow-hidden">
-          <div className="absolute inset-0 opacity-10 sm:opacity-15">
-            <div className="absolute top-1/3 left-1/3 w-48 sm:w-72 h-48 sm:h-72 bg-emerald-400/30 rounded-full blur-3xl"></div>
-            <div className="absolute bottom-1/3 right-1/3 w-48 sm:w-72 h-48 sm:h-72 bg-teal-400/30 rounded-full blur-3xl"></div>
+        {/* About Doctor Section */}
+        <section id="sobre-mi" className="relative py-8 sm:py-12 lg:py-20 bg-gradient-to-br from-emerald-900 via-slate-800 to-emerald-800 overflow-hidden">
+          <div className="absolute inset-0 opacity-20">
+            <div className="absolute top-1/4 left-1/4 w-48 sm:w-96 h-48 sm:h-96 bg-emerald-400/20 rounded-full blur-3xl"></div>
+            <div className="absolute bottom-1/4 right-1/4 w-48 sm:w-96 h-48 sm:h-96 bg-teal-400/20 rounded-full blur-3xl"></div>
           </div>
           
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10"> 
             <div className="flex flex-col lg:flex-row items-center gap-6 sm:gap-8 lg:gap-12">
               <ScrollAnimation animation="fade-in-right" className="lg:w-2/5 w-full max-w-md lg:max-w-none">
                 <div className="relative">
-                  <div className="absolute -inset-2 sm:-inset-4 bg-gradient-to-tr from-emerald-100 via-emerald-50 to-white rounded-xl sm:rounded-2xl blur-xl sm:blur-2xl opacity-40 sm:opacity-60"></div>
-                  <div className="relative bg-white rounded-xl sm:rounded-2xl p-1.5 sm:p-2 shadow-xl">
-                    <div className="w-full h-64 sm:h-80 lg:h-96 bg-gradient-to-br from-emerald-100 to-emerald-200 rounded-lg sm:rounded-xl overflow-hidden">
-                      <div className="w-full h-full flex items-center justify-center text-emerald-700">
-                        <div className="text-center">
-                          <Users className="h-12 w-12 sm:h-16 sm:w-16 mx-auto mb-2 sm:mb-4" />
-                          <p className="text-sm sm:text-base font-medium">Dr. Mario Martínez Thomas</p>
-                          <p className="text-xs sm:text-sm text-emerald-600">Cirujano Urólogo</p>
-                        </div>
-                      </div>
+                  <div className="relative bg-gradient-to-br from-white via-white to-emerald-50 rounded-xl sm:rounded-2xl p-1.5 sm:p-2 shadow-xl hover:shadow-2xl transition-shadow duration-300">
+                    <div className="w-full h-96 sm:h-112 lg:h-128 rounded-lg sm:rounded-xl overflow-hidden relative group"> 
+                      <div className="absolute inset-0 bg-gradient-to-t from-emerald-900/70 via-transparent to-transparent z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                      
+                      <Image
+                        src="/images/dr_mario_martinez.jpg"
+                        alt="Dr. Mario Martínez Thomas"
+                        fill
+                        sizes="(max-width: 1024px) 100vw, 40vw"
+                        className="object-cover object-center scale-100 group-hover:scale-105 transition-transform duration-700 ease-in-out"
+                        priority
+                        quality={90}
+                      />
                     </div>
-                    <div className="absolute -bottom-2 sm:-bottom-4 -right-2 sm:-right-4 bg-gradient-to-r from-emerald-700 to-emerald-600 text-white p-2 sm:p-4 rounded-lg sm:rounded-xl shadow-lg">
-                      <div className="flex items-center gap-1 sm:gap-2 mb-1">
-                        <CheckSquare className="h-3 w-3 sm:h-5 sm:w-5" />
-                        <span className="font-bold text-sm sm:text-lg">500+</span>
-                      </div>
-                      <p className="text-xs font-medium">Cirugías Exitosas</p>
+                    <div className="text-center mt-4 mb-2">
+                      <p className="text-sm sm:text-base font-bold bg-gradient-to-r from-emerald-800 to-emerald-600 bg-clip-text text-transparent">Dr. Mario Martínez Thomas</p>
+                      <p className="text-xs sm:text-sm font-medium text-emerald-600">Cirujano Urólogo Especialista</p>
                     </div>
+                  </div>
+                  <div className="absolute -bottom-2 sm:-bottom-4 -right-2 sm:-right-4 bg-gradient-to-r from-emerald-700 to-emerald-600 text-white p-2 sm:p-4 rounded-lg sm:rounded-xl shadow-lg transform hover:scale-105 transition-transform duration-300">
+                    <div className="flex items-center gap-1 sm:gap-2 mb-1">
+                      <CheckSquare className="h-3 w-3 sm:h-5 sm:w-5" />
+                      <span className="font-bold text-sm sm:text-lg">500+</span>
+                    </div>
+                    <p className="text-xs font-medium">Cirugías Exitosas</p>
                   </div>
                 </div>
               </ScrollAnimation>
@@ -700,27 +721,28 @@ export default function ClinicaCircuncision() {
                 </div>
 
                 <div className="space-y-2 sm:space-y-3">
-                  <div className="flex items-start gap-2 sm:gap-3">
-                    <CheckCircle className="h-4 w-4 sm:h-5 sm:w-5 text-emerald-400 flex-shrink-0 mt-0.5 sm:mt-1" />
-                    <div>
-                      <h4 className="font-bold text-white mb-1 text-sm sm:text-base">Tecnología Láser CO2 Avanzada</h4>
-                      <p className="text-white/80 text-xs sm:text-sm">Equipos de última generación para procedimientos más precisos, menos dolor y mejor cicatrización.</p>
+                  {[
+                    {
+                      title: "Tecnología Láser CO2 Avanzada",
+                      description: "Equipos de última generación para procedimientos más precisos, menos dolor y mejor cicatrización."
+                    },
+                    {
+                      title: "Seguimiento Personalizado 24/7",
+                      description: "Atención continua durante todo el proceso de recuperación con consultas ilimitadas."
+                    },
+                    {
+                      title: "Garantía de Satisfacción",
+                      description: "Compromiso total con resultados óptimos y reintervención gratuita si es necesaria."
+                    }
+                  ].map((item, index) => (
+                    <div key={index} className="flex items-start gap-2 sm:gap-3">
+                      <CheckCircle className="h-4 w-4 sm:h-5 sm:w-5 text-emerald-400 flex-shrink-0 mt-0.5 sm:mt-1" />
+                      <div>
+                        <h4 className="font-bold text-white mb-1 text-sm sm:text-base">{item.title}</h4>
+                        <p className="text-white/80 text-xs sm:text-sm">{item.description}</p>
+                      </div>
                     </div>
-                  </div>
-                  <div className="flex items-start gap-2 sm:gap-3">
-                    <CheckCircle className="h-4 w-4 sm:h-5 sm:w-5 text-emerald-400 flex-shrink-0 mt-0.5 sm:mt-1" />
-                    <div>
-                      <h4 className="font-bold text-white mb-1 text-sm sm:text-base">Seguimiento Personalizado 24/7</h4>
-                      <p className="text-white/80 text-xs sm:text-sm">Atención continua durante todo el proceso de recuperación con consultas ilimitadas.</p>
-                    </div>
-                  </div>
-                  <div className="flex items-start gap-2 sm:gap-3">
-                    <CheckCircle className="h-4 w-4 sm:h-5 sm:w-5 text-emerald-400 flex-shrink-0 mt-0.5 sm:mt-1" />
-                    <div>
-                      <h4 className="font-bold text-white mb-1 text-sm sm:text-base">Garantía de Satisfacción</h4>
-                      <p className="text-white/80 text-xs sm:text-sm">Compromiso total con resultados óptimos y reintervención gratuita si es necesaria.</p>
-                    </div>
-                  </div>
+                  ))}
                 </div>
 
                 <div className="pt-2 sm:pt-4">
@@ -737,7 +759,7 @@ export default function ClinicaCircuncision() {
           </div>
         </section>
 
-        {/* FAQ Section Mejorado */}
+        {/* FAQ Section */}
         <section id="faq" className="relative py-8 sm:py-12 lg:py-16 bg-gradient-to-br from-white via-emerald-50/30 to-slate-50 overflow-hidden">
           <div className="absolute inset-0 opacity-15">
             <div className="absolute top-1/4 right-1/4 w-48 sm:w-72 h-48 sm:h-72 bg-emerald-200/30 rounded-full blur-3xl"></div>
@@ -775,7 +797,6 @@ export default function ClinicaCircuncision() {
               ))}
             </div>
 
-            {/* CTA adicional en FAQ */}
             <ScrollAnimation animation="fade-in-up" delay={800}>
               <div className="mt-8 sm:mt-12 text-center">
                 <div className="bg-gradient-to-r from-emerald-50 to-teal-50 rounded-xl p-6 sm:p-8 border border-emerald-100">
@@ -807,7 +828,7 @@ export default function ClinicaCircuncision() {
           
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
             <ScrollAnimation animation="fade-in-up">
-              <div className="bg-gradient-to-b from-white to-emerald-50/40 rounded-xl sm:rounded-2xl overflow-hidden border border-emerald-200 shadow-[0_8px_30px_rgb(0,0,0,0.06)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] transition-all duration-500">
+              <div className="bg-gradient-to-b from-white to-emerald-50/40 rounded-xl sm:rounded-2xl overflow-hidden border border-emerald-200 shadow-xl">
                 <div className="flex flex-col items-center text-center p-6 sm:p-8 lg:p-12">
                   <div className="inline-flex items-center gap-2 bg-emerald-50 text-emerald-700 px-3 sm:px-4 py-2 rounded-full text-xs font-medium mb-4 sm:mb-6">
                     <Calendar className="h-4 w-4" />
@@ -842,26 +863,19 @@ export default function ClinicaCircuncision() {
                     </button>
                   </div>
 
-                  {/* Beneficios adicionales */}
                   <div className="mt-6 sm:mt-8 grid grid-cols-1 sm:grid-cols-3 gap-4 text-center">
-                    <div className="flex flex-col items-center">
-                      <div className="bg-emerald-100 p-2 rounded-lg mb-2">
-                        <CheckCircle className="h-4 w-4 text-emerald-600" />
+                    {[
+                      { icon: CheckCircle, text: "Consulta sin costo" },
+                      { icon: FileText, text: "Plan personalizado" },
+                      { icon: Award, text: "Garantía incluida" }
+                    ].map((item, index) => (
+                      <div key={index} className="flex flex-col items-center">
+                        <div className="bg-emerald-100 p-2 rounded-lg mb-2">
+                          <item.icon className="h-4 w-4 text-emerald-600" />
+                        </div>
+                        <span className="text-xs sm:text-sm font-medium text-slate-600">{item.text}</span>
                       </div>
-                      <span className="text-xs sm:text-sm font-medium text-slate-600">Consulta sin costo</span>
-                    </div>
-                    <div className="flex flex-col items-center">
-                      <div className="bg-emerald-100 p-2 rounded-lg mb-2">
-                        <FileText className="h-4 w-4 text-emerald-600" />
-                      </div>
-                      <span className="text-xs sm:text-sm font-medium text-slate-600">Plan personalizado</span>
-                    </div>
-                    <div className="flex flex-col items-center">
-                      <div className="bg-emerald-100 p-2 rounded-lg mb-2">
-                        <Award className="h-4 w-4 text-emerald-600" />
-                      </div>
-                      <span className="text-xs sm:text-sm font-medium text-slate-600">Garantía incluida</span>
-                    </div>
+                    ))}
                   </div>
                 </div>
               </div>
@@ -869,7 +883,8 @@ export default function ClinicaCircuncision() {
           </div>
         </section>
       </main>
-      <Footer/>
+
+      <Footer />
     </div>
-  )
+  );
 }

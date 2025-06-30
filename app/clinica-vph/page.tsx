@@ -1,20 +1,12 @@
 "use client"
-// Este archivo representa `app/clinica-vph/page.tsx`
-// Contiene la lógica y la UI completa en un solo lugar según lo solicitado.
 
-import React, { useEffect, useRef } from "react";
-import { useFormState, useFormStatus } from "react-dom";
-import Link from "next/link";
-import Image from "next/image";
-import { z } from "zod";
-
-import { ScrollProgressBar, CustomCursor } from "@/components/scroll-animations"; // Asumimos que existen y son Client Components
-import { Header } from "@/components/header"; // Asumimos que es un Client Component para el scroll-spy
-import { Section } from "@/components/section";
-import { ResponsiveContainer } from "@/components/responsive-container";
-import { Button } from "@/components/ui/button"; // Asumimos que soporta la prop `asChild`
-import { Footer } from "@/components/footer";
-
+import { useEffect, useState } from "react"
+import { ScrollProgressBar, CustomCursor } from "@/components/scroll-animations"
+import { Header } from "@/components/header"
+import { Section } from "@/components/section"
+import { ResponsiveContainer } from "@/components/responsive-container"
+import { Button } from "@/components/ui/button"
+import { Footer } from "@/components/footer" 
 import {
   Phone,
   Facebook,
@@ -29,35 +21,46 @@ import {
   Zap,
   Target,
   Eye,
-} from "lucide-react";
+} from "lucide-react"
+import Link from "next/link"
+import Image from "next/image"
+import { ScrollAnimation } from "@/components/scroll-animations"
 
-// -----------------------------------------------------------------------------
-// --- 1. DEFINICIÓN DE TIPOS Y DATOS ESTÁTICOS ---
-// En un proyecto real, esto estaría en `lib/types.ts` y `lib/data.ts`
-// -----------------------------------------------------------------------------
+export default function ClinicaVPH() {
+  const [activeSection, setActiveSection] = useState("inicio")
 
-type Treatment = {
-  name: string;
-  description: string;
-  duration: string;
-  recovery: string;
-  benefits: string[];
-  icon: React.ReactNode;
-};
+  useEffect(() => {
+    const handleScroll = () => {
+      const sections = ["inicio", "tratamientos", "sobre-mi", "contacto"]
+      
+      for (const section of sections) {
+        const element = document.getElementById(section)
+        if (!element) continue
 
-type VphInfo = {
-  title: string;
-  description: string;
-  icon: React.ReactNode;
-};
+        const rect = element.getBoundingClientRect()
+        if (rect.top <= 100 && rect.bottom >= 100) {
+          setActiveSection(section)
+          break
+        }
+      }
+    }
 
-const treatmentsData: Treatment[] = [
+    window.addEventListener("scroll", handleScroll, { passive: true })
+    return () => window.removeEventListener("scroll", handleScroll)
+  }, [])
+
+  const treatments = [
     {
       name: "Electrocauterización",
       description: "Remoción de lesiones utilizando corriente eléctrica controlada.",
       duration: "20-45 minutos",
       recovery: "2-3 semanas",
-      benefits: [ "Procedimiento ambulatorio", "Alta precisión", "Resultados inmediatos", "Mínimo sangrado" ],
+      benefits: [
+        "Procedimiento ambulatorio",
+        "Alta precisión",
+        "Resultados inmediatos",
+        "Mínimo sangrado"
+      ],
       icon: <Zap className="h-6 w-6 text-emerald-700" />
     },
     {
@@ -65,307 +68,557 @@ const treatmentsData: Treatment[] = [
       description: "Tratamiento de precisión para eliminar verrugas y lesiones por VPH.",
       duration: "30-60 minutos",
       recovery: "1-3 semanas",
-      benefits: [ "Tecnología láser avanzada", "Mínimo dolor", "Cicatrización superior", "Preservación del tejido sano" ],
+      benefits: [
+        "Tecnología láser avanzada",
+        "Mínimo dolor",
+        "Cicatrización superior",
+        "Preservación del tejido sano"
+      ],
       icon: <Target className="h-6 w-6 text-emerald-700" />
     }
-];
+  ]
 
-const vphInfoData: VphInfo[] = [
-  {
-    title: "¿Qué es el VPH?",
-    description: "El Virus del Papiloma Humano (VPH) es una infección viral común que puede afectar la piel y las mucosas. Existen más de 100 tipos diferentes, algunos de los cuales pueden causar verrugas genitales o cambios celulares que podrían derivar en cáncer.",
-    icon: <Eye className="h-5 w-5 text-emerald-700" />
-  },
-  {
-    title: "Detección Temprana",
-    description: "La detección temprana del VPH es crucial para un tratamiento efectivo. Realizamos diagnósticos precisos utilizando técnicas avanzadas de identificación viral y evaluación de lesiones.",
-    icon: <Target className="h-5 w-5 text-emerald-700" />
-  },
-  {
-    title: "Tratamiento Confidencial",
-    description: "Entendemos la importancia de la privacidad en estos casos. Ofrecemos un ambiente completamente confidencial y profesional, con atención personalizada y discreta.",
-    icon: <Lock className="h-5 w-5 text-emerald-700" />
-  }
-];
-
-
-// -----------------------------------------------------------------------------
-// --- 2. LÓGICA DEL FORMULARIO Y SERVER ACTION ---
-// En un proyecto real, esto estaría en `lib/actions.ts`
-// -----------------------------------------------------------------------------
-
-type FormState = {
-  message: string;
-  errors?: {
-    name?: string[];
-    phone?: string[];
-    message?: string[];
-  };
-  isSuccess: boolean;
-};
-
-const ContactFormSchema = z.object({
-  name: z.string().min(2, { message: "El nombre debe tener al menos 2 caracteres." }),
-  phone: z.string().min(10, { message: "El teléfono debe tener al menos 10 dígitos." }),
-  message: z.string().min(10, { message: "El mensaje debe tener al menos 10 caracteres." }),
-});
-
-async function submitContactForm(prevState: FormState, formData: FormData): Promise<FormState> {
-
-  const validatedFields = ContactFormSchema.safeParse({
-    name: formData.get("name"),
-    phone: formData.get("phone"),
-    message: formData.get("message"),
-  });
-
-  if (!validatedFields.success) {
-    return {
-      message: "Error de validación. Por favor, revisa los campos.",
-      errors: validatedFields.error.flatten().fieldErrors,
-      isSuccess: false,
-    };
-  }
-
-  try {
-    console.log("Lead recibido:", validatedFields.data);
-    // Aquí iría la lógica para enviar email (con Resend) o guardar en DB (con Prisma).
-    await new Promise(resolve => setTimeout(resolve, 1500)); // Simular latencia de red
-
-    return { message: "¡Gracias! Tu mensaje ha sido enviado. Nos pondremos en contacto pronto.", isSuccess: true };
-  } catch (error) {
-    console.error("Error en la Server Action:", error);
-    return { message: "Ocurrió un error en el servidor. Por favor, intenta de nuevo.", isSuccess: false };
-  }
-}
-
-// -----------------------------------------------------------------------------
-// --- 3. COMPONENTE DE CLIENTE PARA EL FORMULARIO INTERACTIVO ---
-// En un proyecto real, este sería un archivo separado: `components/contact-form.tsx`
-// -----------------------------------------------------------------------------
-
-function ContactFormSection() {
-  "use client";
-
-  const initialState: FormState = { message: "", isSuccess: false, errors: {} };
-  const [state, formAction] = useFormState(submitContactForm, initialState);
-  const formRef = useRef<HTMLFormElement>(null);
-
-  useEffect(() => {
-    if (state.isSuccess) {
-      formRef.current?.reset();
+  const vphInfo = [
+    {
+      title: "¿Qué es el VPH?",
+      description: "El Virus del Papiloma Humano (VPH) es una infección viral común que puede afectar la piel y las mucosas. Existen más de 100 tipos diferentes, algunos de los cuales pueden causar verrugas genitales o cambios celulares que podrían derivar en cáncer.",
+      icon: <Eye className="h-5 w-5 text-emerald-700" />
+    },
+    {
+      title: "Detección Temprana",
+      description: "La detección temprana del VPH es crucial para un tratamiento efectivo. Realizamos diagnósticos precisos utilizando técnicas avanzadas de identificación viral y evaluación de lesiones.",
+      icon: <Target className="h-5 w-5 text-emerald-700" />
+    },
+    {
+      title: "Tratamiento Confidencial",
+      description: "Entendemos la importancia de la privacidad en estos casos. Ofrecemos un ambiente completamente confidencial y profesional, con atención personalizada y discreta.",
+      icon: <Lock className="h-5 w-5 text-emerald-700" />
     }
-  }, [state.isSuccess]);
+  ]
 
-  const SubmitButton = () => {
-    const { pending } = useFormStatus();
-    return (
-      <Button
-        type="submit"
-        disabled={pending}
-        className="w-full bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white rounded-lg px-6 py-3 font-semibold shadow-md hover:shadow-lg transition-all duration-300 disabled:opacity-70 disabled:cursor-not-allowed"
-      >
-        {pending ? "Enviando Consulta..." : "Enviar Consulta Confidencial"}
-        {!pending && <Lock className="h-4 w-4 ml-2" />}
-      </Button>
-    );
-  };
-  
   const openWhatsApp = () => {
     window.open("https://api.whatsapp.com/send?phone=5215516942925&text=Hola%20dr.%20mario%20me%20gustaria%20obtener%20mas%20informacion%20acerca%20de%20sus%20servicios", "_blank")
   }
 
   return (
-    <section id="contacto" className="relative py-12 sm:py-16 lg:py-20 bg-gradient-to-br from-white via-slate-50/50 to-emerald-50/30 overflow-hidden">
-      <div className="absolute inset-0 opacity-20">
-        <div className="absolute top-1/4 left-1/4 w-72 h-72 bg-emerald-300/30 rounded-full blur-3xl"></div>
-        <div className="absolute bottom-1/4 right-1/4 w-72 h-72 bg-teal-300/30 rounded-full blur-3xl"></div>
-      </div>
-      
-      <ResponsiveContainer className="relative z-10">
-        <div className="mb-12">
-          <div className="text-center max-w-4xl mx-auto mb-10 sm:mb-14 px-4 sm:px-0">
-            <div className="inline-flex items-center gap-2 bg-gradient-to-r from-emerald-100 to-teal-100 text-emerald-700 px-4 sm:px-6 py-2 sm:py-3 rounded-full text-xs sm:text-sm font-semibold mb-4 sm:mb-6 shadow-md">
-              <Phone className="h-4 w-4" />
-              Agenda tu Consulta
-            </div>
-            <h2 className="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-bold bg-gradient-to-r from-emerald-800 via-slate-700 to-emerald-700 bg-clip-text text-transparent mb-4 sm:mb-6 leading-tight">
-              Contacto Confidencial
-            </h2>
-            <div className="w-20 sm:w-24 h-1 bg-gradient-to-r from-emerald-600 via-teal-500 to-emerald-500 mx-auto mb-4 sm:mb-6 rounded-full"></div>
-          </div>
-        </div>
-        
-        <div className="bg-gradient-to-br from-white via-emerald-50/30 to-white rounded-2xl sm:rounded-3xl shadow-xl overflow-hidden border border-emerald-100/50">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            <div className="p-6 sm:p-8 lg:p-12">
-              <div className="mb-6">
-                <h3 className="text-xl sm:text-2xl font-bold text-emerald-700 mb-4">
-                  Solicitar Información Confidencial
-                </h3>
-                <p className="text-slate-600 mb-6">
-                  Envíanos tus datos y nos pondremos en contacto contigo de forma discreta para resolver tus dudas.
-                </p>
-              </div>
-              
-              <form ref={formRef} action={formAction} className="space-y-4">
-                <div>
-                  <label htmlFor="name" className="block text-sm font-medium text-slate-700 mb-1">Nombre</label>
-                  <input type="text" id="name" name="name" className="w-full p-3 rounded-lg border border-slate-200 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all" placeholder="Tu nombre" required />
-                  {state.errors?.name && <p aria-live="polite" className="text-sm text-red-500 mt-1">{state.errors.name[0]}</p>}
-                </div>
-                <div>
-                  <label htmlFor="phone" className="block text-sm font-medium text-slate-700 mb-1">Teléfono</label>
-                  <input type="tel" id="phone" name="phone" className="w-full p-3 rounded-lg border border-slate-200 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all" placeholder="Tu número de teléfono" required />
-                  {state.errors?.phone && <p aria-live="polite" className="text-sm text-red-500 mt-1">{state.errors.phone[0]}</p>}
-                </div>
-                <div>
-                  <label htmlFor="message" className="block text-sm font-medium text-slate-700 mb-1">Mensaje</label>
-                  <textarea id="message" name="message" rows={3} className="w-full p-3 rounded-lg border border-slate-200 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all" placeholder="¿Cómo podemos ayudarte?" required></textarea>
-                  {state.errors?.message && <p aria-live="polite" className="text-sm text-red-500 mt-1">{state.errors.message[0]}</p>}
-                </div>
-                <div className="flex items-center">
-                  <input type="checkbox" id="confidencial" name="confidencial" defaultChecked className="rounded text-emerald-600 focus:ring-emerald-500 mr-2" />
-                  <label htmlFor="confidencial" className="text-sm text-slate-600">Solicito que mi consulta sea tratada de manera confidencial</label>
-                </div>
-                
-                <SubmitButton />
-
-                {state.message && (
-                  <p aria-live="polite" className={`text-sm font-medium text-center mt-4 ${state.isSuccess ? 'text-emerald-700' : 'text-red-500'}`}>
-                    {state.message}
-                  </p>
-                )}
-              </form>
-              <div className="mt-4 text-xs text-slate-500 text-center">
-                Tu información está protegida bajo nuestras políticas de privacidad.
-              </div>
-            </div>
-            
-            <div className="bg-gradient-to-br from-emerald-700 via-emerald-600 to-teal-700 p-6 sm:p-8 lg:p-12 text-white flex flex-col justify-between">
-              <div>
-                <h3 className="text-xl sm:text-2xl font-bold mb-6">¿Atención inmediata?</h3>
-                <p className="mb-8 text-white/90">No postergues tu salud. Agenda una consulta confidencial y recibe el tratamiento que necesitas.</p>
-                <div className="space-y-6 mb-12">
-                  <div className="flex items-start gap-4">
-                    <div className="bg-white/20 p-3 rounded-lg"><Phone className="h-5 w-5" /></div>
-                    <div>
-                      <h4 className="font-semibold text-lg">Teléfono</h4>
-                      <a href="tel:5215516942925" className="text-white/90 hover:text-white block transition-colors">+52 1 55 1694 2925</a>
-                    </div>
-                  </div>
-                  <div className="flex items-start gap-4">
-                    <div className="bg-white/20 p-3 rounded-lg"><Calendar className="h-5 w-5" /></div>
-                    <div>
-                      <h4 className="font-semibold text-lg">Horario de atención</h4>
-                      <p className="text-white/90">Lunes a Viernes: 9:00 - 18:00</p>
-                      <p className="text-white/90">Sábados: 9:00 - 13:00</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <Button onClick={openWhatsApp} className="w-full bg-white text-emerald-700 hover:bg-emerald-50 rounded-xl px-6 py-4 font-bold shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 flex items-center justify-center gap-2">
-                <Phone className="h-5 w-5" />Contactar por WhatsApp
-              </Button>
-            </div>
-          </div>
-        </div>
-      </ResponsiveContainer>
-    </section>
-  );
-}
-
-// -----------------------------------------------------------------------------
-// --- 4. PÁGINA PRINCIPAL (SERVER COMPONENT) ---
-// Este es el componente principal de la ruta. Es un Server Component por defecto.
-// -----------------------------------------------------------------------------
-
-export default function ClinicaVPHPage() {
-
-  // La función para abrir WhatsApp se puede definir aquí si es usada por Server Components
-  // Pero como los botones de acción están en el cliente, la definimos allí.
-  
-  return (
     <div className="flex flex-col min-h-screen bg-gradient-to-br from-slate-50/80 via-white to-emerald-50/20">
       <ScrollProgressBar />
       <CustomCursor />
-      <Header /> {/* Header necesita ser 'use client' para el scroll spy */}
+      <Header activeSection={activeSection} />
 
       <main className="flex-1">
-        {/* Hero Section */}
+        {/* Hero Section - Optimizado */}
         <section id="inicio" className="relative overflow-hidden min-h-[60vh] md:min-h-[70vh] flex items-center py-16 md:py-12">
           <div className="absolute inset-0 w-full h-full">
-            <Image src="/images/vph_thomas.png" alt="Clínica de VPH" fill className="object-cover object-center" priority quality={90} sizes="100vw" />
+            <Image
+              src="/images/vph_thomas.png"
+              alt="Clínica de VPH"
+              fill
+              className="object-cover object-center"
+              priority
+              sizes="100vw"
+              quality={90}
+            />
             <div className="absolute inset-0 bg-gradient-to-br from-emerald-900/95 via-slate-800/90 to-emerald-800/85 backdrop-blur-[1px]"></div>
+            <div className="absolute inset-0 bg-gradient-to-t from-emerald-950/60 via-slate-800/40 to-transparent"></div>
           </div>
+
           <ResponsiveContainer className="relative z-10">
             <div className="max-w-4xl px-4 md:px-0">
-              <div className="inline-flex items-center gap-2 bg-white/15 backdrop-blur-md text-white border border-white/20 rounded-full px-4 py-2 text-sm font-medium mb-6 shadow-lg">
-                <Shield className="h-4 w-4 text-emerald-300" />
-                Tratamiento Especializado VPH
-              </div>
-              <h1 className="text-4xl md:text-6xl font-bold text-white mb-6 leading-tight tracking-tight">Clínica de VPH</h1>
-              <div className="w-24 h-1 bg-gradient-to-r from-transparent via-emerald-300/90 to-transparent mb-6 rounded-full"></div>
-              <p className="text-lg md:text-2xl text-white/95 leading-relaxed mb-8 max-w-3xl">
-                Diagnóstico temprano y tratamiento especializado del Virus del Papiloma Humano con tecnología de última generación en un ambiente <span className="font-semibold text-emerald-200">100% confidencial</span> y profesional.
-              </p>
-              <div className="flex flex-col sm:flex-row gap-4">
-                <Button asChild className="bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white rounded-full px-8 py-4 text-base font-semibold shadow-xl transition-all duration-300 transform hover:scale-105">
-                  <Link href="#contacto"><Calendar className="h-5 w-5 mr-2" />Consulta Confidencial</Link>
-                </Button>
-                <Button variant="outline" asChild className="border-2 border-white/70 text-white bg-white/10 hover:bg-white/20 hover:border-white rounded-full px-8 py-4 text-base font-semibold backdrop-blur-md shadow-lg transition-all duration-300">
-                  <Link href="#tratamientos">Ver Tratamientos</Link>
-                </Button>
-              </div>
+              <ScrollAnimation animation="fade-in-up">
+                <div className="inline-flex items-center gap-2 bg-white/15 backdrop-blur-md text-white border border-white/20 rounded-full px-4 sm:px-6 py-2 sm:py-3 text-xs sm:text-sm font-medium mb-4 sm:mb-6 shadow-lg">
+                  <Shield className="h-4 w-4 text-emerald-300" />
+                  Tratamiento Especializado VPH
+                </div>
+                
+                <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4 sm:mb-6 leading-tight tracking-tight">
+                  Clínica de VPH
+                </h1>
+                
+                <div className="w-20 sm:w-24 h-1 bg-gradient-to-r from-transparent via-emerald-300/90 to-transparent mx-0 mb-6 rounded-full"></div>
+                
+                <p className="text-base sm:text-lg md:text-xl lg:text-2xl text-white/95 leading-relaxed mb-6 sm:mb-8 max-w-3xl">
+                  Diagnóstico temprano y tratamiento especializado del Virus del Papiloma Humano 
+                  con tecnología de última generación en un ambiente <span className="font-semibold text-emerald-200">100% confidencial</span> y profesional.
+                </p>
+
+                <div className="flex flex-col sm:flex-row gap-4 sm:gap-6">
+                  <Button
+                    onClick={openWhatsApp}
+                    className="bg-gradient-to-r from-emerald-600 via-emerald-500 to-teal-600 hover:from-emerald-500 hover:via-emerald-400 hover:to-teal-500 text-white rounded-full px-6 sm:px-8 py-3 sm:py-4 text-base font-semibold shadow-xl transition-all duration-500 transform hover:scale-105 w-full sm:w-auto"
+                  >
+                    <Calendar className="h-5 w-5 mr-2" />
+                    Consulta Confidencial
+                  </Button>
+                  <Button
+                    variant="outline"
+                    className="border-2 border-white/70 text-white bg-white/10 hover:bg-white/20 hover:border-white rounded-full px-6 sm:px-8 py-3 sm:py-4 text-base font-semibold backdrop-blur-md shadow-lg transition-all duration-500 w-full sm:w-auto"
+                    onClick={() => document.getElementById("tratamientos")?.scrollIntoView({ behavior: "smooth" })}
+                  >
+                    Ver Tratamientos
+                  </Button>
+                </div>
+                
+                {/* Indicador de desplazamiento */}
+                <div className="hidden md:flex justify-center mt-12">
+                  <div 
+                    className="animate-bounce cursor-pointer p-2 bg-white/10 backdrop-blur-md rounded-full border border-white/20 shadow-lg"
+                    onClick={() => document.getElementById("vph-info")?.scrollIntoView({ behavior: "smooth" })}
+                  >
+                    <ArrowRight className="h-5 w-5 text-white transform rotate-90" />
+                  </div>
+                </div>
+              </ScrollAnimation>
             </div>
           </ResponsiveContainer>
         </section>
 
-        {/* VPH Info Section */}
+        {/* VPH Information Section */}
         <section id="vph-info" className="relative py-12 sm:py-16 lg:py-20 bg-gradient-to-br from-white via-slate-50/50 to-emerald-50/30 overflow-hidden">
-            <ResponsiveContainer className="relative z-10">
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                    {vphInfoData.map((info) => (
-                        <div key={info.title} className="group bg-gradient-to-br from-white via-emerald-50/50 to-white rounded-2xl p-7 border border-emerald-100/50 hover:border-emerald-200 hover:shadow-xl hover:shadow-emerald-500/10 transition-all duration-500 transform hover:-translate-y-1">
-                            <div className="bg-gradient-to-br from-emerald-100 to-teal-100 p-3 rounded-xl w-fit mb-6 group-hover:scale-110 transition-transform duration-300 shadow-sm">{info.icon}</div>
-                            <h3 className="text-2xl font-bold bg-gradient-to-r from-emerald-800 to-slate-700 bg-clip-text text-transparent mb-4">{info.title}</h3>
-                            <p className="text-slate-600 leading-relaxed">{info.description}</p>
-                        </div>
-                    ))}
+          <div className="absolute inset-0 opacity-25">
+            <div className="absolute top-1/4 right-1/4 w-72 h-72 bg-emerald-200/20 rounded-full blur-3xl"></div>
+            <div className="absolute bottom-1/4 left-1/4 w-72 h-72 bg-teal-200/20 rounded-full blur-3xl"></div>
+          </div>
+          
+          <ResponsiveContainer className="relative z-10">
+            <ScrollAnimation animation="fade-in-up">
+              <div className="text-center max-w-4xl mx-auto mb-10 sm:mb-14 px-4 sm:px-0">
+                <div className="inline-flex items-center gap-2 bg-gradient-to-r from-emerald-100 to-teal-100 text-emerald-700 px-4 sm:px-6 py-2 sm:py-3 rounded-full text-xs sm:text-sm font-semibold mb-4 sm:mb-6 shadow-md">
+                  <Eye className="h-4 w-4" />
+                  Información sobre VPH
                 </div>
-            </ResponsiveContainer>
+                <h2 className="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-bold bg-gradient-to-r from-emerald-800 via-slate-700 to-emerald-700 bg-clip-text text-transparent mb-4 sm:mb-6 leading-tight">
+                  Conoce Más sobre el VPH
+                </h2>
+                <div className="w-20 sm:w-24 h-1 bg-gradient-to-r from-emerald-600 via-teal-500 to-emerald-500 mx-auto mb-4 sm:mb-6 rounded-full"></div>
+                <p className="text-lg sm:text-xl text-slate-600 leading-relaxed">
+                  La información correcta es el primer paso hacia un tratamiento exitoso. 
+                  Te explicamos todo lo que necesitas saber de manera clara y profesional.
+                </p>
+              </div>
+            </ScrollAnimation>
+
+            {/* Tarjetas informativas de VPH */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8 px-4 sm:px-0 mb-12 sm:mb-16">
+              {vphInfo.map((info, index) => (
+                <ScrollAnimation key={info.title} animation="fade-in-up" delay={index * 150}>
+                  <div className="group relative bg-gradient-to-br from-white via-emerald-50/50 to-white rounded-2xl p-6 sm:p-7 border border-emerald-100/50 hover:border-emerald-200 hover:shadow-xl hover:shadow-emerald-500/10 transition-all duration-500 h-full transform hover:-translate-y-1">
+                    <div className="bg-gradient-to-br from-emerald-100 to-teal-100 p-3 rounded-xl w-fit mb-6 group-hover:scale-110 transition-transform duration-300 shadow-sm">
+                      {info.icon}
+                    </div>
+                    <h3 className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-emerald-800 to-slate-700 bg-clip-text text-transparent mb-4">
+                      {info.title}
+                    </h3>
+                    <p className="text-slate-600 leading-relaxed">
+                      {info.description}
+                    </p>
+                  </div>
+                </ScrollAnimation>
+              ))}
+            </div>
+
+            {/* Estadísticas de VPH */}
+            <ScrollAnimation animation="fade-in-up">
+              <div className="bg-gradient-to-br from-white via-slate-50 to-white rounded-2xl p-6 sm:p-8 border border-emerald-100/50 shadow-lg mb-12 sm:mb-16">
+                <h3 className="text-xl sm:text-2xl md:text-3xl font-bold bg-gradient-to-r from-emerald-800 to-slate-700 bg-clip-text text-transparent mb-6 text-center">
+                  Estadísticas de VPH en México
+                </h3>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+                  <div className="bg-white rounded-xl p-4 sm:p-5 shadow-md border border-emerald-50 flex flex-col items-center text-center">
+                    <div className="text-3xl sm:text-4xl font-bold text-emerald-600 mb-2">80%</div>
+                    <p className="text-slate-700">De la población sexualmente activa tendrá contacto con el VPH</p>
+                  </div>
+                  <div className="bg-white rounded-xl p-4 sm:p-5 shadow-md border border-emerald-50 flex flex-col items-center text-center">
+                    <div className="text-3xl sm:text-4xl font-bold text-emerald-600 mb-2">+100</div>
+                    <p className="text-slate-700">Tipos diferentes de VPH identificados</p>
+                  </div>
+                  <div className="bg-white rounded-xl p-4 sm:p-5 shadow-md border border-emerald-50 flex flex-col items-center text-center">
+                    <div className="text-3xl sm:text-4xl font-bold text-emerald-600 mb-2">90%</div>
+                    <p className="text-slate-700">De los casos se resuelven espontáneamente en 2 años</p>
+                  </div>
+                  <div className="bg-white rounded-xl p-4 sm:p-5 shadow-md border border-emerald-50 flex flex-col items-center text-center">
+                    <div className="text-3xl sm:text-4xl font-bold text-emerald-600 mb-2">99%</div>
+                    <p className="text-slate-700">De los casos de cáncer cervicouterino relacionados con VPH</p>
+                  </div>
+                </div>
+              </div>
+            </ScrollAnimation>
+            
+            {/* FAQs sobre VPH */}
+            <ScrollAnimation animation="fade-in-up">
+              <div className="bg-gradient-to-br from-white via-emerald-50/30 to-white rounded-2xl p-6 sm:p-8 border border-emerald-100/50 shadow-lg">
+                <h3 className="text-xl sm:text-2xl md:text-3xl font-bold bg-gradient-to-r from-emerald-800 to-slate-700 bg-clip-text text-transparent mb-6 text-center">
+                  Preguntas Frecuentes sobre VPH
+                </h3>
+                <div className="space-y-4 sm:space-y-6">
+                  <div className="bg-white rounded-xl p-5 sm:p-6 shadow-md border border-emerald-50">
+                    <h4 className="font-bold text-lg sm:text-xl text-emerald-700 mb-2">¿Cómo se transmite el VPH?</h4>
+                    <p className="text-slate-700">El VPH se transmite principalmente a través del contacto sexual, incluyendo el vaginal, anal y oral. También puede transmitirse por contacto piel a piel en áreas infectadas.</p>
+                  </div>
+                  <div className="bg-white rounded-xl p-5 sm:p-6 shadow-md border border-emerald-50">
+                    <h4 className="font-bold text-lg sm:text-xl text-emerald-700 mb-2">¿Cuáles son los síntomas del VPH?</h4>
+                    <p className="text-slate-700">La mayoría de las infecciones por VPH no presentan síntomas visibles. En algunos casos, pueden aparecer verrugas genitales o lesiones. Los tipos de alto riesgo pueden causar cambios celulares detectables en pruebas de detección.</p>
+                  </div>
+                  <div className="bg-white rounded-xl p-5 sm:p-6 shadow-md border border-emerald-50">
+                    <h4 className="font-bold text-lg sm:text-xl text-emerald-700 mb-2">¿Cómo se diagnostica el VPH?</h4>
+                    <p className="text-slate-700">El diagnóstico se realiza mediante pruebas específicas como la PCR para VPH, citología cervical (Papanicolaou), colposcopía, o biopsia de lesiones visibles. Estas pruebas permiten identificar tanto la presencia del virus como posibles lesiones.</p>
+                  </div>
+                  <div className="bg-white rounded-xl p-5 sm:p-6 shadow-md border border-emerald-50">
+                    <h4 className="font-bold text-lg sm:text-xl text-emerald-700 mb-2">¿Todos los tipos de VPH causan cáncer?</h4>
+                    <p className="text-slate-700">No. Existen más de 100 tipos de VPH, pero solo aproximadamente 14 son considerados de "alto riesgo" oncogénico. Los tipos 16 y 18 son los más frecuentemente asociados con cáncer cervicouterino y otros tipos de cáncer.</p>
+                  </div>
+                </div>
+              </div>
+            </ScrollAnimation>
+          </ResponsiveContainer>
         </section>
 
-        {/* Treatments Section */}
+        {/* Treatments Section - Optimizado */}
         <section id="tratamientos" className="relative py-12 sm:py-16 lg:py-20 bg-gradient-to-br from-slate-800 via-emerald-900 to-slate-900 overflow-hidden">
-            <ResponsiveContainer className="relative z-10">
-                <div className="text-center max-w-4xl mx-auto mb-14">
-                    <h2 className="text-4xl lg:text-5xl font-bold text-white mb-6">Tecnología de Vanguardia</h2>
-                    <p className="text-xl text-white/90 leading-relaxed">Técnicas avanzadas para el tratamiento del VPH, garantizando resultados óptimos.</p>
+          <div className="absolute inset-0 opacity-15">
+            <div className="absolute top-1/3 left-1/3 w-72 h-72 bg-emerald-400/30 rounded-full blur-3xl"></div>
+            <div className="absolute bottom-1/3 right-1/3 w-72 h-72 bg-teal-400/30 rounded-full blur-3xl"></div>
+          </div>
+          
+          <ResponsiveContainer className="relative z-10">
+            <ScrollAnimation animation="fade-in-up">
+              <div className="text-center max-w-4xl mx-auto mb-10 sm:mb-14 px-4 sm:px-0">
+                <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md text-white border border-white/20 px-4 sm:px-6 py-2 sm:py-3 rounded-full text-xs sm:text-sm font-semibold mb-4 sm:mb-6 shadow-lg">
+                  <Stethoscope className="h-4 w-4" />
+                  Tratamientos Disponibles
                 </div>
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-5xl mx-auto">
-                    {treatmentsData.map((treatment) => (
-                        <div key={treatment.name} className="group bg-white/5 backdrop-blur-sm rounded-2xl p-8 shadow-lg hover:shadow-emerald-500/20 transition-all duration-500 border border-white/10 hover:border-white/20 transform hover:-translate-y-1">
-                            <div className="w-16 h-16 bg-gradient-to-br from-emerald-100 to-teal-100 rounded-xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300 shadow-sm">{treatment.icon}</div>
-                            <h3 className="text-2xl font-bold text-white text-center mb-4">{treatment.name}</h3>
-                            <p className="text-white/80 text-center leading-relaxed mb-6">{treatment.description}</p>
-                            <div className="space-y-3 mb-6">
-                                {treatment.benefits.map((benefit) => (
-                                    <div key={benefit} className="flex items-center gap-3"><CheckCircle className="h-4 w-4 text-emerald-400 flex-shrink-0" /><span className="text-white/80">{benefit}</span></div>
-                                ))}
-                            </div>
+                <h2 className="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-bold text-white mb-4 sm:mb-6 leading-tight">
+                  Tecnología de Vanguardia
+                </h2>
+                <div className="w-20 sm:w-24 h-1 bg-gradient-to-r from-emerald-400 via-teal-300 to-emerald-400 mx-auto mb-4 sm:mb-6 rounded-full"></div>
+                <p className="text-lg sm:text-xl text-white/90 leading-relaxed">
+                  Utilizamos las técnicas más avanzadas y efectivas para el tratamiento del VPH, 
+                  garantizando resultados óptimos con el mínimo discomfort.
+                </p>
+              </div>
+            </ScrollAnimation>
+
+            {/* Tabla comparativa de tratamientos */}
+            <ScrollAnimation animation="fade-in-up">
+              <div className="overflow-x-auto rounded-xl border border-white/10 shadow-lg mb-12 sm:mb-16 max-w-5xl mx-auto px-0 sm:px-4">
+                <div className="min-w-full bg-white/5 backdrop-blur-sm overflow-hidden">
+                  <div className="grid grid-cols-4 text-center py-3 bg-white/10">
+                    <div className="px-4 py-2 text-white font-bold">Característica</div>
+                    <div className="px-4 py-2 text-emerald-300 font-bold">Electrocauterización</div>
+                    <div className="px-4 py-2 text-emerald-300 font-bold">Láser CO2</div>
+                    <div className="px-4 py-2 text-emerald-300 font-bold">Recomendación</div>
+                  </div>
+                  <div className="grid grid-cols-4 text-center border-t border-white/10">
+                    <div className="px-4 py-3 text-white/90 font-medium">Precisión</div>
+                    <div className="px-4 py-3 text-white/80">Alta</div>
+                    <div className="px-4 py-3 text-white/80">Muy Alta</div>
+                    <div className="px-4 py-3 text-emerald-400">Láser CO2</div>
+                  </div>
+                  <div className="grid grid-cols-4 text-center border-t border-white/10">
+                    <div className="px-4 py-3 text-white/90 font-medium">Dolor</div>
+                    <div className="px-4 py-3 text-white/80">Moderado</div>
+                    <div className="px-4 py-3 text-white/80">Mínimo</div>
+                    <div className="px-4 py-3 text-emerald-400">Láser CO2</div>
+                  </div>
+                  <div className="grid grid-cols-4 text-center border-t border-white/10">
+                    <div className="px-4 py-3 text-white/90 font-medium">Recuperación</div>
+                    <div className="px-4 py-3 text-white/80">2-3 semanas</div>
+                    <div className="px-4 py-3 text-white/80">1-3 semanas</div>
+                    <div className="px-4 py-3 text-emerald-400">Láser CO2</div>
+                  </div>
+                  <div className="grid grid-cols-4 text-center border-t border-white/10">
+                    <div className="px-4 py-3 text-white/90 font-medium">Cicatrización</div>
+                    <div className="px-4 py-3 text-white/80">Estándar</div>
+                    <div className="px-4 py-3 text-white/80">Superior</div>
+                    <div className="px-4 py-3 text-emerald-400">Láser CO2</div>
+                  </div>
+                </div>
+              </div>
+            </ScrollAnimation>
+
+            {/* Tarjetas de tratamientos */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 max-w-5xl mx-auto px-4 sm:px-0">
+              {treatments.map((treatment, index) => (
+                <ScrollAnimation key={treatment.name} animation="fade-in-up" delay={index * 200}>
+                  <div className="group relative bg-white/5 backdrop-blur-sm rounded-2xl p-6 sm:p-8 shadow-lg hover:shadow-emerald-500/20 transition-all duration-500 border border-white/10 hover:border-white/20 transform hover:-translate-y-1 h-full flex flex-col">
+                    <div className="text-center mb-6">
+                      <div className="w-16 h-16 bg-gradient-to-br from-emerald-100 to-teal-100 rounded-xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300 shadow-sm">
+                        {treatment.icon}
+                      </div>
+                      <h3 className="text-xl sm:text-2xl font-bold text-white mb-4">
+                        {treatment.name}
+                      </h3>
+                      <p className="text-white/80 leading-relaxed mb-6">
+                        {treatment.description}
+                      </p>
+                    </div>
+
+                    <div className="space-y-3 mb-6">
+                      <div className="flex justify-between items-center bg-white/10 backdrop-blur-md p-3 rounded-xl">
+                        <span className="font-medium text-white/90">Duración</span>
+                        <span className="font-bold text-emerald-300">{treatment.duration}</span>
+                      </div>
+                      <div className="flex justify-between items-center bg-white/10 backdrop-blur-md p-3 rounded-xl">
+                        <span className="font-medium text-white/90">Recuperación</span>
+                        <span className="font-bold text-emerald-300">{treatment.recovery}</span>
+                      </div>
+                    </div>
+
+                    <div className="space-y-3 mb-6 flex-grow">
+                      <h4 className="font-bold text-white mb-4">Beneficios:</h4>
+                      {treatment.benefits.map((benefit, idx) => (
+                        <div key={idx} className="flex items-center gap-3">
+                          <CheckCircle className="h-4 w-4 text-emerald-400 flex-shrink-0" />
+                          <span className="text-white/80">{benefit}</span>
                         </div>
-                    ))}
-                </div>
-            </ResponsiveContainer>
+                      ))}
+                    </div>
+
+                    <Button
+                      onClick={openWhatsApp}
+                      className="w-full bg-gradient-to-r from-emerald-600 via-emerald-500 to-teal-600 hover:from-emerald-500 hover:via-emerald-400 hover:to-teal-500 text-white py-3 rounded-xl font-semibold transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-[1.02]"
+                    >
+                      Consultar Tratamiento
+                      <ArrowRight className="h-4 w-4 ml-2" />
+                    </Button>
+                  </div>
+                </ScrollAnimation>
+              ))}
+            </div>
+          </ResponsiveContainer>
         </section>
 
-        {/* El resto de secciones (Sobre Mi, etc.) seguirían el mismo patrón de ser Server Components estáticos */}
+        {/* Doctor Section */}
+        <section id="sobre-mi" className="relative py-12 sm:py-16 lg:py-20 bg-gradient-to-br from-slate-50 via-white to-emerald-50/30 overflow-hidden">
+          <div className="absolute inset-0 opacity-20">
+            <div className="absolute top-1/4 left-1/4 w-72 h-72 bg-emerald-300/30 rounded-full blur-3xl"></div>
+            <div className="absolute bottom-1/4 right-1/4 w-72 h-72 bg-teal-300/30 rounded-full blur-3xl"></div>
+          </div>
+          
+          <ResponsiveContainer className="relative z-10">
+            <div className="flex flex-col lg:flex-row items-center gap-8 lg:gap-12">
+              <ScrollAnimation animation="fade-in-right" className="lg:w-2/5">
+                <div className="relative">
+                  <div className="absolute -inset-4 bg-gradient-to-tr from-emerald-100 via-emerald-50 to-white rounded-2xl blur-2xl opacity-60"></div>
+                  <div className="relative bg-white rounded-2xl p-2 shadow-xl">
+                    <Image
+                      src="/images/dr_mario_martinez.jpg"
+                      alt="Dr. Mario Martínez Thomas - Especialista en VPH"
+                      width={500}
+                      height={600}
+                      className="rounded-xl w-full h-auto"
+                    />
+                    <div className="absolute -bottom-4 -right-4 bg-gradient-to-r from-emerald-700 to-emerald-600 text-white p-4 rounded-xl shadow-lg">
+                      <div className="flex items-center gap-2 mb-1">
+                        <Shield className="h-5 w-5" />
+                        <span className="font-bold text-lg">100%</span>
+                      </div>
+                      <p className="text-xs font-medium">Confidencial</p>
+                    </div>
+                  </div>
+                </div>
+              </ScrollAnimation>
 
-        {/* Contact Form Section (Client Component) */}
-        <ContactFormSection />
+              <ScrollAnimation animation="fade-in-left" className="lg:w-3/5 space-y-6">
+                <div>
+                  <div className="inline-flex items-center gap-2 bg-gradient-to-r from-emerald-100 to-teal-100 text-emerald-700 px-4 sm:px-6 py-2 sm:py-3 rounded-full text-xs sm:text-sm font-semibold mb-4 sm:mb-6 shadow-md">
+                    <Lock className="h-4 w-4" />
+                    Atención Confidencial
+                  </div>
+                  <h2 className="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-bold bg-gradient-to-r from-emerald-800 via-slate-700 to-emerald-700 bg-clip-text text-transparent mb-4 sm:mb-6 leading-tight">
+                    Dr. Mario Martínez Thomas
+                  </h2>
+                  <div className="w-20 sm:w-24 h-1 bg-gradient-to-r from-emerald-600 via-teal-500 to-emerald-500 mb-6 rounded-full"></div>
+                  <p className="text-lg sm:text-xl text-slate-600 leading-relaxed">
+                    Cirujano Urólogo egresado de CMN 20 de Noviembre, con mención honorífica otorgada 
+                    por la Universidad Nacional Autónoma de México. Especialista en el tratamiento discreto 
+                    y efectivo del VPH con las técnicas más avanzadas.
+                  </p>
+                </div>
 
+                <div className="bg-gradient-to-br from-white via-emerald-50/30 to-white p-6 rounded-xl border border-emerald-100/50 shadow-md">
+                  <h3 className="text-xl font-bold bg-gradient-to-r from-emerald-800 to-slate-700 bg-clip-text text-transparent mb-4">¿Por qué elegirnos?</h3>
+                  <div className="space-y-3">
+                    <div className="flex items-start gap-3">
+                      <CheckCircle className="h-5 w-5 text-emerald-600 flex-shrink-0 mt-1" />
+                      <div>
+                        <h4 className="font-bold text-slate-800 mb-1">Experiencia Comprobada</h4>
+                        <p className="text-slate-600">Más de 15 años tratando casos de VPH con éxito.</p>
+                      </div>
+                    </div>
+                    <div className="flex items-start gap-3">
+                      <CheckCircle className="h-5 w-5 text-emerald-600 flex-shrink-0 mt-1" />
+                      <div>
+                        <h4 className="font-bold text-slate-800 mb-1">Tecnología Avanzada</h4>
+                        <p className="text-slate-600">Equipos de última generación para tratamientos precisos.</p>
+                      </div>
+                    </div>
+                    <div className="flex items-start gap-3">
+                      <CheckCircle className="h-5 w-5 text-emerald-600 flex-shrink-0 mt-1" />
+                      <div>
+                        <h4 className="font-bold text-slate-800 mb-1">Ambiente Confidencial</h4>
+                        <p className="text-slate-600">Privacidad absoluta y atención personalizada.</p>
+                      </div>
+                    </div>
+                    <div className="flex items-start gap-3">
+                      <CheckCircle className="h-5 w-5 text-emerald-600 flex-shrink-0 mt-1" />
+                      <div>
+                        <h4 className="font-bold text-slate-800 mb-1">Seguimiento Integral</h4>
+                        <p className="text-slate-600">Acompañamiento durante todo el proceso de tratamiento.</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="pt-4">
+                  <Button
+                    onClick={openWhatsApp}
+                    className="bg-gradient-to-r from-emerald-700 via-emerald-600 to-teal-600 hover:from-emerald-600 hover:via-emerald-500 hover:to-teal-500 text-white px-8 py-4 rounded-xl font-medium shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-[1.02]"
+                  >
+                    <Lock className="h-5 w-5 mr-2" />
+                    Consulta Confidencial
+                  </Button>
+                </div>
+              </ScrollAnimation>
+            </div>
+          </ResponsiveContainer>
+        </section>
+
+        {/* Contact Section - Mejorado */}
+        <section id="contacto" className="relative py-12 sm:py-16 lg:py-20 bg-gradient-to-br from-white via-slate-50/50 to-emerald-50/30 overflow-hidden">
+          <div className="absolute inset-0 opacity-20">
+            <div className="absolute top-1/4 left-1/4 w-72 h-72 bg-emerald-300/30 rounded-full blur-3xl"></div>
+            <div className="absolute bottom-1/4 right-1/4 w-72 h-72 bg-teal-300/30 rounded-full blur-3xl"></div>
+          </div>
+          
+          <ResponsiveContainer className="relative z-10">
+            <ScrollAnimation animation="fade-in-up" className="mb-12">
+              <div className="text-center max-w-4xl mx-auto mb-10 sm:mb-14 px-4 sm:px-0">
+                <div className="inline-flex items-center gap-2 bg-gradient-to-r from-emerald-100 to-teal-100 text-emerald-700 px-4 sm:px-6 py-2 sm:py-3 rounded-full text-xs sm:text-sm font-semibold mb-4 sm:mb-6 shadow-md">
+                  <Phone className="h-4 w-4" />
+                  Agenda tu Consulta
+                </div>
+                <h2 className="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-bold bg-gradient-to-r from-emerald-800 via-slate-700 to-emerald-700 bg-clip-text text-transparent mb-4 sm:mb-6 leading-tight">
+                  Contacto Confidencial
+                </h2>
+                <div className="w-20 sm:w-24 h-1 bg-gradient-to-r from-emerald-600 via-teal-500 to-emerald-500 mx-auto mb-4 sm:mb-6 rounded-full"></div>
+              </div>
+            </ScrollAnimation>
+            
+            <ScrollAnimation animation="fade-in-up">
+              <div className="bg-gradient-to-br from-white via-emerald-50/30 to-white rounded-2xl sm:rounded-3xl shadow-xl overflow-hidden border border-emerald-100/50">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                  {/* Formulario de contacto rápido */}
+                  <div className="p-6 sm:p-8 lg:p-12">
+                    <div className="mb-6">
+                      <h3 className="text-xl sm:text-2xl font-bold text-emerald-700 mb-4">
+                        Solicitar Información Confidencial
+                      </h3>
+                      <p className="text-slate-600 mb-6">
+                        Envíanos tus datos y nos pondremos en contacto contigo de forma discreta 
+                        para resolver todas tus dudas sobre tratamientos para el VPH.
+                      </p>
+                    </div>
+                    
+                    {/* Formulario */}
+                    <form className="space-y-4" onSubmit={(e) => e.preventDefault()}>
+                      <div>
+                        <label htmlFor="nombre" className="block text-sm font-medium text-slate-700 mb-1">Nombre</label>
+                        <input 
+                          type="text" 
+                          id="nombre" 
+                          className="w-full p-3 rounded-lg border border-slate-200 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all"
+                          placeholder="Tu nombre"
+                        />
+                      </div>
+                      <div>
+                        <label htmlFor="telefono" className="block text-sm font-medium text-slate-700 mb-1">Teléfono</label>
+                        <input 
+                          type="tel" 
+                          id="telefono" 
+                          className="w-full p-3 rounded-lg border border-slate-200 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all"
+                          placeholder="Tu número de teléfono"
+                        />
+                      </div>
+                      <div>
+                        <label htmlFor="mensaje" className="block text-sm font-medium text-slate-700 mb-1">Mensaje</label>
+                        <textarea 
+                          id="mensaje" 
+                          rows={3}
+                          className="w-full p-3 rounded-lg border border-slate-200 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all"
+                          placeholder="¿Cómo podemos ayudarte?"
+                        ></textarea>
+                      </div>
+                      <div className="flex items-center">
+                        <input type="checkbox" id="confidencial" className="rounded text-emerald-600 focus:ring-emerald-500 mr-2" />
+                        <label htmlFor="confidencial" className="text-sm text-slate-600">Solicito que mi consulta sea tratada de manera confidencial</label>
+                      </div>
+                      <Button
+                        type="submit"
+                        className="w-full bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white rounded-lg px-6 py-3 font-semibold shadow-md hover:shadow-lg transition-all duration-300"
+                      >
+                        Enviar Consulta Confidencial
+                        <Lock className="h-4 w-4 ml-2" />
+                      </Button>
+                    </form>
+                    
+                    <div className="mt-4 text-xs text-slate-500 text-center">
+                      Tu información estará protegida bajo nuestras políticas de privacidad y confidencialidad médica.
+                    </div>
+                  </div>
+                  
+                  {/* Información de contacto */}
+                  <div className="bg-gradient-to-br from-emerald-700 via-emerald-600 to-teal-700 p-6 sm:p-8 lg:p-12 text-white flex flex-col justify-between">
+                    <div>
+                      <h3 className="text-xl sm:text-2xl font-bold mb-6">
+                        ¿Necesitas atención inmediata?
+                      </h3>
+                      <p className="mb-8 text-white/90">
+                        No posterges tu salud. Agenda una consulta confidencial y recibe 
+                        el tratamiento especializado que necesitas en un ambiente profesional y discreto.
+                      </p>
+                      
+                      <div className="space-y-6 mb-12">
+                        <div className="flex items-start gap-4">
+                          <div className="bg-white/20 p-3 rounded-lg">
+                            <Phone className="h-5 w-5" />
+                          </div>
+                          <div>
+                            <h4 className="font-semibold text-lg">Teléfono</h4>
+                            <a href="tel:5215516942925" className="text-white/90 hover:text-white block transition-colors">
+                              +52 1 55 1694 2925
+                            </a>
+                          </div>
+                        </div>
+                        
+                        <div className="flex items-start gap-4">
+                          <div className="bg-white/20 p-3 rounded-lg">
+                            <Calendar className="h-5 w-5" />
+                          </div>
+                          <div>
+                            <h4 className="font-semibold text-lg">Horario de atención</h4>
+                            <p className="text-white/90">Lunes a Viernes: 9:00 - 18:00</p>
+                            <p className="text-white/90">Sábados: 9:00 - 13:00</p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <Button
+                      onClick={openWhatsApp}
+                      className="w-full bg-white text-emerald-700 hover:bg-emerald-50 rounded-xl px-6 py-4 font-bold shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 flex items-center justify-center gap-2"
+                    >
+                      <Phone className="h-5 w-5" />
+                      Contactar por WhatsApp
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            </ScrollAnimation>
+          </ResponsiveContainer>
+        </section>
       </main>
       <Footer />
     </div>
-  );
+  )
 }

@@ -434,31 +434,6 @@ export default function ClinicaProstata() {
                 </div>
               </ScrollAnimation>
             </div>
-
-            {/* Testimonio destacado */}
-            <ScrollAnimation animation="fade-in-up">
-              <div className="mt-12 sm:mt-16 mx-auto max-w-4xl px-4 sm:px-0">
-                <div className="bg-white/5 backdrop-blur-sm rounded-2xl p-6 sm:p-8 border border-white/10 shadow-lg relative">
-                  <div className="absolute -top-3 -left-3 text-emerald-300 transform scale-125">
-                    <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M12 22.5H6.5C5.125 22.5 4 21.375 4 20V16C4 14.625 5.125 13.5 6.5 13.5H9.5C10.875 13.5 12 14.625 12 16V22.5ZM12 22.5C12 26.625 8.625 30 4.5 30" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
-                      <path d="M28 22.5H22.5C21.125 22.5 20 21.375 20 20V16C20 14.625 21.125 13.5 22.5 13.5H25.5C26.875 13.5 28 14.625 28 16V22.5ZM28 22.5C28 26.625 24.625 30 20.5 30" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
-                    </svg>
-                  </div>
-                  <p className="text-white/90 italic text-lg pl-8">
-                    El Dr. Martínez Thomas es un profesional excepcional. Su conocimiento en problemas de próstata y la cirugía láser me permitió recuperar mi calidad de vida de forma rápida y con mínimas molestias postoperatorias.
-                  </p>
-                  <div className="flex items-center mt-6 pl-8">
-                    <div className="flex">
-                      {[...Array(5)].map((_, i) => (
-                        <Star key={i} className="h-4 w-4 text-emerald-300 fill-current" />
-                      ))}
-                    </div>
-                    <p className="text-white/70 text-sm ml-3">Paciente tratado con Enucleación Láser</p>
-                  </div>
-                </div>
-              </div>
-            </ScrollAnimation>
           </ResponsiveContainer>
         </section>
 
