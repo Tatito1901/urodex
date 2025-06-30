@@ -68,6 +68,7 @@ interface TreatmentItem {
   icon: JSX.Element;
   bgColor: string;
   featured?: boolean;
+  price?: string; // Agregado para mostrar el precio si está disponible
 }
 
 interface ConditionItem {
@@ -283,7 +284,8 @@ export default function ClinicaCircuncision() {
       ],
       ideal: "Casos complejos y revisiones",
       icon: <Shield className="h-5 w-5 sm:h-6 sm:w-6 text-white" />,
-      bgColor: "from-emerald-600 to-emerald-700"
+      bgColor: "from-emerald-600 to-emerald-700",
+      price: "$7,500 MXN"
     },
     {
       name: "Circuncisión con Láser",
@@ -299,7 +301,8 @@ export default function ClinicaCircuncision() {
       ideal: "Primera opción recomendada",
       icon: <Zap className="h-5 w-5 sm:h-6 sm:w-6 text-white" />,
       bgColor: "from-teal-600 to-teal-700",
-      featured: true
+      featured: true,
+      price: "$9,500 MXN"
     },
     {
       name: "Frenuloplastía",
@@ -314,7 +317,8 @@ export default function ClinicaCircuncision() {
       ],
       ideal: "Problemas de frenillo únicamente",
       icon: <Target className="h-5 w-5 sm:h-6 sm:w-6 text-white" />,
-      bgColor: "from-emerald-600 to-teal-600"
+      bgColor: "from-emerald-600 to-teal-600",
+      price: "$6,500 MXN"
     }
   ], [])
 
