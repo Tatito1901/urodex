@@ -732,7 +732,7 @@ export default function ClinicaCircuncision() {
                     },
                     {
                       title: "Garantía de Satisfacción",
-                      description: "Compromiso total con resultados óptimos y reintervención gratuita si es necesaria."
+                      description: "Compromiso total con resultados óptimos"
                     }
                   ].map((item, index) => (
                     <div key={index} className="flex items-start gap-2 sm:gap-3">
@@ -751,7 +751,7 @@ export default function ClinicaCircuncision() {
                     className="bg-white text-emerald-700 hover:bg-emerald-50 px-4 sm:px-8 py-3 sm:py-4 rounded-lg sm:rounded-xl font-medium shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-[1.02] text-sm sm:text-base flex items-center justify-center w-full sm:w-auto group"
                   >
                     <Calendar className="h-4 w-4 sm:h-5 sm:w-5 mr-2 group-hover:rotate-12 transition-transform duration-300" />
-                    Consulta Especializada Gratuita
+                    Consulta Especializada
                   </button>
                 </div>
               </ScrollAnimation>
@@ -832,7 +832,7 @@ export default function ClinicaCircuncision() {
                 <div className="flex flex-col items-center text-center p-6 sm:p-8 lg:p-12">
                   <div className="inline-flex items-center gap-2 bg-emerald-50 text-emerald-700 px-3 sm:px-4 py-2 rounded-full text-xs font-medium mb-4 sm:mb-6">
                     <Calendar className="h-4 w-4" />
-                    Consulta especializada gratuita
+                    Consulta especializada
                   </div>
                   
                   <h3 className="text-xl sm:text-2xl lg:text-3xl xl:text-4xl font-bold text-emerald-800 mb-3 sm:mb-4">
@@ -842,7 +842,7 @@ export default function ClinicaCircuncision() {
                   <div className="w-16 sm:w-20 h-1 bg-gradient-to-r from-emerald-400 to-teal-500 mx-auto mb-4 sm:mb-6 rounded-full"></div>
                   
                   <p className="text-sm sm:text-base lg:text-lg text-slate-700 mb-6 sm:mb-8 max-w-xl mx-auto leading-relaxed">
-                    Termina con tus problemas de balanitis, fimosis o parafimosis. Agenda tu consulta gratuita 
+                    Termina con tus problemas de balanitis, fimosis o parafimosis. Agenda tu consulta
                     y recibe un plan de tratamiento personalizado sin compromiso.
                   </p>
                   
@@ -852,7 +852,7 @@ export default function ClinicaCircuncision() {
                       className="bg-emerald-700 hover:bg-emerald-800 text-white px-4 sm:px-6 py-3 rounded-lg font-medium shadow-md hover:shadow-lg transition-all duration-300 text-sm sm:text-base flex items-center justify-center group"
                     >
                       <Phone className="h-4 w-4 mr-2 group-hover:rotate-12 transition-transform duration-300" />
-                      Consulta Gratuita por WhatsApp
+                      Consulta por WhatsApp
                     </button>
                     <button
                       onClick={() => scrollToSection("inicio")}
