@@ -54,7 +54,7 @@ const LOCATIONS: Record<LocationKey, Location> = {
     address: "Temístocles 210, Polanco, Ciudad de México",
     schedule: { weekdays: "9:00 AM - 7:00 PM", saturday: "9:00 AM - 2:00 PM" },
     phone: "(55) 1694 2925",
-    mapUrl: "https://maps.app.goo.gl/YFminzdq8uixrNxB9?g_st=com.google.maps.preview.copy",
+    mapUrl: "https://maps.app.goo.gl/1qXagFCEpNSLQmec8",
     features: ["Estacionamiento disponible", "Acceso fácil", "Zona segura"],
   },
   satelite: {

@@ -120,41 +120,7 @@ const FAQItem = ({ question, answer, isOpen, onToggle, index }: FAQItemProps) =>
   </div>
 );
 
-// Scroll Progress Bar optimizada
-const ScrollProgressBar = () => {
-  const [scrollProgress, setScrollProgress] = useState(0);
 
-  useEffect(() => {
-    let ticking = false;
-
-    const updateScrollProgress = () => {
-      const scrollPx = document.documentElement.scrollTop;
-      const winHeightPx = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-      const scrolled = scrollPx / winHeightPx;
-      setScrollProgress(scrolled);
-      ticking = false;
-    };
-
-    const requestTick = () => {
-      if (!ticking) {
-        requestAnimationFrame(updateScrollProgress);
-        ticking = true;
-      }
-    };
-
-    window.addEventListener('scroll', requestTick, { passive: true });
-    return () => window.removeEventListener('scroll', requestTick);
-  }, []);
-
-  return (
-    <div className="fixed top-0 left-0 w-full h-1 bg-emerald-100 z-50">
-      <div 
-        className="h-full bg-gradient-to-r from-emerald-500 to-teal-600 transition-all duration-150 ease-out"
-        style={{ width: `${scrollProgress * 100}%` }}
-      />
-    </div>
-  );
-};
 
 // Componente de animación optimizado
 const ScrollAnimation = ({ children, animation = "fade-in-up", delay = 0, className = "" }: ScrollAnimationProps) => {
@@ -418,7 +384,7 @@ export default function ClinicaCircuncision() {
         }
       `}</style>
       
-      <ScrollProgressBar />
+
       <Header activeSection={activeSection} />
 
       <main className="flex-1">
@@ -455,7 +421,7 @@ export default function ClinicaCircuncision() {
                     className="bg-emerald-600 hover:bg-emerald-700 text-white px-4 sm:px-6 py-3 rounded-lg text-sm sm:text-base font-medium shadow-lg hover:shadow-emerald-700/20 transition-all duration-300 flex items-center justify-center group"
                   >
                     <Calendar className="h-4 w-4 mr-2 group-hover:rotate-12 transition-transform duration-300" />
-                    Agendar Consulta Gratuita
+                    Agendar Consulta
                   </button>
                   <button
                     onClick={() => scrollToSection("tratamientos")}

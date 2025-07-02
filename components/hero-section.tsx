@@ -175,13 +175,7 @@ export function HeroSection() {
         </Badge>
       </ResponsiveContainer>
 
-      {/* indicador scroll */}
-      <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-30 hidden md:flex flex-col items-center">
-        <div className="w-6 h-10 rounded-full border-2 border-emerald-400/50 flex justify-center p-1 backdrop-blur-sm">
-          <div className="w-1 h-2 bg-emerald-400/80 rounded-full animate-bounce" />
-        </div>
-        <span className="text-white/60 text-xs mt-2 font-light">Scroll</span>
-      </div>
+
     </section>
   )
 }

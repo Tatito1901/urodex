@@ -805,11 +805,15 @@ const LazyImageGallery = lazy(() => Promise.resolve({ default: ImageGallery }));
 const LazyVideoCard = lazy(() => Promise.resolve({ default: VideoCard }));
 
 // --- COMPONENTE PRINCIPAL OPTIMIZADO ---
-const DoctorInfo = memo(() => {
+interface DoctorInfoProps {
+  background?: string;
+}
+
+const DoctorInfo = memo(({ background = 'pearl' }: DoctorInfoProps) => {
   return (
     <Section
       id="doctor-info"
-      className="bg-gradient-to-b from-teal-50/70 via-white to-teal-50/70 py-12 sm:py-16 md:py-24 overflow-hidden"
+      className={`${background === 'pearl' ? 'bg-gradient-to-b from-teal-50/70 via-white to-teal-50/70' : background === 'primary-dark' ? 'bg-gradient-to-b from-teal-800 via-teal-900 to-teal-800 text-white' : ''} py-12 sm:py-16 md:py-24 overflow-hidden`}
     >
       <ResponsiveContainer>
         {/* Encabezado optimizado */}
